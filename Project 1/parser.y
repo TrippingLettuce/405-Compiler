@@ -16,13 +16,13 @@ void yyerror(const char* s);
 	char* string;
 }
 
-%token <string> TYPE
-%token <string> KEYWORD
-%token <string> ID
-%token <char> PUNCTUATOR
-%token <number> NUMBER
-%token <string> STRVALUE
-%token <char> BINOP
+%token <string> TYPE /* i.e.: int, char, float ...*/
+%token <string> KEYWORD /* i.e: for, while, return...*/
+%token <string> ID /* i.e: vairiable name: int x = 5 */
+%token <char> PUNCTUATOR /*i.e: ; = {} () , ... */
+%token <number> NUMBER /* 5 2.5 3.555 5/7 */
+%token <string> STRVALUE /* "anything between quotes" */
+%token <char> BINOP /* >= > < == && || != */
 %token WRITE
 
 
