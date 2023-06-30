@@ -17,10 +17,14 @@ void yyerror(const char* s);
 }
 
 %token <string> TYPE
+%token <string> KEYWORD
 %token <string> ID
 %token <char> SEMICOLON
+%token <char> UNARYOP
 %token <char> EQ
 %token <number> NUMBER
+%token <string> STRVALUE
+%token <char> BINOP
 %token WRITE
 
 
