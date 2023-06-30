@@ -10,39 +10,19 @@ extern FILE* yyin;
 void yyerror(const char* s);
 %}
 
-%union{ 
-    int number;
-    char character;
-    char* string;
+%union {
+	int number;
+	char character;
+	char* string;
 }
+
 %token <string> TYPE
 %token <string> ID
-%token <string> INT
-%token <string> FLOAT
-%token <string> CHAR
-%token <string> RETURN
-%token <string> RESULT
-%token <string> WHILE
-%token <string> IF
-%token <string> ELSE
-%token <string> COUNT
-%token <string> IDENTIFIER
-%token <string> SUM
+%token <char> SEMICOLON
+%token <char> EQ
 %token <number> NUMBER
-%token <string> WORD
-%token <character> SEMICOLON
-%token <character> EQUAL
-%token <character> NOTEQUAL
-%token <character> PLUS
-%token <character> MINUS
-%token <character> TIMES
-%token <character> DIVIDE
-%token <character> GREATERTHAN
-%token <character> LESSTHAN
-%token <character> ABS
-%token <character> NOT
-%token <character> AND
-%token <character> COMMENT
+%token WRITE
+
 
 %printer { fprintf(yyoutput, "%s", $$); } ID;
 
@@ -50,38 +30,35 @@ void yyerror(const char* s);
 
 %%
 
-Program: VarDeclList StmtList {printf("The Parser has started\n");}
+Program: DeclList  
 ;
 
-VarDeclList: {/*empty, i.e it is possible not to declare a variable*/}
-	| VarDecl VarDeclList
+DeclList:	Decl DeclList
+	| Decl
 ;
 
-VarDecl: Type ID EQ OptSemi { printf("\n RECOGNIZED RULE: Variable declaration %s\n", $2);}
+Decl:	VarDecl
+	| StmtList
 ;
 
-OptSemi: SEMICOLON
-| { printf("Warning: Missing semicolon. Inserting it automatically.\n"); }
+VarDecl:	TYPE ID SEMICOLON	{ printf("\n RECOGNIZED RULE: Variable declaration %s\n", $2);
+								  //printf("Items recognized: %s, %s, %c \n", $1, $2, $3);
+								}
 ;
 
-Type: "int"
-; 
-
-StmtList: 
-        | Stmt StmtList
+StmtList:	
+	| Stmt StmtList
 ;
 
-Stmt: ID EQ Expr OptSemi /* An assignment statement */
-        | WRITE ID OptSemi
+Stmt:	SEMICOLON
+	| Expr SEMICOLON
 ;
 
-Expr: Expr BinOp Expr
-        | ID
-        | NUMBER
-;
+Expr:	ID { printf("\n RECOGNIZED RULE: Simplest expression\n"); }
+	| ID EQ ID 	{ printf("\n RECOGNIZED RULE: Assignment statement\n"); }
+	| ID EQ NUMBER 	{ printf("\n RECOGNIZED RULE: Assignment statement\n"); }
+	| WRITE ID 	{ printf("\n RECOGNIZED RULE: WRITE statement\n"); }
 
-BinOP: "+"
-;
 %%
 
 int main(int argc, char**argv)

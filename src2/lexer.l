@@ -1,18 +1,20 @@
 %option noyywrap
+%option noyywrap yylineno
 
 %{
-#include <stdio.h>
+#include <stdio.h> 
 #include <string.h>
+#include "parser.tab.h"
+
+int yycolumn = 1;
 
 #define YY_DECL int yylex()
-#include "parser.tab.h"
 
 int words = 0;
 int chars = 0;
 int lines = 0;
 
 %}
-
 letter      [a-zA-Z]
 digit       [0-9]
 ID          {letter}({letter}|{digit})*
@@ -74,6 +76,5 @@ ws          {delim}+
 .		{chars++;
          printf("%s : Unrecognized symbol at line %d char %d\n", yytext,lines,chars);
 		}
-		
 
 %%
