@@ -83,12 +83,14 @@ extern int yyparse();
 extern FILE* yyin;
 FILE * IRcode;
 
+int has_errors = 0;  // 0 means no errors, 1 means there were errors
+
 
 void yyerror(const char* s);
 char currentScope[50]; // "global" or the name of the function
 int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 
-#line 92 "parser.tab.c"
+#line 94 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -520,8 +522,8 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    46,    46,    52,    55,    58,    59,    62,    80,    81,
-      84,    85,    88,    90,   130,   169
+       0,    48,    48,    54,    57,    60,    61,    64,    82,    83,
+      86,    87,    90,    92,   132,   171
 };
 #endif
 
@@ -709,15 +711,15 @@ yy_symbol_value_print (FILE *yyo,
   switch (yykind)
     {
     case YYSYMBOL_ID: /* ID  */
-#line 37 "parser.y"
+#line 39 "parser.y"
          { fprintf(yyoutput, "%s", ((*yyvaluep).string)); }
-#line 715 "parser.tab.c"
+#line 717 "parser.tab.c"
         break;
 
     case YYSYMBOL_NUMBER: /* NUMBER  */
-#line 38 "parser.y"
+#line 40 "parser.y"
          { fprintf(yyoutput, "%d", ((*yyvaluep).number)); }
-#line 721 "parser.tab.c"
+#line 723 "parser.tab.c"
         break;
 
       default:
@@ -1105,30 +1107,30 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* Program: DeclList  */
-#line 46 "parser.y"
+#line 48 "parser.y"
                    { (yyval.ast) = (yyvsp[0].ast);
 					 printf("\n--- Abstract Syntax Tree ---\n\n");
 					 printAST((yyval.ast),0);
 					}
-#line 1114 "parser.tab.c"
+#line 1116 "parser.tab.c"
     break;
 
   case 3: /* DeclList: Decl DeclList  */
-#line 52 "parser.y"
+#line 54 "parser.y"
                                 { (yyvsp[-1].ast)->left = (yyvsp[0].ast);
 							  (yyval.ast) = (yyvsp[-1].ast);
 							}
-#line 1122 "parser.tab.c"
+#line 1124 "parser.tab.c"
     break;
 
   case 4: /* DeclList: Decl  */
-#line 55 "parser.y"
+#line 57 "parser.y"
                 { (yyval.ast) = (yyvsp[0].ast); }
-#line 1128 "parser.tab.c"
+#line 1130 "parser.tab.c"
     break;
 
   case 7: /* VarDecl: TYPE ID SEMICOLON  */
-#line 62 "parser.y"
+#line 64 "parser.y"
                                         { printf("\n RECOGNIZED RULE: Variable declaration %s\n", (yyvsp[-1].string));
 									// Symbol Table
 									symTabAccess();
@@ -1145,30 +1147,30 @@ yyreduce:
 								    (yyval.ast) = AST_Type("Type",(yyvsp[-2].string),(yyvsp[-1].string));
 									printf("-----------> %s", (yyval.ast)->LHS);
 								}
-#line 1149 "parser.tab.c"
+#line 1151 "parser.tab.c"
     break;
 
   case 10: /* Stmt: SEMICOLON  */
-#line 84 "parser.y"
+#line 86 "parser.y"
                         {}
-#line 1155 "parser.tab.c"
+#line 1157 "parser.tab.c"
     break;
 
   case 11: /* Stmt: Expr SEMICOLON  */
-#line 85 "parser.y"
+#line 87 "parser.y"
                                 {(yyval.ast) = (yyvsp[-1].ast);}
-#line 1161 "parser.tab.c"
+#line 1163 "parser.tab.c"
     break;
 
   case 12: /* Expr: ID  */
-#line 88 "parser.y"
+#line 90 "parser.y"
            { printf("\n RECOGNIZED RULE: Simplest expression\n"); //E.g. function call
 		   }
-#line 1168 "parser.tab.c"
+#line 1170 "parser.tab.c"
     break;
 
   case 13: /* Expr: ID EQ ID  */
-#line 90 "parser.y"
+#line 92 "parser.y"
                         { printf("\n RECOGNIZED RULE: Assignment statement\n"); 
 					// ---- SEMANTIC ACTIONS by PARSER ---- //
 					  (yyval.ast) = AST_assignment("=",(yyvsp[-2].string),(yyvsp[0].string));
@@ -1208,11 +1210,11 @@ yyreduce:
 					
 
 				}
-#line 1212 "parser.tab.c"
+#line 1214 "parser.tab.c"
     break;
 
   case 14: /* Expr: ID EQ NUMBER  */
-#line 130 "parser.y"
+#line 132 "parser.y"
                         { printf("\n RECOGNIZED RULE: Constant Assignment statement\n"); 
 					   // ---- SEMANTIC ACTIONS by PARSER ----
 					   char str[50];
@@ -1251,11 +1253,11 @@ yyreduce:
 							emitConstantIntAssignment(id1, id2);
 						}
 					}
-#line 1255 "parser.tab.c"
+#line 1257 "parser.tab.c"
     break;
 
   case 15: /* Expr: WRITE ID  */
-#line 169 "parser.y"
+#line 171 "parser.y"
                         { printf("\n RECOGNIZED RULE: WRITE statement\n");
 					(yyval.ast) = AST_Write("write",(yyvsp[0].string),"");
 					
@@ -1277,11 +1279,11 @@ yyreduce:
 							emitWriteId((yyvsp[0].string));
 						}
 				}
-#line 1281 "parser.tab.c"
+#line 1283 "parser.tab.c"
     break;
 
 
-#line 1285 "parser.tab.c"
+#line 1287 "parser.tab.c"
 
       default: break;
     }
@@ -1474,7 +1476,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 192 "parser.y"
+#line 194 "parser.y"
 
 
 int main(int argc, char**argv)
@@ -1499,6 +1501,6 @@ int main(int argc, char**argv)
 }
 
 void yyerror(const char* s) {
+    has_errors = 1;  // Set the flag to indicate an error
     fprintf(stderr, "Parse error: %s at line %d\n", s, yylineno);
-    exit(1);
 }

@@ -13,6 +13,8 @@ extern int yyparse();
 extern FILE* yyin;
 FILE * IRcode;
 
+int has_errors = 0;  // 0 means no errors, 1 means there were errors
+
 
 void yyerror(const char* s);
 char currentScope[50]; // "global" or the name of the function
@@ -213,6 +215,6 @@ int main(int argc, char**argv)
 }
 
 void yyerror(const char* s) {
+    has_errors = 1;  // Set the flag to indicate an error
     fprintf(stderr, "Parse error: %s at line %d\n", s, yylineno);
-    exit(1);
 }
