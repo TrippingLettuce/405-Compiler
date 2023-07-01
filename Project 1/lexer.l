@@ -181,7 +181,8 @@ ws          {delim}+
 		}
 
 \n		{lines++; chars=0;}
-[ \t]	{chars++;}
+[ \t]		{chars++;}
+[\r\n]      	{lines++; chars=0;}
 .		{chars++;
          printf("%s : ERROR - Unrecognized symbol at line %d char %d\n", yytext,lines,chars);
 		}
