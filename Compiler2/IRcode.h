@@ -4,6 +4,8 @@
 #include <stdio.h>
 // ---- Functions to handle IR code emissions ---- //
 
+FILE *IRcode;  // Declaration of the file pointer
+
 void  initIRcodeFile(){
     IRcode = fopen("IRcode.ir", "a");
     fprintf(IRcode, "\n\n#### IR Code ####\n\n");
