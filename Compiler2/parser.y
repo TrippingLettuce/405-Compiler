@@ -36,6 +36,9 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %token <char> OP
 %token <number> NUMBER
 %token <string> WRITE
+%token <char> PLUS
+%token <char> MINUS
+
 
 %printer { fprintf(yyoutput, "%s", $$); } ID;
 %printer { fprintf(yyoutput, "%d", $$); } NUMBER;
