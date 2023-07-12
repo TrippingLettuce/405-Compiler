@@ -9,7 +9,7 @@
 
 int words = 0;
 int chars = 0;
-int lines = 0;
+int lines = 1;
 
 %}
 
@@ -80,6 +80,7 @@ ws          {delim}+
 		}
 		
 [\n]	{lines++; chars=0;}
+[\n\r]	{lines++; chars=0;}
 [ \t]	{chars++;}
 .		{chars++;
          printf("%s : Unrecognized symbol at line %d char %d\n", yytext,lines,chars);
