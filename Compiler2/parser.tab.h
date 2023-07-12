@@ -62,7 +62,9 @@ extern int yydebug;
     NUMBER = 263,                  /* NUMBER  */
     WRITE = 264,                   /* WRITE  */
     PLUS = 265,                    /* PLUS  */
-    MINUS = 266                    /* MINUS  */
+    MINUS = 266,                   /* MINUS  */
+    LPAR = 267,                    /* LPAR  */
+    RPAR = 268                     /* RPAR  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -78,7 +80,7 @@ union YYSTYPE
 	char* string;
 	struct AST* ast;
 
-#line 82 "parser.tab.h"
+#line 84 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

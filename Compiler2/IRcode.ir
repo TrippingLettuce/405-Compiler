@@ -28,3 +28,10 @@ output T2
 x = 2
 y = 3
 output T2
+
+
+#### IR Code ####
+
+x = 2
+y = 3
+output T2

@@ -38,6 +38,9 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %token <string> WRITE
 %token <char> PLUS
 %token <char> MINUS
+%token <char> LPAR
+%token <char> RPAR
+
 
 
 %printer { fprintf(yyoutput, "%s", $$); } ID;
@@ -208,14 +211,24 @@ Expr:	ID { printf("\n RECOGNIZED RULE: Simplest expression\n"); //E.g. function 
 						}
 					}
 	
-	| WRITE ID 	{ printf("\n RECOGNIZED RULE: WRITE statement\n");
-					$$ = AST_Write("write",$2,"");
+	| WRITE LPAR ID RPAR SEMICOLON	{ printf("\n RECOGNIZED RULE: WRITE statement\n");
+					// ---- SEMANTIC ACTIONS by PARSER ----
+					char str1;
+					   
+					sprintf(str1, "%d", $3); // convert $3 from int to string
+					$$ = AST_assignment("=",$1, str1);
+
+						// ---- SEMANTIC ANALYSIS ACTIONS ---- //  
+
+						// Check if identifiers have been declared
+					
+					$$ = AST_Write("write",$3,"");
 					
 					// ---- SEMANTIC ANALYSIS ACTIONS ---- //  
 
 					// Check if identifiers have been declared
-					    if(found($2, currentScope) != 1) {
-							printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", $2, currentScope);
+					    if(found($3, currentScope) != 1) {
+							printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", $3, currentScope);
 							semanticCheckPassed = 0;
 						}
 
@@ -226,7 +239,7 @@ Expr:	ID { printf("\n RECOGNIZED RULE: Simplest expression\n"); //E.g. function 
 							
 							// The IR code is printed to a separate file
 							
-							emitWriteId($2);
+							emitWriteId($3);
 
 							// ----     EMIT MIPS CODE   ----  //
 
@@ -236,7 +249,7 @@ Expr:	ID { printf("\n RECOGNIZED RULE: Simplest expression\n"); //E.g. function 
 							// and the paramaters of the function below will change
 							// to using $t0, ..., $t9 registers
 
-							emitMIPSWriteId($2);
+							emitMIPSWriteId($3);
 						}
 				}
 		| ID EQ BinOpExp

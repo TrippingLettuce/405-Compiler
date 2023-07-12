@@ -78,9 +78,20 @@ ws          {delim}+
 		  yylval.string = strdup(yytext); 
 		  return MINUS;
 		}
+"("		{chars++;
+		  printf("%s : EQ\n", yytext);
+		  yylval.string = strdup(yytext); 
+		  return LPAR;
+		}
+")"		{chars++;
+		  printf("%s : EQ\n", yytext);
+		  yylval.string = strdup(yytext); 
+		  return RPAR;
+		}
+
 		
 [\n]	{lines++; chars=0;}
-[\n\r]	{lines++; chars=0;}
+[\n\r]	{chars=0;}
 [ \t]	{chars++;}
 .		{chars++;
          printf("%s : Unrecognized symbol at line %d char %d\n", yytext,lines,chars);
