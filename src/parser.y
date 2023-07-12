@@ -99,7 +99,8 @@ Expr:	ID EQ RecursiveFunc {
             emitIR(id1, id2, numid);
             emitMIPSConstantIntAssignment(id1, id2, numid);
             setValue(id1, sum, currentScope);		
-            sum = 0;		
+            sum = 0;
+            showSymTable();		
         }
         | ID EQ ID 	{ 
             printf("\n RECOGNIZED RULE: Assignment statement\n"); 
@@ -178,9 +179,7 @@ RecursiveFunc:	NUMBER ADD_OP RecursiveFunc {
 };
 	| ID ADD_OP RecursiveFunc	{
         printf("\n RECOGNIZED RULE: ID + REC\n");
-		symTabAccess();
 		char id1[50];
-        sprintf(id1, "%d", $1);
         int id2 = getValue($1, currentScope);
 		sum = sum + id2;
 	};
@@ -188,15 +187,16 @@ RecursiveFunc:	NUMBER ADD_OP RecursiveFunc {
 	| NUMBER {
         printf("\n RECOGNIZED RULE: ADD STATMENT NUM END\n");
 		sum = sum + $1;
+        symTabAccess();
 	};
 
 	| ID {
         printf("\n RECOGNIZED RULE: ADD STATMENT ID END \n");
-		symTabAccess();
 		char id1[50];
         sprintf(id1, "%d", $1);
         int id2 = getValue($1, currentScope);
 		sum = sum + id2;
+		symTabAccess();
 	};
 
 %%
