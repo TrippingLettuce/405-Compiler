@@ -62,3 +62,31 @@ syscall      # system call (terminate)
 li $v0,10   # call code for terminate
 syscall      # system call (terminate)
 .end main
+.text
+main:
+# -----------------------
+li $t0,2
+li $t0,4
+li $t1,z
+li $t2,x
+li $t2,$t1
+.text
+main:
+# -----------------------
+li $t0,2
+.text
+main:
+# -----------------------
+li $t0,2
+.text
+main:
+# -----------------------
+li $t0,2
+.text
+main:
+# -----------------------
+li $t0,2
+.text
+main:
+# -----------------------
+li $t0,2

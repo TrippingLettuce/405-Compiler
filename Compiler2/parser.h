@@ -35,8 +35,8 @@
    especially those whose name start with YY_ or yy_.  They are
    private implementation details that can be changed or removed.  */
 
-#ifndef YY_YY_REVPARSE_TAB_H_INCLUDED
-# define YY_YY_REVPARSE_TAB_H_INCLUDED
+#ifndef YY_YY_PARSER_H_INCLUDED
+# define YY_YY_PARSER_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -55,12 +55,16 @@ extern int yydebug;
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
     TYPE = 258,                    /* TYPE  */
-    KEYWORD = 259,                 /* KEYWORD  */
-    IDENTIFIER = 260,              /* IDENTIFIER  */
-    NUMBER = 261,                  /* NUMBER  */
-    SEMICOLON = 262,               /* SEMICOLON  */
-    EQ = 263,                      /* EQ  */
-    BinOP = 264                    /* BinOP  */
+    ID = 259,                      /* ID  */
+    SEMICOLON = 260,               /* SEMICOLON  */
+    EQ = 261,                      /* EQ  */
+    OP = 262,                      /* OP  */
+    NUMBER = 263,                  /* NUMBER  */
+    WRITE = 264,                   /* WRITE  */
+    PLUS = 265,                    /* PLUS  */
+    MINUS = 266,                   /* MINUS  */
+    LPAR = 267,                    /* LPAR  */
+    RPAR = 268                     /* RPAR  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -69,13 +73,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 12 "revparse.y"
- 
-    int number;
-    char character;
-    char* string;
+#line 25 "parser.y"
 
-#line 79 "revparse.tab.h"
+	int number;
+	char character;
+	char* string;
+	struct AST* ast;
+
+#line 84 "parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -90,4 +95,4 @@ extern YYSTYPE yylval;
 int yyparse (void);
 
 
-#endif /* !YY_YY_REVPARSE_TAB_H_INCLUDED  */
+#endif /* !YY_YY_PARSER_H_INCLUDED  */

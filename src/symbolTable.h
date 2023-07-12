@@ -1,92 +1,166 @@
-//Abstract Syntax Tree Implementation
+
+//Symbol table header
 #include <string.h>
 
-struct AST{
-	char nodeType[50];
-	char LHS[50];
-	char RHS[50];
-	
-	struct AST * left;
-	struct AST * right;
-	// review pointers to structs in C 
-	// complete the tree struct with pointers
+struct Entry
+{
+	int itemID;
+	char itemName[50];  //the name of the identifier
+	char itemKind[8];  //is it a function or a variable?
+	char itemType[8];  // Is it int, char, etc.?
+	int arrayLength;
+	int itemVal;
+	char scope[50];     // global, or the name of the function
 };
 
+struct Entry symTabItems[100];
+int symTabIndex = 0;
+int SYMTAB_SIZE = 20;
 
+void symTabAccess(void){
+	printf("::::> Symbol table accessed.\n");
+}
 
-struct AST * AST_assignment(char nodeType[50], char LHS[50], char RHS[50]){
+void addItem(char itemName[50], char itemKind[8], char itemType[8], int arrayLength, char scope[50]){
 	
 
-	struct AST* ASTassign = malloc(sizeof(struct AST));
-	strcpy(ASTassign->nodeType, nodeType);
-	strcpy(ASTassign->LHS, LHS);
-	strcpy(ASTassign->RHS, RHS);
-	
-
-/*
-       =
-	 /   \
-	x     y
-
-*/	
-	return ASTassign;
+		// what about scope? should you add scope to this function?
+		symTabItems[symTabIndex].itemID = symTabIndex;
+		strcpy(symTabItems[symTabIndex].itemName, itemName);
+		strcpy(symTabItems[symTabIndex].itemKind, itemKind);
+		strcpy(symTabItems[symTabIndex].itemType, itemType);
+		symTabItems[symTabIndex].itemVal = 0;
+		symTabItems[symTabIndex].arrayLength = arrayLength;
+		strcpy(symTabItems[symTabIndex].scope, scope);
+		symTabIndex++;
 	
 }
-struct AST * AST_BinaryExpression(char nodeType[50], char LHS[50], char RHS[50]){
+	int setValue(char itemName[50], int itemVal, char scope[50]){
+	// Lookup an identifier in the symbol table
+	// what about scope?
+	// return TRUE or FALSE
+	// Later on, you may want to return additional information
 
-	struct AST* ASTBinExp = malloc(sizeof(struct AST));
-	strcpy(ASTBinExp->nodeType, nodeType);
-	strcpy(ASTBinExp->LHS, LHS);
-	strcpy(ASTBinExp->RHS, RHS);
-	return ASTBinExp;
-	
-}
-struct AST * AST_Type(char nodeType[50], char LHS[50], char RHS[50]){
-
-	struct AST* ASTtype = malloc(sizeof(struct AST));
-	strcpy(ASTtype->nodeType, nodeType);
-	strcpy(ASTtype->LHS, LHS);
-	strcpy(ASTtype->RHS, RHS);
+	// Dirty loop, becuase it counts SYMTAB_SIZE times, no matter the size of the symbol table
+	for(int i=0; i<SYMTAB_SIZE; i++){
+		int str1 = strcmp(symTabItems[i].itemName, itemName); 
+		int str2 = strcmp(symTabItems[i].scope,scope); 
 		
-	return ASTtype;
-	
+		if( str1 == 0 && str2 == 0){
+			symTabItems[i].itemVal = itemVal;
+			return 1; // found the ID in the table
+		}
+	}
+	return 0;
 }
 
-struct AST * AST_Func(char nodeType[50], char LHS[50], char RHS[50]){
+void showSymTable(){
+	printf("itemID    itemName    itemKind    itemType     ArrayLength    itemSCope\n");
+	printf("-----------------------------------------------------------------------\n");
+	for (int i=0; i<symTabIndex; i++){
+		printf("%5d %15s  %7d  %7s %7s %6d %15s \n",symTabItems[i].itemID, symTabItems[i].itemName, symTabItems[i].itemVal, symTabItems[i].itemKind, symTabItems[i].itemType, symTabItems[i].arrayLength, symTabItems[i].scope);
+	}
 	
-	struct AST* ASTtype = malloc(sizeof(struct AST));
-	strcpy(ASTtype->nodeType, nodeType);
-	strcpy(ASTtype->LHS, LHS);
-	strcpy(ASTtype->RHS, RHS);
-		
-	return ASTtype;
-	
+
+	printf("-----------------------------------------------------------------------\n");
 }
 
-struct AST * AST_Write(char nodeType[50], char LHS[50], char RHS[50]){
-	
-	struct AST* ASTtype = malloc(sizeof(struct AST));
-	strcpy(ASTtype->nodeType, nodeType);
-	strcpy(ASTtype->LHS, LHS);
-	strcpy(ASTtype->LHS, RHS);
-		
-	return ASTtype;
-	
+int found(char itemName[50], char scope[50]){
+	// Lookup an identifier in the symbol table
+	// what about scope?
+	// return TRUE or FALSE
+	// Later on, you may want to return additional information
+
+	// Dirty loop, becuase it counts SYMTAB_SIZE times, no matter the size of the symbol table
+	for(int i=0; i<SYMTAB_SIZE; i++){
+		int str1 = strcmp(symTabItems[i].itemName, itemName); 
+		//printf("\n\n---------> str1=%d: COMPARED: %s vs %s\n\n", str1, symTabItems[i].itemName, itemName);
+		int str2 = strcmp(symTabItems[i].scope,scope); 
+		//printf("\n\n---------> str2=%d: COMPARED %s vs %s\n\n", str2, symTabItems[i].itemName, itemName);
+		if( str1 == 0 && str2 == 0){
+			return 1; // found the ID in the table
+		} 
+	}
+	return 0;
 }
 
-void printDots(int num)
-{
-	for (int i = 0; i < num; i++)
-		printf("      ");
+
+int getValue(char itemName[50],char scope[50]){
+	// Lookup an identifier in the symbol table
+	// what about scope?
+	// return TRUE or FALSE
+	// Later on, you may want to return additional information
+	int returnNum;
+	// Dirty loop, becuase it counts SYMTAB_SIZE times, no matter the size of the symbol table
+	for(int i=0; i<SYMTAB_SIZE; i++){
+		int str1 = strcmp(symTabItems[i].itemName, itemName); 
+		//printf("\n\n---------> str1=%d: COMPARED: %s vs %s\n\n", str1, symTabItems[i].itemName, itemName);
+		int str2 = strcmp(symTabItems[i].scope,scope); 
+		//printf("\n\n---------> str2=%d: COMPARED %s vs %s\n\n", str2, symTabItems[i].itemName, itemName);
+		if( str1 == 0 && str2 == 0){
+			returnNum = symTabItems[i].itemVal;
+			return symTabItems[i].itemVal; // found the ID in the table
+	
+		}
+	}
+
+	return 0;
 }
 
-void printAST(struct AST* tree, int level){
-	if (tree == NULL) return;
-	printDots(level);
-	printf("%s\n", tree->nodeType);
-	printDots(level);
-	printf("%s %s\n", tree->LHS, tree->RHS);
-	if(tree->left != NULL) printAST(tree->left, level+1); else return;
-	if(tree->right != NULL) printAST(tree->right, level+1); else return;
-	
+void printVal(){
+	for(int i = 0; i < 4; i++) {
+		printf("%7d\n", symTabItems[i].itemVal);
+	}
 }
+
+
+int getID(char itemName[50],char scope[50]){
+	// Lookup an identifier in the symbol table
+	// what about scope?
+	// return TRUE or FALSE
+	// Later on, you may want to return additional information
+	int returnID;
+	// Dirty loop, becuase it counts SYMTAB_SIZE times, no matter the size of the symbol table
+	for(int i=0; i<SYMTAB_SIZE; i++){
+		int str1 = strcmp(symTabItems[i].itemName, itemName); 
+		//printf("\n\n---------> str1=%d: COMPARED: %s vs %s\n\n", str1, symTabItems[i].itemName, itemName);
+		int str2 = strcmp(symTabItems[i].scope,scope); 
+		//printf("\n\n---------> str2=%d: COMPARED %s vs %s\n\n", str2, symTabItems[i].itemName, itemName);
+		if( str1 == 0 && str2 == 0){
+			returnID = (int)(symTabItems[i].itemID)+0;
+			return returnID; // found the ID in the table
+	
+		}
+	}
+	return 0;
+}
+
+const char* getVariableType(char itemName[50], char scope[50]){
+	//char *name = "int";
+	//return name;
+
+	for(int i=0; i<SYMTAB_SIZE; i++){
+		int str1 = strcmp(symTabItems[i].itemName, itemName); 
+		//printf("\n\n---------> str1=%d: COMPARED: %s vs %s\n\n", str1, symTabItems[i].itemName, itemName);
+		int str2 = strcmp(symTabItems[i].scope,scope); 
+		//printf("\n\n---------> str2=%d: COMPARED %s vs %s\n\n", str2, symTabItems[i].itemName, itemName);
+		if( str1 == 0 && str2 == 0){
+			return symTabItems[i].itemType; // found the ID in the table
+		}
+	}
+	return NULL;
+}
+
+int compareTypes(char itemName1[50], char itemName2[50],char scope[50]){
+	const char* idType1 = getVariableType(itemName1, scope);
+	const char* idType2 = getVariableType(itemName2, scope);
+	
+	printf("%s = %s\n", idType1, idType2);
+	
+	int typeMatch = strcmp(idType1, idType2);
+	if(typeMatch == 0){
+		return 1; // types are matching
+	}
+	else return 0;
+}
+    

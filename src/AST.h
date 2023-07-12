@@ -1,3 +1,4 @@
+
 //Abstract Syntax Tree Implementation
 #include <string.h>
 
@@ -27,6 +28,7 @@ struct AST * AST_assignment(char nodeType[50], char LHS[50], char RHS[50]){
        =
 	 /   \
 	x     y
+
 */	
 	return ASTassign;
 	
@@ -45,21 +47,6 @@ struct AST * AST_Type(char nodeType[50], char LHS[50], char RHS[50]){
 	struct AST* ASTtype = malloc(sizeof(struct AST));
 	strcpy(ASTtype->nodeType, nodeType);
 	strcpy(ASTtype->LHS, LHS);
-	strcpy(ASTtype->RHS, RHS);
-		
-	return ASTtype;
-	
-}
-
-struct AST * AST_Param(char nodeType[50], char LHS[50], char RHS[50], char paramType[50]){
-	
-	struct AST* ASTtype = malloc(sizeof(struct AST));
-	struct AST* ASTtype2 = malloc(sizeof(struct AST));
-	strcpy(ASTtype2->nodeType, LHS);
-	strcpy(ASTtype2->LHS, paramType);
-	strcpy(ASTtype2->RHS, NULL);
-	strcpy(ASTtype->nodeType, nodeType);
-	strcpy(ASTtype->LHS, ASTtype2);
 	strcpy(ASTtype->RHS, RHS);
 		
 	return ASTtype;
@@ -100,19 +87,34 @@ void printAST(struct AST* tree, int level){
 	printf("%s\n", tree->nodeType);
 	printDots(level);
 	printf("%s %s\n", tree->LHS, tree->RHS);
-	if(tree->left != NULL || tree->left != "") printAST(tree->left, level+1); else return;
-	if(tree->right != NULL || tree->left != "") printAST(tree->right, level+1); else return;
+	if(tree->left != NULL) printAST(tree->left, level+1); else return;
+	if(tree->right != NULL) printAST(tree->right, level+1); else return;
 	
 }
 
-struct AST * appendNode(struct AST* tree, struct AST* appendTree) {
-    struct AST* temp = tree->left;
- 
-	printf("here");
-    while (temp->left != NULL && temp->left != "") {
-        temp = temp->left;
-		printf("HERE: %s\n", temp->nodeType);
-	}
-	temp->left = appendTree;
-	return tree;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    

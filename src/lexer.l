@@ -5,6 +5,7 @@
 #include <string.h>
 
 #define YY_DECL int yylex()
+#include "parser.tab.h"
 
 int words = 0;
 int chars = 0;
@@ -13,11 +14,10 @@ int lines = 0;
 %}
 
 letter      [a-zA-Z]
-word        [a-zA-Z_][a-zA-Z0-9_]*
 digit       [0-9]
 ID          {letter}({letter}|{digit})*
 delim       [ \t\n]
-NUMBER         {digit}+(\.{digit}+)?(E[+\-]?(digit)+)?
+NUMBER      {digit}+(\.{digit}+)?(E[+\-]?(digit)+)?
 ws          {delim}+
 
 %%
@@ -34,176 +34,51 @@ ws          {delim}+
 						}
 						
 "int"	{words++; chars += strlen(yytext);
-		 printf("%s : TYPE\n", yytext);
+			printf("%s : TYPE\n", yytext);
+			yylval.string = strdup(yytext); 
+			return TYPE;
 		}
 
-"char"	{words++; chars += strlen(yytext);
-		 printf("%s : TYPE\n", yytext);
-		}
-
-"float"	{words++; chars += strlen(yytext);
-		 printf("%s : TYPE\n", yytext);
-		}
-
-"list" {words++; chars += strlen(yytext);
-		 printf("%s : TYPE\n", yytext);
-		}
-
-"write"	{words++; 
-		 chars += strlen(yytext);
-		 printf("%s : KEYWORD\n", yytext);
-		}
-
-"writeln" {words++; 
-		 chars += strlen(yytext);
-		 printf("%s : KEYWORD\n", yytext);
-		}
-
-"return" {words++; 
-		 chars += strlen(yytext);
-		 printf("%s : KEYWORD\n", yytext);
-		}
-
-"read"  {words++; 
-		 chars += strlen(yytext);
-		 printf("%s : KEYWORD\n", yytext);
-		}
-
-"while" {words++; 
-		 chars += strlen(yytext);
-		 printf("%s : KEYWORD\n", yytext);
-		}
-
-"if" 	{words++; 
-		 chars += strlen(yytext);
-		 printf("%s : KEYWORD\n", yytext);
-		}
-
-"else"	{words++; 
-		 chars += strlen(yytext);
-		 printf("%s : KEYWORD\n", yytext);
-		}
-
-"main"	{words++; 
-		 chars += strlen(yytext);
-		 printf("%s : KEYWORD\n", yytext);
+"write"	{words++; chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return WRITE;
 		}
 
 {ID}	{words++; chars += strlen(yytext);
-		 printf("%s : IDENTIFIER\n",yytext);
-		}
-			
-{NUMBER}	{words++; chars += strlen(yytext);
-			  printf("%s : NUMBER\n",yytext);
+			  printf("%s : IDENTIFIER\n",yytext);
+			  yylval.string = strdup(yytext); 
+			  return ID;
 			}
+			
+{NUMBER}		{words++; chars += strlen(yytext);
+			  printf("%s : NUMBER\n",yytext);
+			  yylval.number = atoi(strdup(yytext)); 
+			  return NUMBER;
+			}
+			
 ";"		{chars++;
-		 printf("%s : SEMICOLON\n", yytext);
+		  printf("%s : SEMICOLON\n", yytext);
+		  yylval.string = strdup(yytext); 
+		  return SEMICOLON;
 		}
 		
 "="		{chars++;
-		 printf("%s : EQ\n", yytext);
+		  printf("%s : EQ\n", yytext);
+		  yylval.string = strdup(yytext); 
+		  return EQ;
 		}
-
 "+"		{chars++;
-		 printf("%s : BinOP\n", yytext);
+		  printf("%s : ADD_OP\n", yytext);
+		  yylval.string = strdup(yytext); 
+		  return ADD_OP;
 		}
-
-"-"		{chars++;
-		 printf("%s : BinOP/\n", yytext);
-		}
-
-"*"		{chars++;
-		 printf("%s : BinOP\n", yytext);
-		}
-
-"/"		{chars++;
-		 printf("%s : BinOP\n", yytext);
-		}
-
-"=="	{chars++;
-		 printf("%s : BinOP\n", yytext);
-		}		
-
-"!="	{chars++;
-		 printf("%s : BinOP\n", yytext);
-		}		
-
-"<"		{chars++;
-		 printf("%s : BinOP\n", yytext);
-		}		
-
-"<="	{chars++;
-		 printf("%s : BinOP\n", yytext);
-		}		
-
-">"		{chars++;
-		 printf("%s : BinOP\n", yytext);
-		}		
-
-">="	{chars++;
-		 printf("%s : BinOP\n", yytext);
-		}		
-
-"&&"	{chars++;
-		 printf("%s : BinOP\n", yytext);
-		}		
-
-"|"		{chars++;
-		 printf("%s : BinOP\n", yytext);
-		}		
-
-"["		{chars++;
-		 printf("%s : LBRAC\n", yytext);
-		}	
-
-"]"		{chars++;
-		 printf("%s : RBRAC\n", yytext);
-		}
-
-"{"		{chars++;
-		 printf("%s : LCBRAC\n", yytext);
-		}	
-
-"}"		{chars++;
-		 printf("%s : RCBRAC\n", yytext);
-		}	
-
-"("		{chars++;
-		 printf("%s : LPAREN\n", yytext);
-		}
-
-")"		{chars++;
-		 printf("%s : RPAREN\n", yytext);
-		}
-
-","		{chars++;
-		 printf("%s : COMMA\n", yytext);
-		}
-
-\n		{lines++; chars=0;}
+		
+[\n]	{lines++; chars=0;}
 [ \t]	{chars++;}
 .		{chars++;
-         printf("%s : ERROR - Unrecognized symbol at line %d char %d\n", yytext,lines,chars);
+         printf("%s : Unrecognized symbol at line %d char %d\n", yytext,lines,chars);
 		}
 		
 
-
 %%
-int main(int argc, char**argv)
-{
-	#ifdef YYDEBUG
-		yydebug = 1;
-	#endif
-
-	printf("Compiler started. \n\n");
-
-	if (argc > 1){
-	  if(!(yyin = fopen(argv[1], "r")))
-          {
-		perror(argv[1]);
-		return(1);
-	  }
-	}
-	yylex();
-}
-

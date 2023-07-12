@@ -39,7 +39,7 @@
 # define YY_YY_PARSER_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+# define YYDEBUG 1
 #endif
 #if YYDEBUG
 extern int yydebug;
@@ -56,32 +56,11 @@ extern int yydebug;
     YYUNDEF = 257,                 /* "invalid token"  */
     TYPE = 258,                    /* TYPE  */
     ID = 259,                      /* ID  */
-    INT = 260,                     /* INT  */
-    FLOAT = 261,                   /* FLOAT  */
-    CHAR = 262,                    /* CHAR  */
-    RETURN = 263,                  /* RETURN  */
-    RESULT = 264,                  /* RESULT  */
-    WHILE = 265,                   /* WHILE  */
-    IF = 266,                      /* IF  */
-    ELSE = 267,                    /* ELSE  */
-    COUNT = 268,                   /* COUNT  */
-    IDENTIFIER = 269,              /* IDENTIFIER  */
-    SUM = 270,                     /* SUM  */
-    NUMBER = 271,                  /* NUMBER  */
-    WORD = 272,                    /* WORD  */
-    SEMICOLON = 273,               /* SEMICOLON  */
-    EQUAL = 274,                   /* EQUAL  */
-    NOTEQUAL = 275,                /* NOTEQUAL  */
-    PLUS = 276,                    /* PLUS  */
-    MINUS = 277,                   /* MINUS  */
-    TIMES = 278,                   /* TIMES  */
-    DIVIDE = 279,                  /* DIVIDE  */
-    GREATERTHAN = 280,             /* GREATERTHAN  */
-    LESSTHAN = 281,                /* LESSTHAN  */
-    ABS = 282,                     /* ABS  */
-    NOT = 283,                     /* NOT  */
-    AND = 284,                     /* AND  */
-    COMMENT = 285                  /* COMMENT  */
+    SEMICOLON = 260,               /* SEMICOLON  */
+    EQ = 261,                      /* EQ  */
+    ADD_OP = 262,                  /* ADD_OP  */
+    NUMBER = 263,                  /* NUMBER  */
+    WRITE = 264                    /* WRITE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -90,13 +69,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 13 "parser.y"
- 
-    int number;
-    char character;
-    char* string;
+#line 24 "parser.y"
 
-#line 100 "parser.tab.h"
+	int number;
+	char character;
+	char* string;
+	struct AST* ast;
+
+#line 80 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
