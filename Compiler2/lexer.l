@@ -68,6 +68,16 @@ ws          {delim}+
 		  yylval.string = strdup(yytext); 
 		  return EQ;
 		}
+"+"		{chars++;
+		  printf("%s : EQ\n", yytext);
+		  yylval.string = strdup(yytext); 
+		  return PLUS;
+		}
+"-"		{chars++;
+		  printf("%s : EQ\n", yytext);
+		  yylval.string = strdup(yytext); 
+		  return MINUS;
+		}
 		
 [\n]	{lines++; chars=0;}
 [ \t]	{chars++;}

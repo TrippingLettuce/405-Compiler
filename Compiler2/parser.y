@@ -236,8 +236,15 @@ Expr:	ID { printf("\n RECOGNIZED RULE: Simplest expression\n"); //E.g. function 
 							emitMIPSWriteId($2);
 						}
 				}
+		| ID EQ BinOpExp
 ;
 
+BinOpExp : Value BinOp Value |
+	Value BinOp BinOpExp
+
+Value: ID | NUMBER
+
+BinOp: PLUS | MINUS
 %%
 
 int main(int argc, char**argv)
