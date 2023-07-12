@@ -1359,8 +1359,14 @@ yyreduce:
 #line 1360 "parser.tab.c"
     break;
 
+  case 16: /* Expr: ID EQ BinOpExp  */
+#line 255 "parser.y"
+                                 {printf("\n RECOGNIZED RULE: Binary Operation Assignment Statement \n\n");}
+#line 1366 "parser.tab.c"
+    break;
 
-#line 1364 "parser.tab.c"
+
+#line 1370 "parser.tab.c"
 
       default: break;
     }

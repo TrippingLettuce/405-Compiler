@@ -826,7 +826,7 @@ case 8:
 YY_RULE_SETUP
 #line 71 "lexer.l"
 {chars++;
-		  printf("%s : EQ\n", yytext);
+		  printf("%s : PLUS\n", yytext);
 		  yylval.string = strdup(yytext); 
 		  return PLUS;
 		}
@@ -835,7 +835,7 @@ case 9:
 YY_RULE_SETUP
 #line 76 "lexer.l"
 {chars++;
-		  printf("%s : EQ\n", yytext);
+		  printf("%s : MINUS\n", yytext);
 		  yylval.string = strdup(yytext); 
 		  return MINUS;
 		}
@@ -844,7 +844,7 @@ case 10:
 YY_RULE_SETUP
 #line 81 "lexer.l"
 {chars++;
-		  printf("%s : EQ\n", yytext);
+		  printf("%s : LPAR\n", yytext);
 		  yylval.string = strdup(yytext); 
 		  return LPAR;
 		}
@@ -853,7 +853,7 @@ case 11:
 YY_RULE_SETUP
 #line 86 "lexer.l"
 {chars++;
-		  printf("%s : EQ\n", yytext);
+		  printf("%s : RPAR\n", yytext);
 		  yylval.string = strdup(yytext); 
 		  return RPAR;
 		}

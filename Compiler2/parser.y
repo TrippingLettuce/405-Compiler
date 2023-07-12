@@ -252,10 +252,10 @@ Expr:	ID { printf("\n RECOGNIZED RULE: Simplest expression\n"); //E.g. function 
 							emitMIPSWriteId($3);
 						}
 				}
-		| ID EQ BinOpExp
+		| ID EQ BinOpExp {printf("\n RECOGNIZED RULE: Binary Operation Assignment Statement \n\n");}
 ;
 
-BinOpExp : Value BinOp Value |
+BinOpExp : Value BinOp Value  |
 	Value BinOp BinOpExp
 
 Value: ID | NUMBER
