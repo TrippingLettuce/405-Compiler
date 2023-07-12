@@ -69,22 +69,22 @@ ws          {delim}+
 		  return EQ;
 		}
 "+"		{chars++;
-		  printf("%s : EQ\n", yytext);
+		  printf("%s : PLUS\n", yytext);
 		  yylval.string = strdup(yytext); 
 		  return PLUS;
 		}
 "-"		{chars++;
-		  printf("%s : EQ\n", yytext);
+		  printf("%s : MINUS\n", yytext);
 		  yylval.string = strdup(yytext); 
 		  return MINUS;
 		}
 "("		{chars++;
-		  printf("%s : EQ\n", yytext);
+		  printf("%s : LPAR\n", yytext);
 		  yylval.string = strdup(yytext); 
 		  return LPAR;
 		}
 ")"		{chars++;
-		  printf("%s : EQ\n", yytext);
+		  printf("%s : RPAR\n", yytext);
 		  yylval.string = strdup(yytext); 
 		  return RPAR;
 		}
