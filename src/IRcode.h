@@ -2,17 +2,18 @@
 // ---- Functions to handle IR code emissions ---- //
 FILE * IRcode;
 
-void  initIRcodeFile(){
-    IRcode = fopen("IRcode.ir", "w");
-    fprintf(IRcode, "\n\n#### IR Code ####\n\n");
-    fclose(IRcode);
-}
+
 
 void emitBinaryOperation(char op[1], const char* id1, const char* id2){
     fprintf(IRcode, "T1 = %s %s %s", id1, op, id2);
     fclose(IRcode);
 }
 
+void  initIRcodeFile(){
+    IRcode = fopen("IRcode.ir", "w");
+    fprintf(IRcode, "\n\n#### IR Code ####\n\n");
+    fclose(IRcode);
+}
 void emitAssignment(char * id1, char * id2){
   // This is the temporary approach, until temporary variables management is implemented
 
