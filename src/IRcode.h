@@ -1,3 +1,4 @@
+#include <stdio.h>
 
 // ---- Functions to handle IR code emissions ---- //
 FILE * IRcode;

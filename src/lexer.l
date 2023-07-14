@@ -74,9 +74,8 @@ ws          {delim}+
 		  return ADD_OP;
 		}
 		
-[\n\r]	{lines++; chars=0;}
+[\r]	{chars=0;}
 [\n]	{lines++; chars=0;}
-
 [ \t]	{chars++;}
 .		{chars++;
          printf("%s : Unrecognized symbol at line %d char %d\n", yytext,lines,chars);

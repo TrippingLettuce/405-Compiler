@@ -4,5 +4,4 @@ int z;
 x = 8 + 4 + 2;
 y = 5;
 z = 2 + x + y + 7;
-write z;s
-
+y = 0;

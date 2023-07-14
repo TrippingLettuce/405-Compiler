@@ -1,3 +1,4 @@
+#include <stdio.h>
 
 // Set of functions to emit MIPS code
 FILE * MIPScode;

@@ -47,8 +47,8 @@ int semanticCheckPassed = 1;
 
 Program: DeclList  { 
     $$ = $1;
-	printf("\n--- Abstract Syntax Tree ---\n\n");
-	printAST($$,0);
+	//printf("\n--- Abstract Syntax Tree ---\n\n");
+	//printAST($$,0);
 };
 
 
@@ -65,6 +65,7 @@ Decl:	VarDecl | StmtList;
 
 VarDecl:	TYPE ID SEMICOLON	{ 
     char id1[50];
+    
     printf("\n RECOGNIZED RULE: Variable declaration %s\n", $2);
 	symTabAccess();
 	int inSymTab = found($2, currentScope);
@@ -75,7 +76,7 @@ VarDecl:	TYPE ID SEMICOLON	{
 	showSymTable();
     sprintf(id1, "%s", $2);
     int numid = getID(id1, currentScope);   // ADDING TO IR CODE T0 = X
-    emitConstantIntAssignment ($2, numid);							
+    emitConstantIntAssignment ($2, numid);
 	$$ = AST_Type("Type",$1,$2);
 	printf("-----------> %s", $$->LHS);
 };
