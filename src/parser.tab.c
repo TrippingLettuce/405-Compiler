@@ -523,8 +523,8 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    48,    48,    55,    59,    64,    64,    66,    83,    84,
-      87,    88,    93,   103,   128,   155,   174,   178,   186,   191
+       0,    48,    48,    55,    59,    64,    64,    66,    84,    85,
+      88,    89,    94,   106,   131,   158,   177,   181,   188,   194
 };
 #endif
 
@@ -1114,8 +1114,8 @@ yyreduce:
 #line 48 "parser.y"
                    { 
     (yyval.ast) = (yyvsp[0].ast);
-	printf("\n--- Abstract Syntax Tree ---\n\n");
-	printAST((yyval.ast),0);
+	//printf("\n--- Abstract Syntax Tree ---\n\n");
+	//printAST($$,0);
 }
 #line 1121 "parser.tab.c"
     break;
@@ -1141,6 +1141,7 @@ yyreduce:
 #line 66 "parser.y"
                                         { 
     char id1[50];
+    
     printf("\n RECOGNIZED RULE: Variable declaration %s\n", (yyvsp[-1].string));
 	symTabAccess();
 	int inSymTab = found((yyvsp[-1].string), currentScope);
@@ -1151,29 +1152,29 @@ yyreduce:
 	showSymTable();
     sprintf(id1, "%s", (yyvsp[-1].string));
     int numid = getID(id1, currentScope);   // ADDING TO IR CODE T0 = X
-    emitConstantIntAssignment ((yyvsp[-1].string), numid);							
+    emitConstantIntAssignment ((yyvsp[-1].string), numid);
 	(yyval.ast) = AST_Type("Type",(yyvsp[-2].string),(yyvsp[-1].string));
 	printf("-----------> %s", (yyval.ast)->LHS);
 }
-#line 1159 "parser.tab.c"
+#line 1160 "parser.tab.c"
     break;
 
   case 10: /* Stmt: SEMICOLON  */
-#line 87 "parser.y"
+#line 88 "parser.y"
                   {}
-#line 1165 "parser.tab.c"
+#line 1166 "parser.tab.c"
     break;
 
   case 11: /* Stmt: Expr SEMICOLON  */
-#line 88 "parser.y"
+#line 89 "parser.y"
                          {
         (yyval.ast) = (yyvsp[-1].ast);
     }
-#line 1173 "parser.tab.c"
+#line 1174 "parser.tab.c"
     break;
 
   case 12: /* Expr: ID EQ RecursiveFunc  */
-#line 93 "parser.y"
+#line 94 "parser.y"
                             { 
             printf("\n RECOGNIZED RULE: Simplest expression\n"); 
             char id1[50], id2[50];
@@ -1181,14 +1182,16 @@ yyreduce:
             sprintf(id2, "%d", sum);
             int numid = getID(id1, currentScope);
             emitIR(id1, id2, numid);
-            emitMIPSConstantIntAssignment(id1, id2, numid);		
-            sum = 0;		
+            emitMIPSConstantIntAssignment(id1, id2, numid);
+            setValue(id1, sum, currentScope);		
+            sum = 0;
+            showSymTable();		
         }
-#line 1188 "parser.tab.c"
+#line 1191 "parser.tab.c"
     break;
 
   case 13: /* Expr: ID EQ ID  */
-#line 103 "parser.y"
+#line 106 "parser.y"
                         { 
             printf("\n RECOGNIZED RULE: Assignment statement\n"); 
             (yyval.ast) = AST_assignment("=",(yyvsp[-2].string),(yyvsp[0].string));
@@ -1213,11 +1216,11 @@ yyreduce:
             }
                         
         }
-#line 1217 "parser.tab.c"
+#line 1220 "parser.tab.c"
     break;
 
   case 14: /* Expr: ID EQ NUMBER  */
-#line 128 "parser.y"
+#line 131 "parser.y"
                         { 
             printf("\n RECOGNIZED RULE: ID EQ NUMBER\n"); 
             char str[50];
@@ -1244,11 +1247,11 @@ yyreduce:
                 emitMIPSConstantIntAssignment(id1, id2, numid);
             }
         }
-#line 1248 "parser.tab.c"
+#line 1251 "parser.tab.c"
     break;
 
   case 15: /* Expr: WRITE ID  */
-#line 155 "parser.y"
+#line 158 "parser.y"
                         { 
             printf("\n RECOGNIZED RULE: WRITE statement\n");
             (yyval.ast) = AST_Write("write",(yyvsp[0].string),"");
@@ -1266,53 +1269,54 @@ yyreduce:
             }
             
         }
-#line 1270 "parser.tab.c"
+#line 1273 "parser.tab.c"
     break;
 
   case 16: /* RecursiveFunc: NUMBER ADD_OP RecursiveFunc  */
-#line 174 "parser.y"
+#line 177 "parser.y"
                                             {
     printf("\n RECOGNIZED RULE: NUMBER + REC\n");
 	sum = sum + (yyvsp[-2].number);			
 }
-#line 1279 "parser.tab.c"
+#line 1282 "parser.tab.c"
     break;
 
   case 17: /* RecursiveFunc: ID ADD_OP RecursiveFunc  */
-#line 178 "parser.y"
+#line 181 "parser.y"
                                         {
         printf("\n RECOGNIZED RULE: ID + REC\n");
-		symTabAccess();
 		char id1[50];
-		int id2 = getValue((yyvsp[-2].string), currentScope);
+        int id2 = getValue((yyvsp[-2].string), currentScope);
 		sum = sum + id2;
 	}
-#line 1291 "parser.tab.c"
+#line 1293 "parser.tab.c"
     break;
 
   case 18: /* RecursiveFunc: NUMBER  */
-#line 186 "parser.y"
+#line 188 "parser.y"
                  {
         printf("\n RECOGNIZED RULE: ADD STATMENT NUM END\n");
 		sum = sum + (yyvsp[0].number);
+        symTabAccess();
 	}
-#line 1300 "parser.tab.c"
+#line 1303 "parser.tab.c"
     break;
 
   case 19: /* RecursiveFunc: ID  */
-#line 191 "parser.y"
+#line 194 "parser.y"
              {
         printf("\n RECOGNIZED RULE: ADD STATMENT ID END \n");
-		symTabAccess();
 		char id1[50];
-		int id2 = getValue((yyvsp[0].string), currentScope);
+        sprintf(id1, "%d", (yyvsp[0].string));
+        int id2 = getValue((yyvsp[0].string), currentScope);
 		sum = sum + id2;
+		symTabAccess();
 	}
-#line 1312 "parser.tab.c"
+#line 1316 "parser.tab.c"
     break;
 
 
-#line 1316 "parser.tab.c"
+#line 1320 "parser.tab.c"
 
       default: break;
     }
@@ -1505,7 +1509,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 199 "parser.y"
+#line 203 "parser.y"
 
 
 int main(int argc, char**argv) {

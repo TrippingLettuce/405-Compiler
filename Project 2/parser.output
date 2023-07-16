@@ -1,11 +1,8 @@
-Terminals unused in grammar
-
-    OP
-
-
 State 0 conflicts: 4 shift/reduce
 State 7 conflicts: 4 shift/reduce, 1 reduce/reduce
 State 10 conflicts: 3 shift/reduce
+State 20 conflicts: 1 reduce/reduce
+State 21 conflicts: 1 reduce/reduce
 
 
 Grammar
@@ -28,20 +25,15 @@ Grammar
     9 Stmt: SEMICOLON
    10     | Expr SEMICOLON
 
-   11 Expr: ID
+   11 Expr: ID EQ RecursiveFunc
    12     | ID EQ ID
    13     | ID EQ NUMBER
-   14     | WRITE LPAR ID RPAR SEMICOLON
-   15     | ID EQ BinOpExp
+   14     | WRITE ID
 
-   16 BinOpExp: Value BinOp Value
-   17         | Value BinOp BinOpExp
-
-   18 Value: ID
-   19      | NUMBER
-
-   20 BinOp: PLUS
-   21      | MINUS
+   15 RecursiveFunc: NUMBER ADD_OP RecursiveFunc
+   16              | ID ADD_OP RecursiveFunc
+   17              | NUMBER
+   18              | ID
 
 
 Terminals, with rules where they appear
@@ -49,52 +41,42 @@ Terminals, with rules where they appear
     $end (0) 0
     error (256)
     TYPE <string> (258) 6
-    ID <string> (259) 6 11 12 13 14 15 18
-    SEMICOLON <char> (260) 6 9 10 14
-    EQ <char> (261) 12 13 15
-    OP <char> (262)
-    NUMBER <number> (263) 13 19
+    ID <string> (259) 6 11 12 13 14 16 18
+    SEMICOLON <char> (260) 6 9 10
+    EQ <char> (261) 11 12 13
+    ADD_OP <char> (262) 15 16
+    NUMBER <number> (263) 13 15 17
     WRITE <string> (264) 14
-    PLUS <char> (265) 20
-    MINUS <char> (266) 21
-    LPAR <char> (267) 14
-    RPAR <char> (268) 14
 
 
 Nonterminals, with rules where they appear
 
-    $accept (14)
+    $accept (10)
         on left: 0
-    Program <ast> (15)
+    Program <ast> (11)
         on left: 1
         on right: 0
-    DeclList <ast> (16)
+    DeclList <ast> (12)
         on left: 2 3
         on right: 1 2
-    Decl <ast> (17)
+    Decl <ast> (13)
         on left: 4 5
         on right: 2 3
-    VarDecl <ast> (18)
+    VarDecl <ast> (14)
         on left: 6
         on right: 4
-    StmtList <ast> (19)
+    StmtList <ast> (15)
         on left: 7 8
         on right: 5 8
-    Stmt <ast> (20)
+    Stmt <ast> (16)
         on left: 9 10
         on right: 8
-    Expr <ast> (21)
-        on left: 11 12 13 14 15
+    Expr <ast> (17)
+        on left: 11 12 13 14
         on right: 10
-    BinOpExp (22)
-        on left: 16 17
-        on right: 15 17
-    Value (23)
-        on left: 18 19
-        on right: 16 17
-    BinOp (24)
-        on left: 20 21
-        on right: 16 17
+    RecursiveFunc (18)
+        on left: 15 16 17 18
+        on right: 11 15 16
 
 
 State 0
@@ -130,14 +112,11 @@ State 1
 
 State 2
 
-   11 Expr: ID •
+   11 Expr: ID • EQ RecursiveFunc
    12     | ID • EQ ID
    13     | ID • EQ NUMBER
-   15     | ID • EQ BinOpExp
 
     EQ  shift, and go to state 13
-
-    $default  reduce using rule 11 (Expr)
 
 
 State 3
@@ -149,9 +128,9 @@ State 3
 
 State 4
 
-   14 Expr: WRITE • LPAR ID RPAR SEMICOLON
+   14 Expr: WRITE • ID
 
-    LPAR  shift, and go to state 14
+    ID  shift, and go to state 14
 
 
 State 5
@@ -242,22 +221,21 @@ State 12
 
 State 13
 
-   12 Expr: ID EQ • ID
+   11 Expr: ID EQ • RecursiveFunc
+   12     | ID EQ • ID
    13     | ID EQ • NUMBER
-   15     | ID EQ • BinOpExp
 
     ID      shift, and go to state 20
     NUMBER  shift, and go to state 21
 
-    BinOpExp  go to state 22
-    Value     go to state 23
+    RecursiveFunc  go to state 22
 
 
 State 14
 
-   14 Expr: WRITE LPAR • ID RPAR SEMICOLON
+   14 Expr: WRITE ID •
 
-    ID  shift, and go to state 24
+    $default  reduce using rule 14 (Expr)
 
 
 State 15
@@ -298,116 +276,85 @@ State 19
 State 20
 
    12 Expr: ID EQ ID •
-   18 Value: ID •
+   16 RecursiveFunc: ID • ADD_OP RecursiveFunc
+   18              | ID •
+
+    ADD_OP  shift, and go to state 23
 
     SEMICOLON  reduce using rule 12 (Expr)
-    $default   reduce using rule 18 (Value)
+    SEMICOLON  [reduce using rule 18 (RecursiveFunc)]
+    $default   reduce using rule 12 (Expr)
 
 
 State 21
 
    13 Expr: ID EQ NUMBER •
-   19 Value: NUMBER •
+   15 RecursiveFunc: NUMBER • ADD_OP RecursiveFunc
+   17              | NUMBER •
+
+    ADD_OP  shift, and go to state 24
 
     SEMICOLON  reduce using rule 13 (Expr)
-    $default   reduce using rule 19 (Value)
+    SEMICOLON  [reduce using rule 17 (RecursiveFunc)]
+    $default   reduce using rule 13 (Expr)
 
 
 State 22
 
-   15 Expr: ID EQ BinOpExp •
+   11 Expr: ID EQ RecursiveFunc •
 
-    $default  reduce using rule 15 (Expr)
+    $default  reduce using rule 11 (Expr)
 
 
 State 23
 
-   16 BinOpExp: Value • BinOp Value
-   17         | Value • BinOp BinOpExp
+   16 RecursiveFunc: ID ADD_OP • RecursiveFunc
 
-    PLUS   shift, and go to state 25
-    MINUS  shift, and go to state 26
+    ID      shift, and go to state 25
+    NUMBER  shift, and go to state 26
 
-    BinOp  go to state 27
+    RecursiveFunc  go to state 27
 
 
 State 24
 
-   14 Expr: WRITE LPAR ID • RPAR SEMICOLON
+   15 RecursiveFunc: NUMBER ADD_OP • RecursiveFunc
 
-    RPAR  shift, and go to state 28
+    ID      shift, and go to state 25
+    NUMBER  shift, and go to state 26
+
+    RecursiveFunc  go to state 28
 
 
 State 25
 
-   20 BinOp: PLUS •
+   16 RecursiveFunc: ID • ADD_OP RecursiveFunc
+   18              | ID •
 
-    $default  reduce using rule 20 (BinOp)
+    ADD_OP  shift, and go to state 23
+
+    $default  reduce using rule 18 (RecursiveFunc)
 
 
 State 26
 
-   21 BinOp: MINUS •
+   15 RecursiveFunc: NUMBER • ADD_OP RecursiveFunc
+   17              | NUMBER •
 
-    $default  reduce using rule 21 (BinOp)
+    ADD_OP  shift, and go to state 24
+
+    $default  reduce using rule 17 (RecursiveFunc)
 
 
 State 27
 
-   16 BinOpExp: Value BinOp • Value
-   17         | Value BinOp • BinOpExp
+   16 RecursiveFunc: ID ADD_OP RecursiveFunc •
 
-    ID      shift, and go to state 29
-    NUMBER  shift, and go to state 30
-
-    BinOpExp  go to state 31
-    Value     go to state 32
+    $default  reduce using rule 16 (RecursiveFunc)
 
 
 State 28
 
-   14 Expr: WRITE LPAR ID RPAR • SEMICOLON
+   15 RecursiveFunc: NUMBER ADD_OP RecursiveFunc •
 
-    SEMICOLON  shift, and go to state 33
-
-
-State 29
-
-   18 Value: ID •
-
-    $default  reduce using rule 18 (Value)
-
-
-State 30
-
-   19 Value: NUMBER •
-
-    $default  reduce using rule 19 (Value)
-
-
-State 31
-
-   17 BinOpExp: Value BinOp BinOpExp •
-
-    $default  reduce using rule 17 (BinOpExp)
-
-
-State 32
-
-   16 BinOpExp: Value • BinOp Value
-   16         | Value BinOp Value •
-   17         | Value • BinOp BinOpExp
-
-    PLUS   shift, and go to state 25
-    MINUS  shift, and go to state 26
-
-    $default  reduce using rule 16 (BinOpExp)
-
-    BinOp  go to state 27
-
-
-State 33
-
-   14 Expr: WRITE LPAR ID RPAR SEMICOLON •
-
-    $default  reduce using rule 14 (Expr)
+    $default  reduce using rule 15 (RecursiveFunc)

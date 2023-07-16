@@ -1,6 +1,8 @@
+
 //Symbol table header
 #include <string.h>
 #include <stdio.h>
+
 
 struct Entry
 {
@@ -9,6 +11,7 @@ struct Entry
 	char itemKind[8];  //is it a function or a variable?
 	char itemType[8];  // Is it int, char, etc.?
 	int arrayLength;
+	int itemVal;
 	char scope[50];     // global, or the name of the function
 };
 
@@ -28,17 +31,36 @@ void addItem(char itemName[50], char itemKind[8], char itemType[8], int arrayLen
 		strcpy(symTabItems[symTabIndex].itemName, itemName);
 		strcpy(symTabItems[symTabIndex].itemKind, itemKind);
 		strcpy(symTabItems[symTabIndex].itemType, itemType);
+		symTabItems[symTabIndex].itemVal = 0;
 		symTabItems[symTabIndex].arrayLength = arrayLength;
 		strcpy(symTabItems[symTabIndex].scope, scope);
 		symTabIndex++;
 	
+}
+	int setValue(char itemName[50], int itemVal, char scope[50]){
+	// Lookup an identifier in the symbol table
+	// what about scope?
+	// return TRUE or FALSE
+	// Later on, you may want to return additional information
+
+	// Dirty loop, becuase it counts SYMTAB_SIZE times, no matter the size of the symbol table
+	for(int i=0; i<SYMTAB_SIZE; i++){
+		int str1 = strcmp(symTabItems[i].itemName, itemName); 
+		int str2 = strcmp(symTabItems[i].scope,scope); 
+		
+		if( str1 == 0 && str2 == 0){
+			symTabItems[i].itemVal = itemVal;
+			return 1; // found the ID in the table
+		}
+	}
+	return 0;
 }
 
 void showSymTable(){
 	printf("itemID    itemName    itemKind    itemType     ArrayLength    itemSCope\n");
 	printf("-----------------------------------------------------------------------\n");
 	for (int i=0; i<symTabIndex; i++){
-		printf("%5d %15s  %7s  %7s %6d %15s \n",symTabItems[i].itemID, symTabItems[i].itemName, symTabItems[i].itemKind, symTabItems[i].itemType, symTabItems[i].arrayLength, symTabItems[i].scope);
+		printf("%5d %15s  %7d  %7s %7s %6d %15s \n",symTabItems[i].itemID, symTabItems[i].itemName, symTabItems[i].itemVal, symTabItems[i].itemKind, symTabItems[i].itemType, symTabItems[i].arrayLength, symTabItems[i].scope);
 	}
 	
 
@@ -59,6 +81,57 @@ int found(char itemName[50], char scope[50]){
 		//printf("\n\n---------> str2=%d: COMPARED %s vs %s\n\n", str2, symTabItems[i].itemName, itemName);
 		if( str1 == 0 && str2 == 0){
 			return 1; // found the ID in the table
+		} 
+	}
+	return 0;
+}
+
+
+int getValue(char itemName[50],char scope[50]){
+	// Lookup an identifier in the symbol table
+	// what about scope?
+	// return TRUE or FALSE
+	// Later on, you may want to return additional information
+	int returnNum;
+	// Dirty loop, becuase it counts SYMTAB_SIZE times, no matter the size of the symbol table
+	for(int i=0; i<SYMTAB_SIZE; i++){
+		int str1 = strcmp(symTabItems[i].itemName, itemName); 
+		//printf("\n\n---------> str1=%d: COMPARED: %s vs %s\n\n", str1, symTabItems[i].itemName, itemName);
+		int str2 = strcmp(symTabItems[i].scope,scope); 
+		//printf("\n\n---------> str2=%d: COMPARED %s vs %s\n\n", str2, symTabItems[i].itemName, itemName);
+		if( str1 == 0 && str2 == 0){
+			returnNum = symTabItems[i].itemVal;
+			return symTabItems[i].itemVal; // found the ID in the table
+	
+		}
+	}
+
+	return 0;
+}
+
+void printVal(){
+	for(int i = 0; i < 4; i++) {
+		printf("%7d\n", symTabItems[i].itemVal);
+	}
+}
+
+
+int getID(char itemName[50],char scope[50]){
+	// Lookup an identifier in the symbol table
+	// what about scope?
+	// return TRUE or FALSE
+	// Later on, you may want to return additional information
+	int returnID;
+	// Dirty loop, becuase it counts SYMTAB_SIZE times, no matter the size of the symbol table
+	for(int i=0; i<SYMTAB_SIZE; i++){
+		int str1 = strcmp(symTabItems[i].itemName, itemName); 
+		//printf("\n\n---------> str1=%d: COMPARED: %s vs %s\n\n", str1, symTabItems[i].itemName, itemName);
+		int str2 = strcmp(symTabItems[i].scope,scope); 
+		//printf("\n\n---------> str2=%d: COMPARED %s vs %s\n\n", str2, symTabItems[i].itemName, itemName);
+		if( str1 == 0 && str2 == 0){
+			returnID = (int)(symTabItems[i].itemID)+0;
+			return returnID; // found the ID in the table
+	
 		}
 	}
 	return 0;
@@ -93,4 +166,3 @@ int compareTypes(char itemName1[50], char itemName2[50],char scope[50]){
 	else return 0;
 }
     
-

@@ -9,7 +9,7 @@
 
 int words = 0;
 int chars = 0;
-int lines = 1;
+int lines = 0;
 
 %}
 
@@ -69,29 +69,13 @@ ws          {delim}+
 		  return EQ;
 		}
 "+"		{chars++;
-		  printf("%s : PLUS\n", yytext);
+		  printf("%s : ADD_OP\n", yytext);
 		  yylval.string = strdup(yytext); 
-		  return PLUS;
+		  return ADD_OP;
 		}
-"-"		{chars++;
-		  printf("%s : MINUS\n", yytext);
-		  yylval.string = strdup(yytext); 
-		  return MINUS;
-		}
-"("		{chars++;
-		  printf("%s : LPAR\n", yytext);
-		  yylval.string = strdup(yytext); 
-		  return LPAR;
-		}
-")"		{chars++;
-		  printf("%s : RPAR\n", yytext);
-		  yylval.string = strdup(yytext); 
-		  return RPAR;
-		}
-
 		
+[\r]	{chars=0;}
 [\n]	{lines++; chars=0;}
-[\n\r]	{chars=0;}
 [ \t]	{chars++;}
 .		{chars++;
          printf("%s : Unrecognized symbol at line %d char %d\n", yytext,lines,chars);
