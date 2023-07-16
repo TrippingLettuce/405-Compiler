@@ -7,7 +7,7 @@
 struct Entry
 {
 	int itemID;
-	char itemName[50];  //the name of the identifier
+	char itemName[50];  
 	char itemKind[8];  //is it a function or a variable?
 	char itemType[8];  // Is it int, char, etc.?
 	int arrayLength;

@@ -75,3 +75,29 @@ li $t1,0
 li $v0,10   # call code for terminate
 syscall      # system call (terminate)
 .end main
+.text
+main:
+# -----------------------
+li $t0,14
+li $t1,5
+li $t2,28
+li $t1,0
+# -----------------
+#  Done, terminate program.
+
+li $v0,10   # call code for terminate
+syscall      # system call (terminate)
+.end main
+.text
+main:
+# -----------------------
+li $t0,14
+li $t1,5
+li $t2,28
+li $t1,0
+# -----------------
+#  Done, terminate program.
+
+li $v0,10   # call code for terminate
+syscall      # system call (terminate)
+.end main
