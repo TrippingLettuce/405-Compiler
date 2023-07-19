@@ -41,6 +41,8 @@ int semanticCheckPassed = 1;
 %token <char> RPAREN
 %token <char> LBRACE
 %token <char> RBRACE
+%token <char> LBRACK
+%token <char> RBRACK
 %token <char> COMMA
 
 %printer { fprintf(yyoutput, "%s", $$); } ID;

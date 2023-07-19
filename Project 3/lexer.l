@@ -45,6 +45,18 @@ ws          {delim}+
 			return WRITE;
 		}
 
+"void"	{words++; chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return VOID;
+		}
+
+"return"	{words++; chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return RETURN;
+		}
+
 {ID}	{words++; chars += strlen(yytext);
 			  printf("%s : IDENTIFIER\n",yytext);
 			  yylval.string = strdup(yytext); 
@@ -63,6 +75,12 @@ ws          {delim}+
 		  return SEMICOLON;
 		}
 		
+","		{chars++;
+		  printf("%s : COMMA\n", yytext);
+		  yylval.string = strdup(yytext); 
+		  return COMMA;
+		}
+
 "="		{chars++;
 		  printf("%s : EQ\n", yytext);
 		  yylval.string = strdup(yytext); 
@@ -73,7 +91,43 @@ ws          {delim}+
 		  yylval.string = strdup(yytext); 
 		  return ADD_OP;
 		}
+
+"("		{chars++;
+		  printf("%s : LPAREN\n", yytext);
+		  yylval.string = strdup(yytext); 
+		  return LPAREN;
+		}
+
+")"		{chars++;
+		  printf("%s : RPAREN\n", yytext);
+		  yylval.string = strdup(yytext); 
+		  return RPAREN;
+		}
+
+"{"		{chars++;
+		  printf("%s : LBRACE\n", yytext);
+		  yylval.string = strdup(yytext); 
+		  return LBRACE;
+		}	
 		
+"}"		{chars++;
+		  printf("%s : RBRACE\n", yytext);
+		  yylval.string = strdup(yytext); 
+		  return RBRACE;
+		}
+
+"["		{chars++;
+		  printf("%s : LBRACK\n", yytext);
+		  yylval.string = strdup(yytext); 
+		  return LBRACK;
+		}	
+		
+"]"		{chars++;
+		  printf("%s : RBRACK\n", yytext);
+		  yylval.string = strdup(yytext); 
+		  return RBRACK;
+		}	
+
 [\r]	{chars=0;}
 [\n]	{lines++; chars=0;}
 [ \t]	{chars++;}
