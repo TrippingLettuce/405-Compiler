@@ -90,6 +90,21 @@ VarDecl:	TYPE ID SEMICOLON	{
 	printf("-----------> %s", $$->LHS);
 };
 
+Func: TYPE ID LPAREN Params RPAREN LBRACE FuncBody RBRACE {
+    printf("\n RECOGNIZED RULE: Function declaration %s\n", $2);}
+;
+
+Params: 
+    | Param
+    | Param COMMA Params
+;
+
+Param: TYPE ID
+;
+
+FuncBody: StmtList ReturnStmt
+;
+
 StmtList:	
 	| Stmt StmtList
 ;
@@ -208,6 +223,9 @@ RecursiveFunc:	NUMBER ADD_OP RecursiveFunc {
 		sum = sum + id2;
 		symTabAccess();
 	};
+
+ReturnStmt: RETURN ID SEMICOLON
+;
 
 %%
 

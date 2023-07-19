@@ -1,1 +1,6 @@
-{}, [], (), return void
+int x;
+
+int returnX(int y) {
+    x = y;
+    return x; 
+}

@@ -46,9 +46,9 @@ ws          {delim}+
 		}
 
 "void"	{words++; chars += strlen(yytext);
-			printf("%s : KEYWORD\n", yytext);
+			printf("%s : TYPE\n", yytext);
 			yylval.string = strdup(yytext); 
-			return VOID;
+			return TYPE;
 		}
 
 "return"	{words++; chars += strlen(yytext);
