@@ -35,6 +35,13 @@ int semanticCheckPassed = 1;
 %token <char> ADD_OP
 %token <number> NUMBER
 %token <string> WRITE
+%token <string> VOID
+%token <string> RETURN
+%token <char> LPAREN
+%token <char> RPAREN
+%token <char> LBRACE
+%token <char> RBRACE
+%token <char> COMMA
 
 %printer { fprintf(yyoutput, "%s", $$); } ID;
 %printer { fprintf(yyoutput, "%d", $$); } NUMBER;
