@@ -13,6 +13,7 @@ struct AST{
 	// complete the tree struct with pointers
 };
 
+//This is the first ast tree we will need a secound one for the function
 
 
 struct AST * AST_assignment(char nodeType[50], char LHS[50], char RHS[50]){
@@ -24,12 +25,6 @@ struct AST * AST_assignment(char nodeType[50], char LHS[50], char RHS[50]){
 	strcpy(ASTassign->RHS, RHS);
 	
 
-/*
-       =
-	 /   \
-	x     y
-
-*/	
 	return ASTassign;
 	
 }

@@ -54,13 +54,35 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    TYPE = 258,                    /* TYPE  */
-    ID = 259,                      /* ID  */
-    SEMICOLON = 260,               /* SEMICOLON  */
-    EQ = 261,                      /* EQ  */
-    ADD_OP = 262,                  /* ADD_OP  */
-    NUMBER = 263,                  /* NUMBER  */
-    WRITE = 264                    /* WRITE  */
+    ID = 258,                      /* ID  */
+    WRITE = 259,                   /* WRITE  */
+    IF = 260,                      /* IF  */
+    ELSE = 261,                    /* ELSE  */
+    WHILE = 262,                   /* WHILE  */
+    RETURN = 263,                  /* RETURN  */
+    TYPE = 264,                    /* TYPE  */
+    KEYWORD = 265,                 /* KEYWORD  */
+    NUMBER = 266,                  /* NUMBER  */
+    CHAR = 267,                    /* CHAR  */
+    SINGLE_QOUTE = 268,            /* SINGLE_QOUTE  */
+    SEMICOLON = 269,               /* SEMICOLON  */
+    COMMA = 270,                   /* COMMA  */
+    EQ = 271,                      /* EQ  */
+    OR = 272,                      /* OR  */
+    LSS = 273,                     /* LSS  */
+    GTR = 274,                     /* GTR  */
+    LEQ = 275,                     /* LEQ  */
+    GEQ = 276,                     /* GEQ  */
+    LPAREN = 277,                  /* LPAREN  */
+    RPAREN = 278,                  /* RPAREN  */
+    LBRACE = 279,                  /* LBRACE  */
+    RBRACE = 280,                  /* RBRACE  */
+    LBRACKET = 281,                /* LBRACKET  */
+    RBRACKET = 282,                /* RBRACKET  */
+    ADD = 283,                     /* ADD  */
+    SUB = 284,                     /* SUB  */
+    MULTIPLY = 285,                /* MULTIPLY  */
+    DIV = 286                      /* DIV  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -69,14 +91,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 24 "parser.y"
+#line 41 "parser.y"
 
 	int number;
 	char character;
 	char* string;
 	struct AST* ast;
 
-#line 80 "parser.tab.h"
+#line 102 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

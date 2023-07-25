@@ -11,5 +11,5 @@ parser: lex.yy.c parser.tab.c parser.tab.h
 	./parser testProg.cmm
 
 clean:
-	rm -f parser lexer parser.tab.c lex.yy.c parser.tab.h parser.output MIPScode.asm
+	rm -f parser lexer parser.tab.c lex.yy.c parser.tab.h parser.output MIPScode.asm IRcode.ir
 	ls -l

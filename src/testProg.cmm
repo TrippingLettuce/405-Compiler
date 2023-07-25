@@ -1,7 +1,30 @@
+int w;
 int x;
 int y;
 int z;
-x = 8 + 4 + 2;
-y = 5;
-z = 2 + x + y + 7;
-y = 0;
+char c;
+float m;
+int arr [5];
+char arr2 [8];
+arr[4] = 100;
+
+void assignArr(){
+
+    arr2[3] = 'h';
+    arr2[4] = 'i';
+    arr2[5] = 'm';
+    arr2[6] = 'o';
+    arr2[7] = 'm';
+}
+
+int assignMath(){
+    w = 10 + 4 * 6 + 5 - 6;
+    x = 50 + w + 200 / 4;
+}
+
+
+assignMath();
+assignArr();
+
+write w;
+write x;

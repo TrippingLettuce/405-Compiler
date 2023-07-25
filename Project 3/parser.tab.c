@@ -73,24 +73,41 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "symbolTable.h"
+#include <unistd.h>
+#include "FunctionST.h"
+#include "VarST.h"
 #include "AST.h"
 #include "IRcode.h"
 #include "Assembly.h"
 #include "cal.h"
 
+typedef enum { F, T } boolean;
+
 extern int yylex();
 extern int yyparse();
 extern FILE* yyin;
+boolean FunctionFlag = F;
 
 FILE * IRcode;
 
-void yyerror(const char* s);
-char currentScope[50]; 
-int sum = 0;
-int semanticCheckPassed = 1; 
 
-#line 94 "parser.tab.c"
+
+void yyerror(const char* s);
+
+int sum = 0;
+char curArr[50];
+int arrIndex = 0;
+
+char curFun[50];
+
+char scope[50] = "Global";
+char Global[50] = "Global";
+char Local[50] = "Global";
+
+
+int semanticCheckPassed = 1;
+
+#line 111 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -121,22 +138,59 @@ enum yysymbol_kind_t
   YYSYMBOL_YYEOF = 0,                      /* "end of file"  */
   YYSYMBOL_YYerror = 1,                    /* error  */
   YYSYMBOL_YYUNDEF = 2,                    /* "invalid token"  */
-  YYSYMBOL_TYPE = 3,                       /* TYPE  */
-  YYSYMBOL_ID = 4,                         /* ID  */
-  YYSYMBOL_SEMICOLON = 5,                  /* SEMICOLON  */
-  YYSYMBOL_EQ = 6,                         /* EQ  */
-  YYSYMBOL_ADD_OP = 7,                     /* ADD_OP  */
-  YYSYMBOL_NUMBER = 8,                     /* NUMBER  */
-  YYSYMBOL_WRITE = 9,                      /* WRITE  */
-  YYSYMBOL_YYACCEPT = 10,                  /* $accept  */
-  YYSYMBOL_Program = 11,                   /* Program  */
-  YYSYMBOL_DeclList = 12,                  /* DeclList  */
-  YYSYMBOL_Decl = 13,                      /* Decl  */
-  YYSYMBOL_VarDecl = 14,                   /* VarDecl  */
-  YYSYMBOL_StmtList = 15,                  /* StmtList  */
-  YYSYMBOL_Stmt = 16,                      /* Stmt  */
-  YYSYMBOL_Expr = 17,                      /* Expr  */
-  YYSYMBOL_RecursiveFunc = 18              /* RecursiveFunc  */
+  YYSYMBOL_ID = 3,                         /* ID  */
+  YYSYMBOL_WRITE = 4,                      /* WRITE  */
+  YYSYMBOL_IF = 5,                         /* IF  */
+  YYSYMBOL_ELSE = 6,                       /* ELSE  */
+  YYSYMBOL_WHILE = 7,                      /* WHILE  */
+  YYSYMBOL_RETURN = 8,                     /* RETURN  */
+  YYSYMBOL_TYPE = 9,                       /* TYPE  */
+  YYSYMBOL_KEYWORD = 10,                   /* KEYWORD  */
+  YYSYMBOL_NUMBER = 11,                    /* NUMBER  */
+  YYSYMBOL_CHAR = 12,                      /* CHAR  */
+  YYSYMBOL_SINGLE_QOUTE = 13,              /* SINGLE_QOUTE  */
+  YYSYMBOL_SEMICOLON = 14,                 /* SEMICOLON  */
+  YYSYMBOL_COMMA = 15,                     /* COMMA  */
+  YYSYMBOL_EQ = 16,                        /* EQ  */
+  YYSYMBOL_OR = 17,                        /* OR  */
+  YYSYMBOL_LSS = 18,                       /* LSS  */
+  YYSYMBOL_GTR = 19,                       /* GTR  */
+  YYSYMBOL_LEQ = 20,                       /* LEQ  */
+  YYSYMBOL_GEQ = 21,                       /* GEQ  */
+  YYSYMBOL_LPAREN = 22,                    /* LPAREN  */
+  YYSYMBOL_RPAREN = 23,                    /* RPAREN  */
+  YYSYMBOL_LBRACE = 24,                    /* LBRACE  */
+  YYSYMBOL_RBRACE = 25,                    /* RBRACE  */
+  YYSYMBOL_LBRACKET = 26,                  /* LBRACKET  */
+  YYSYMBOL_RBRACKET = 27,                  /* RBRACKET  */
+  YYSYMBOL_ADD = 28,                       /* ADD  */
+  YYSYMBOL_SUB = 29,                       /* SUB  */
+  YYSYMBOL_MULTIPLY = 30,                  /* MULTIPLY  */
+  YYSYMBOL_DIV = 31,                       /* DIV  */
+  YYSYMBOL_YYACCEPT = 32,                  /* $accept  */
+  YYSYMBOL_Program = 33,                   /* Program  */
+  YYSYMBOL_DeclList = 34,                  /* DeclList  */
+  YYSYMBOL_Decl = 35,                      /* Decl  */
+  YYSYMBOL_FunDecl = 36,                   /* FunDecl  */
+  YYSYMBOL_FuncallStmtList = 37,           /* FuncallStmtList  */
+  YYSYMBOL_FuncallStmt = 38,               /* FuncallStmt  */
+  YYSYMBOL_ParamDeclList = 39,             /* ParamDeclList  */
+  YYSYMBOL_ParamDecl = 40,                 /* ParamDecl  */
+  YYSYMBOL_Block = 41,                     /* Block  */
+  YYSYMBOL_FunBlock = 42,                  /* FunBlock  */
+  YYSYMBOL_VarDeclList = 43,               /* VarDeclList  */
+  YYSYMBOL_VarDecl = 44,                   /* VarDecl  */
+  YYSYMBOL_ArrayDeclList = 45,             /* ArrayDeclList  */
+  YYSYMBOL_ArrayDecl = 46,                 /* ArrayDecl  */
+  YYSYMBOL_StmtList = 47,                  /* StmtList  */
+  YYSYMBOL_Stmt = 48,                      /* Stmt  */
+  YYSYMBOL_AssignStmtList = 49,            /* AssignStmtList  */
+  YYSYMBOL_AssignStmt = 50,                /* AssignStmt  */
+  YYSYMBOL_WriteStmtList = 51,             /* WriteStmtList  */
+  YYSYMBOL_WriteStmt = 52,                 /* WriteStmt  */
+  YYSYMBOL_BinOp = 53,                     /* BinOp  */
+  YYSYMBOL_MathStatList = 54,              /* MathStatList  */
+  YYSYMBOL_MathStat = 55                   /* MathStat  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -462,21 +516,21 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  15
+#define YYFINAL  32
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   24
+#define YYLAST   96
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  10
+#define YYNTOKENS  32
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  9
+#define YYNNTS  24
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  19
+#define YYNRULES  53
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  29
+#define YYNSTATES  90
 
 /* YYMAXUTOK -- Last valid token kind.  */
-#define YYMAXUTOK   264
+#define YYMAXUTOK   286
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -516,15 +570,21 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    31
 };
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_int16 yyrline[] =
 {
-       0,    48,    48,    55,    59,    64,    64,    66,    84,    85,
-      88,    89,    94,   106,   131,   158,   177,   181,   188,   194
+       0,    93,    93,   100,   103,   106,   107,   108,   109,   117,
+     141,   143,   145,   166,   167,   170,   173,   193,   196,   199,
+     200,   201,   203,   205,   207,   231,   233,   235,   279,   281,
+     283,   284,   285,   286,   290,   292,   294,   333,   373,   412,
+     492,   538,   540,   542,   571,   575,   579,   583,   587,   589,
+     591,   595,   604,   608
 };
 #endif
 
@@ -540,10 +600,16 @@ static const char *yysymbol_name (yysymbol_kind_t yysymbol) YY_ATTRIBUTE_UNUSED;
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "\"end of file\"", "error", "\"invalid token\"", "TYPE", "ID",
-  "SEMICOLON", "EQ", "ADD_OP", "NUMBER", "WRITE", "$accept", "Program",
-  "DeclList", "Decl", "VarDecl", "StmtList", "Stmt", "Expr",
-  "RecursiveFunc", YY_NULLPTR
+  "\"end of file\"", "error", "\"invalid token\"", "ID", "WRITE", "IF",
+  "ELSE", "WHILE", "RETURN", "TYPE", "KEYWORD", "NUMBER", "CHAR",
+  "SINGLE_QOUTE", "SEMICOLON", "COMMA", "EQ", "OR", "LSS", "GTR", "LEQ",
+  "GEQ", "LPAREN", "RPAREN", "LBRACE", "RBRACE", "LBRACKET", "RBRACKET",
+  "ADD", "SUB", "MULTIPLY", "DIV", "$accept", "Program", "DeclList",
+  "Decl", "FunDecl", "FuncallStmtList", "FuncallStmt", "ParamDeclList",
+  "ParamDecl", "Block", "FunBlock", "VarDeclList", "VarDecl",
+  "ArrayDeclList", "ArrayDecl", "StmtList", "Stmt", "AssignStmtList",
+  "AssignStmt", "WriteStmtList", "WriteStmt", "BinOp", "MathStatList",
+  "MathStat", YY_NULLPTR
 };
 
 static const char *
@@ -553,7 +619,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-12)
+#define YYPACT_NINF (-66)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -567,9 +633,15 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -3,     6,     8,   -12,    11,    16,   -12,    -3,   -12,   -12,
-      -1,    12,    13,     1,   -12,   -12,   -12,   -12,   -12,   -12,
-      14,    15,   -12,     3,     3,    14,    15,   -12,   -12
+      33,    -2,     1,     3,    30,     7,   -66,    33,   -66,   -66,
+       5,   -66,   -66,   -66,    44,   -66,    28,   -66,     6,   -66,
+      46,    29,    25,    39,   -66,   -66,   -66,   -66,    46,    38,
+     -11,    46,   -66,   -66,    32,   -66,   -66,    -4,   -66,   -66,
+      30,   -66,   -12,    50,    52,    62,    45,    25,    40,   -66,
+     -66,   -66,    25,    58,   -66,   -66,   -66,   -66,   -66,    56,
+     -66,    55,    49,    47,   -66,    51,    53,    59,    61,    64,
+      42,   -66,   -66,   -66,   -66,    73,    54,   -66,    71,   -66,
+      72,   -66,    -5,   -66,    79,   -66,    80,   -66,    70,    60
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -577,21 +649,31 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       8,     0,     0,    10,     0,     0,     2,     4,     5,     6,
-       8,     0,     0,     0,    15,     1,     3,     9,    11,     7,
-      13,    14,    12,     0,     0,    19,    18,    17,    16
+       0,    53,     0,     0,    52,     0,     2,     4,     5,    33,
+      11,     7,     8,     6,    29,    30,    35,    32,    42,    31,
+      49,     0,    13,     0,    44,    45,    46,    47,     0,     0,
+       0,     0,     1,     3,     0,    10,    28,     0,    34,    41,
+      53,    48,     0,     0,     0,     0,     0,    13,     0,    51,
+      43,    24,    13,     0,    50,    39,    38,    40,    16,     0,
+      14,     0,     0,     0,    12,     0,     0,     0,     0,     0,
+       0,     9,    27,    36,    37,     0,     0,    20,    23,    19,
+      26,    21,     0,    18,     0,    22,     0,    25,     0,     0
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -12,   -12,    17,   -12,   -12,     9,   -12,   -12,   -11
+     -66,   -66,    78,   -66,   -66,    77,   -66,    -9,   -66,   -66,
+     -66,    10,   -65,     9,   -45,   -14,   -66,    74,   -66,    75,
+     -66,    -3,    76,     2
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-       0,     5,     6,     7,     8,     9,    10,    11,    22
+       0,     5,     6,     7,     8,     9,    10,    46,    47,    71,
+      76,    77,    11,    79,    12,    13,    14,    15,    16,    17,
+      18,    28,    19,    20
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -599,39 +681,67 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       1,     2,     3,     2,     3,    20,     4,    25,     4,    21,
-      12,    26,    27,    28,    13,    14,    15,    18,    19,    17,
-       0,    23,    24,     0,    16
+      36,    31,    55,    51,    29,    78,    30,    32,    34,    51,
+       2,    52,    21,    78,    21,    53,    24,    25,    26,    27,
+      22,    53,    23,    44,    23,    80,    24,    25,    26,    27,
+      49,    37,    40,    54,    45,    80,     1,     2,    60,    31,
+      42,    43,     3,    62,     4,     1,     2,     1,     2,    40,
+      48,    75,    50,     4,    22,     4,    81,     4,    24,    25,
+      26,    27,    68,    69,    56,    58,    57,    61,    59,    63,
+      64,    65,    66,    72,    67,    73,    82,    70,    74,    83,
+      84,    86,    88,    89,    51,    33,    53,    35,    85,    87,
+      38,     0,     0,    39,     0,     0,    41
 };
 
 static const yytype_int8 yycheck[] =
 {
-       3,     4,     5,     4,     5,     4,     9,     4,     9,     8,
-       4,     8,    23,    24,     6,     4,     0,     5,     5,    10,
-      -1,     7,     7,    -1,     7
+      14,     4,    14,    14,     3,    70,     3,     0,     3,    14,
+       4,    22,    16,    78,    16,    26,    28,    29,    30,    31,
+      22,    26,    26,    21,    26,    70,    28,    29,    30,    31,
+      28,     3,     3,    31,     9,    80,     3,     4,    47,    42,
+      11,    12,     9,    52,    11,     3,     4,     3,     4,     3,
+      11,     9,    14,    11,    22,    11,    70,    11,    28,    29,
+      30,    31,    11,    12,    14,     3,    14,    27,    23,    11,
+      14,    16,    23,    14,    27,    14,     3,    24,    14,    25,
+       9,     9,     3,     3,    14,     7,    26,    10,    78,    80,
+      16,    -1,    -1,    18,    -1,    -1,    20
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     3,     4,     5,     9,    11,    12,    13,    14,    15,
-      16,    17,     4,     6,     4,     0,    12,    15,     5,     5,
-       4,     8,    18,     7,     7,     4,     8,    18,    18
+       0,     3,     4,     9,    11,    33,    34,    35,    36,    37,
+      38,    44,    46,    47,    48,    49,    50,    51,    52,    54,
+      55,    16,    22,    26,    28,    29,    30,    31,    53,     3,
+       3,    53,     0,    34,     3,    37,    47,     3,    49,    51,
+       3,    54,    11,    12,    55,     9,    39,    40,    11,    55,
+      14,    14,    22,    26,    55,    14,    14,    14,     3,    23,
+      39,    27,    39,    11,    14,    16,    23,    27,    11,    12,
+      24,    41,    14,    14,    14,     9,    42,    43,    44,    45,
+      46,    47,     3,    25,     9,    43,     9,    45,     3,     3
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    10,    11,    12,    12,    13,    13,    14,    15,    15,
-      16,    16,    17,    17,    17,    17,    18,    18,    18,    18
+       0,    32,    33,    34,    34,    35,    35,    35,    35,    36,
+      37,    37,    38,    39,    39,    39,    40,    40,    41,    42,
+      42,    42,    43,    43,    44,    45,    45,    46,    47,    47,
+      48,    48,    48,    48,    49,    49,    50,    50,    50,    50,
+      50,    51,    51,    52,    53,    53,    53,    53,    54,    54,
+      55,    55,    55,    55
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     1,     2,     1,     1,     1,     3,     0,     2,
-       1,     2,     3,     3,     3,     2,     3,     3,     1,     1
+       0,     2,     1,     2,     1,     1,     1,     1,     1,     6,
+       2,     1,     5,     0,     2,     1,     2,     0,     3,     1,
+       1,     1,     2,     1,     3,     2,     1,     6,     2,     1,
+       1,     1,     1,     1,     2,     1,     7,     7,     4,     4,
+       4,     2,     1,     3,     1,     1,     1,     1,     2,     1,
+       3,     3,     1,     1
 };
 
 
@@ -715,15 +825,21 @@ yy_symbol_value_print (FILE *yyo,
   switch (yykind)
     {
     case YYSYMBOL_ID: /* ID  */
-#line 39 "parser.y"
+#line 78 "parser.y"
          { fprintf(yyoutput, "%s", ((*yyvaluep).string)); }
-#line 721 "parser.tab.c"
+#line 831 "parser.tab.c"
         break;
 
     case YYSYMBOL_NUMBER: /* NUMBER  */
-#line 40 "parser.y"
-         { fprintf(yyoutput, "%d", ((*yyvaluep).number)); }
-#line 727 "parser.tab.c"
+#line 79 "parser.y"
+         { fprintf(yyoutput, "%d", ((*yyvaluep).string)); }
+#line 837 "parser.tab.c"
+        break;
+
+    case YYSYMBOL_CHAR: /* CHAR  */
+#line 80 "parser.y"
+         { fprintf(yyoutput, "%s", ((*yyvaluep).string)); }
+#line 843 "parser.tab.c"
         break;
 
       default:
@@ -1111,212 +1227,680 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* Program: DeclList  */
-#line 48 "parser.y"
-                   { 
-    (yyval.ast) = (yyvsp[0].ast);
-	//printf("\n--- Abstract Syntax Tree ---\n\n");
-	//printAST($$,0);
-}
-#line 1121 "parser.tab.c"
+#line 93 "parser.y"
+                   { (yyval.ast) = (yyvsp[0].ast);
+					 printf("\n--- Abstract Syntax Tree ---\n\n");
+					 printAST((yyval.ast),0);
+					}
+#line 1236 "parser.tab.c"
     break;
 
   case 3: /* DeclList: Decl DeclList  */
-#line 55 "parser.y"
-                                {
-    (yyvsp[-1].ast)->left = (yyvsp[0].ast);
-	(yyval.ast) = (yyvsp[-1].ast);
-}
-#line 1130 "parser.tab.c"
+#line 100 "parser.y"
+                                { (yyvsp[-1].ast)->left = (yyvsp[0].ast);
+							  (yyval.ast) = (yyvsp[-1].ast);
+							}
+#line 1244 "parser.tab.c"
     break;
 
   case 4: /* DeclList: Decl  */
-#line 59 "parser.y"
-        {
-    (yyval.ast) = (yyvsp[0].ast); 
-}
-#line 1138 "parser.tab.c"
+#line 103 "parser.y"
+                { (yyval.ast) = (yyvsp[0].ast); }
+#line 1250 "parser.tab.c"
     break;
 
-  case 7: /* VarDecl: TYPE ID SEMICOLON  */
-#line 66 "parser.y"
-                                        { 
-    char id1[50];
-    
-    printf("\n RECOGNIZED RULE: Variable declaration %s\n", (yyvsp[-1].string));
-	symTabAccess();
-	int inSymTab = found((yyvsp[-1].string), currentScope);
-	if (inSymTab == 0) 
-		addItem((yyvsp[-1].string), "Var", (yyvsp[-2].string), 0, currentScope);
-	else
-		printf("SEMANTIC ERROR: Var %s is already in the symbol table", (yyvsp[-1].string));
-	showSymTable();
-    sprintf(id1, "%s", (yyvsp[-1].string));
-    int numid = getID(id1, currentScope);   // ADDING TO IR CODE T0 = X
-    emitConstantIntAssignment ((yyvsp[-1].string), numid);
-	(yyval.ast) = AST_Type("Type",(yyvsp[-2].string),(yyvsp[-1].string));
-	printf("-----------> %s", (yyval.ast)->LHS);
-}
-#line 1160 "parser.tab.c"
+  case 9: /* FunDecl: TYPE ID LPAREN ParamDeclList RPAREN Block  */
+#line 117 "parser.y"
+                                                          {printf("\nRULE: Function\n");
+							
+								char id1[50];
+								char type[50];
+								strcpy(id1, (yyvsp[-4].string));
+								strcpy(type, (yyvsp[-5].string));
+								strcpy(scope, Local);
+								int inSymTab = found((yyvsp[-4].string), scope);
+								
+								if (inSymTab == 0){
+									addItemVST(id1, "Fun", (yyvsp[-5].string), 0, scope);
+
+									addItemFST(id1, "Fun", &type, 0, &id1, &scope);
+								}
+								else{					
+									printf("SEMANTIC ERROR: Fun %s is already in the symbol table", (yyvsp[-4].string));
+								}
+								showVarSymTable();
+								printFuncTable();
+
+								(yyval.ast) = AST_Type("Fun", (yyvsp[-5].string), (yyvsp[-4].string));
+								
+			}
+#line 1278 "parser.tab.c"
     break;
 
-  case 10: /* Stmt: SEMICOLON  */
-#line 88 "parser.y"
-                  {}
-#line 1166 "parser.tab.c"
+  case 10: /* FuncallStmtList: FuncallStmt FuncallStmtList  */
+#line 141 "parser.y"
+                                             {(yyvsp[-1].ast)->left = (yyvsp[0].ast);
+							  (yyval.ast) = (yyvsp[-1].ast);}
+#line 1285 "parser.tab.c"
     break;
 
-  case 11: /* Stmt: Expr SEMICOLON  */
-#line 89 "parser.y"
-                         {
-        (yyval.ast) = (yyvsp[-1].ast);
-    }
-#line 1174 "parser.tab.c"
+  case 11: /* FuncallStmtList: FuncallStmt  */
+#line 143 "parser.y"
+                                      {(yyval.ast) = (yyvsp[0].ast);}
+#line 1291 "parser.tab.c"
     break;
 
-  case 12: /* Expr: ID EQ RecursiveFunc  */
-#line 94 "parser.y"
-                            { 
-            printf("\n RECOGNIZED RULE: Simplest expression\n"); 
-            char id1[50], id2[50];
-            sprintf(id1, "%s", (yyvsp[-2].string));
-            sprintf(id2, "%d", sum);
-            int numid = getID(id1, currentScope);
-            emitIR(id1, id2, numid);
-            emitMIPSConstantIntAssignment(id1, id2, numid);
-            setValue(id1, sum, currentScope);		
-            sum = 0;
-            showSymTable();		
-        }
-#line 1191 "parser.tab.c"
-    break;
+  case 12: /* FuncallStmt: ID LPAREN ParamDeclList RPAREN SEMICOLON  */
+#line 145 "parser.y"
+                                                      {printf("\nRULE: Function Call\n");
+							
+								char id1[50];
+								strcpy(id1, (yyvsp[-4].string));
+								strcpy(scope, Local);
+								int inSymTab = found(id1, scope);
+								
+								if (inSymTab == 0){
+									printf("SEMANTIC ERROR: Fun %s is not in the symbol table", (yyvsp[-4].string));
+								}
+								else{					
+									
 
-  case 13: /* Expr: ID EQ ID  */
-#line 106 "parser.y"
-                        { 
-            printf("\n RECOGNIZED RULE: Assignment statement\n"); 
-            (yyval.ast) = AST_assignment("=",(yyvsp[-2].string),(yyvsp[0].string));
-            if(found((yyvsp[-2].string), currentScope) != 1) {
-                printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", (yyvsp[-2].string), currentScope);
-                semanticCheckPassed = 0;
-            }
-            if(found((yyvsp[0].string), currentScope) != 1){
-                printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", (yyvsp[-2].string), currentScope);
-                semanticCheckPassed = 0;
-            }
-            printf("\nChecking types: \n");
-            int typeMatch = compareTypes ((yyvsp[-2].string), (yyvsp[0].string), currentScope);
-            if (typeMatch == 0){
-                printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", (yyvsp[-2].string), (yyvsp[0].string));
-                semanticCheckPassed = 0;
-            }
-            if (semanticCheckPassed == 1) {
-                printf("\n\n>>> AssignStmt Rule is SEMANTICALLY correct and IR code is emitted! <<<\n\n");
-                emitAssignment((yyvsp[-2].string), (yyvsp[0].string));
-                emitMIPSAssignment((yyvsp[-2].string), (yyvsp[0].string));
-            }
-                        
-        }
-#line 1220 "parser.tab.c"
-    break;
+								}
 
-  case 14: /* Expr: ID EQ NUMBER  */
-#line 131 "parser.y"
-                        { 
-            printf("\n RECOGNIZED RULE: ID EQ NUMBER\n"); 
-            char str[50];
-            char id1[50];
-            if(found((yyvsp[-2].string), currentScope) != 1) {
-                printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", (yyvsp[-2].string), currentScope);
-                semanticCheckPassed = 0;
-            }
-            printf("\nChecking types: \n");
-            printf("%s = %s\n", "int", "number");  
-            if (semanticCheckPassed == 1) {
-                printf("\n\nRule is semantically correct!\n\n");
-                sprintf(str, "%d", (yyvsp[0].number)); 
-                sprintf(id1, "%s", (yyvsp[-2].string));	
-                symTabAccess();
-                setValue(id1, (yyvsp[0].number), currentScope);
-                showSymTable();
-                (yyval.ast) = AST_assignment("=",(yyvsp[-2].string), str);
-                char id1[50], id2[50];
-                sprintf(id1, "%s", (yyvsp[-2].string));
-                sprintf(id2, "%d", (yyvsp[0].number));
-                int numid = getID(id1, currentScope);
-                emitIR(id1, id2, numid);
-                emitMIPSConstantIntAssignment(id1, id2, numid);
-            }
-        }
-#line 1251 "parser.tab.c"
-    break;
+								printFuncTable();
 
-  case 15: /* Expr: WRITE ID  */
-#line 158 "parser.y"
-                        { 
-            printf("\n RECOGNIZED RULE: WRITE statement\n");
-            (yyval.ast) = AST_Write("write",(yyvsp[0].string),"");
-            char id1[50];
-            sprintf(id1, "%s", (yyvsp[0].string));
-            int numid = getID(id1, currentScope);
-            if(found((yyvsp[0].string), currentScope) != 1) {
-                printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", (yyvsp[0].string), currentScope);
-                semanticCheckPassed = 0;
-            }
-            if (semanticCheckPassed == 1) {
-                printf("\n\nRule is semantically correct!\n\n");
-                emitWriteId((yyvsp[0].string));
-                emitMIPSWriteId((yyvsp[0].string),numid);
-            }
-            
-        }
-#line 1273 "parser.tab.c"
-    break;
-
-  case 16: /* RecursiveFunc: NUMBER ADD_OP RecursiveFunc  */
-#line 177 "parser.y"
-                                            {
-    printf("\n RECOGNIZED RULE: NUMBER + REC\n");
-	sum = sum + (yyvsp[-2].number);			
-}
-#line 1282 "parser.tab.c"
-    break;
-
-  case 17: /* RecursiveFunc: ID ADD_OP RecursiveFunc  */
-#line 181 "parser.y"
-                                        {
-        printf("\n RECOGNIZED RULE: ID + REC\n");
-		char id1[50];
-        int id2 = getValue((yyvsp[-2].string), currentScope);
-		sum = sum + id2;
-	}
-#line 1293 "parser.tab.c"
-    break;
-
-  case 18: /* RecursiveFunc: NUMBER  */
-#line 188 "parser.y"
-                 {
-        printf("\n RECOGNIZED RULE: ADD STATMENT NUM END\n");
-		sum = sum + (yyvsp[0].number);
-        symTabAccess();
-	}
-#line 1303 "parser.tab.c"
-    break;
-
-  case 19: /* RecursiveFunc: ID  */
-#line 194 "parser.y"
-             {
-        printf("\n RECOGNIZED RULE: ADD STATMENT ID END \n");
-		char id1[50];
-        sprintf(id1, "%d", (yyvsp[0].string));
-        int id2 = getValue((yyvsp[0].string), currentScope);
-		sum = sum + id2;
-		symTabAccess();
-	}
+								(yyval.ast) = AST_Type("FunCall", (yyvsp[-4].string), "NULL");
+								
+			}
 #line 1316 "parser.tab.c"
     break;
 
+  case 14: /* ParamDeclList: ParamDecl ParamDeclList  */
+#line 167 "parser.y"
+                                                  {(yyvsp[-1].ast)->left = (yyvsp[0].ast);
+							  (yyval.ast) = (yyvsp[-1].ast);}
+#line 1323 "parser.tab.c"
+    break;
 
-#line 1320 "parser.tab.c"
+  case 15: /* ParamDeclList: ParamDecl  */
+#line 170 "parser.y"
+                                    {(yyval.ast) = (yyvsp[0].ast);}
+#line 1329 "parser.tab.c"
+    break;
+
+  case 16: /* ParamDecl: TYPE ID  */
+#line 173 "parser.y"
+                   {printf("\nRULE: Variable declaration\n");						
+									char id1[50];
+									symTabAccess();
+									int inSymTab = found((yyvsp[0].string), scope);
+
+									
+									if (inSymTab == 0) 
+										addItemVST((yyvsp[0].string), "Var", (yyvsp[-1].string), 0, scope);
+									else						
+										printf("SEMANTIC ERROR: Var %s is already in the symbol table", (yyvsp[0].string));
+
+									showVarSymTable();
+									
+									sprintf(id1, "%s", (yyvsp[0].string));
+									int numid = getItemID(id1, scope);  
+									emitConstantIntAssignment ((yyvsp[0].string), numid);								
+
+									
+								    (yyval.ast) = AST_Type("Type",(yyvsp[-1].string),(yyvsp[0].string));  	
+								}
+#line 1354 "parser.tab.c"
+    break;
+
+  case 22: /* VarDeclList: VarDecl VarDeclList  */
+#line 203 "parser.y"
+                                    {(yyvsp[-1].ast)->left = (yyvsp[0].ast);
+							  (yyval.ast) = (yyvsp[-1].ast);}
+#line 1361 "parser.tab.c"
+    break;
+
+  case 23: /* VarDeclList: VarDecl  */
+#line 205 "parser.y"
+                                  {(yyval.ast) = (yyvsp[0].ast);}
+#line 1367 "parser.tab.c"
+    break;
+
+  case 24: /* VarDecl: TYPE ID SEMICOLON  */
+#line 207 "parser.y"
+                                  { printf("\nRULE: Variable declaration\n");
+
+									char id1[50];
+
+									symTabAccess();
+									int inSymTab = found((yyvsp[-1].string), scope);
+
+									
+									if (inSymTab == 0) 
+										addItemVST((yyvsp[-1].string), "Var", (yyvsp[-2].string), 0, scope);
+									else						
+										printf("SEMANTIC ERROR: Var %s is already in the symbol table", (yyvsp[-1].string));
+
+									showVarSymTable();
+									
+									sprintf(id1, "%s", (yyvsp[-1].string));
+									int numid = getItemID(id1, scope);   
+									emitConstantIntAssignment ((yyvsp[-1].string), numid);								
+
+									
+								    (yyval.ast) = AST_Type("Type",(yyvsp[-2].string),(yyvsp[-1].string));  	 
+								}
+#line 1394 "parser.tab.c"
+    break;
+
+  case 25: /* ArrayDeclList: ArrayDecl ArrayDeclList  */
+#line 231 "parser.y"
+                                        {(yyvsp[-1].ast)->left = (yyvsp[0].ast);
+							  (yyval.ast) = (yyvsp[-1].ast);}
+#line 1401 "parser.tab.c"
+    break;
+
+  case 26: /* ArrayDeclList: ArrayDecl  */
+#line 233 "parser.y"
+                                    {(yyval.ast) = (yyvsp[0].ast);}
+#line 1407 "parser.tab.c"
+    break;
+
+  case 27: /* ArrayDecl: TYPE ID LBRACKET NUMBER RBRACKET SEMICOLON  */
+#line 235 "parser.y"
+                                                       { printf("\nRULE: Array declaration %s\n", (yyvsp[-4].string));
+									char id1[50];
+									(yyvsp[-2].string) = atoi((yyvsp[-2].string));
+
+									char concat[50];
+									sprintf(concat, "%s[%d]", (yyvsp[-4].string), (yyvsp[-2].string));
+
+									
+									char temp[50];
+
+									
+									int inSymTab = found((yyvsp[-4].string), scope);
+
+									if (inSymTab == 0){
+										printf("Adding array to symbol table\n");
+										int tempint = (yyvsp[-2].string);
+
+										for (int i = 0; i < (yyvsp[-2].string); i++){
+											char arrayname[50];
+											
+											sprintf(temp, "%d", i);
+
+											sprintf(arrayname, "%s[%s]", (yyvsp[-4].string), temp);
+
+											addItemVST(arrayname, "Array", (yyvsp[-5].string), (yyvsp[-2].string), &scope);
+											
+											tempint--;
+
+	
+										}
+									}else{
+														
+										printf("SEMANTIC ERROR: Array %s is already in the symbol table", (yyvsp[-4].string));
+									}
+									showVarSymTable();
+									
+									sprintf(id1, "%s", (yyvsp[-4].string));
+									int numid = getItemID(id1, scope);   
+									emitConstantIntAssignment ((yyvsp[-4].string), numid);								
+									
+								    (yyval.ast) = AST_Type("Type",(yyvsp[-5].string),concat);
+									printf("%s", (yyval.ast)->LHS);
+								}
+#line 1455 "parser.tab.c"
+    break;
+
+  case 28: /* StmtList: Stmt StmtList  */
+#line 279 "parser.y"
+                       { (yyvsp[-1].ast)->left = (yyvsp[0].ast);
+					(yyval.ast) = (yyvsp[-1].ast);}
+#line 1462 "parser.tab.c"
+    break;
+
+  case 29: /* StmtList: Stmt  */
+#line 281 "parser.y"
+               { (yyval.ast) = (yyvsp[0].ast); }
+#line 1468 "parser.tab.c"
+    break;
+
+  case 30: /* Stmt: AssignStmtList  */
+#line 283 "parser.y"
+                     {printf("AssignStmt\n");}
+#line 1474 "parser.tab.c"
+    break;
+
+  case 31: /* Stmt: MathStatList  */
+#line 284 "parser.y"
+                       {printf("MathStat\n");}
+#line 1480 "parser.tab.c"
+    break;
+
+  case 32: /* Stmt: WriteStmtList  */
+#line 285 "parser.y"
+                        {printf("WriteStmt\n");}
+#line 1486 "parser.tab.c"
+    break;
+
+  case 33: /* Stmt: FuncallStmtList  */
+#line 286 "parser.y"
+                          {printf("FuncallStmt\n");}
+#line 1492 "parser.tab.c"
+    break;
+
+  case 34: /* AssignStmtList: AssignStmt AssignStmtList  */
+#line 290 "parser.y"
+                                         { (yyvsp[-1].ast)->left = (yyvsp[0].ast);
+					(yyval.ast) = (yyvsp[-1].ast);}
+#line 1499 "parser.tab.c"
+    break;
+
+  case 35: /* AssignStmtList: AssignStmt  */
+#line 292 "parser.y"
+                                            { (yyval.ast) = (yyvsp[0].ast); }
+#line 1505 "parser.tab.c"
+    break;
+
+  case 36: /* AssignStmt: ID LBRACKET NUMBER RBRACKET EQ NUMBER SEMICOLON  */
+#line 294 "parser.y"
+                                                                { printf("\nRULE: Set Val of array at certine index\n"); 
+									
+									char concat[50];
+									sprintf(concat, "%s[%s]", (yyvsp[-6].string), (yyvsp[-4].string));
+									
+
+									if (strcmp(scope, Global) == 0){
+										if(found(concat, scope) != 1) {  
+											printf("SEMANTIC ERROR: Array %s has NOT been declared in scope %s \n", (yyvsp[-6].string), scope);
+											semanticCheckPassed = 0;
+										}
+										if(semanticCheckPassed == 1) {
+											printf("\n\nRule is semantically correct!\n\n");
+											setVal(concat, (yyvsp[-1].string), scope);
+											(yyval.ast) = AST_assignment("=",concat, (yyvsp[-1].string));
+									
+											int numid = getItemID(concat, scope);    
+											emitIRAssignment(concat, (yyvsp[-1].string), numid);         
+											memset(concat, 0, sizeof(concat));
+										}
+
+									}else{
+										if(foundFST(concat, scope) != 1) {  
+											printf("SEMANTIC ERROR: Array %s has NOT been declared in scope %s \n", (yyvsp[-6].string), scope);
+											semanticCheckPassed = 0;
+											setIntFST(concat, (yyvsp[-1].string), scope);
+										}
+										if(semanticCheckPassed == 1) {
+											printf("\n\nRule is semantically correct!\n\n");
+											setIntFST(concat, (yyvsp[-1].string), scope);
+											(yyval.ast) = AST_assignment("=",concat, (yyvsp[-1].string));
+									
+											int numid = getIDFST(concat, scope);   
+											emitIRAssignment(concat, (yyvsp[-1].string), numid);            
+											memset(concat, 0, sizeof(concat));
+										}
+
+									}							
+								}
+#line 1549 "parser.tab.c"
+    break;
+
+  case 37: /* AssignStmt: ID LBRACKET NUMBER RBRACKET EQ CHAR SEMICOLON  */
+#line 333 "parser.y"
+                                                        { printf("\nRULE: Set Val of array at certine index\n"); 
+									
+									char concat[50];
+									sprintf(concat, "%s[%s]", (yyvsp[-6].string), (yyvsp[-4].string));
+									
+
+									if (strcmp(scope, Global) == 0){
+										if(found(concat, scope) != 1) { 
+											printf("SEMANTIC ERROR: Array %s has NOT been declared in scope %s \n", (yyvsp[-6].string), scope);
+											semanticCheckPassed = 0;
+										}
+										if(semanticCheckPassed == 1) {
+											printf("\n\nRule is semantically correct!\n\n");
+											setcharVal(concat, (yyvsp[-1].string), scope);
+											(yyval.ast) = AST_assignment("=",concat, (yyvsp[-1].string));
+									
+											int numid = getItemID(concat, scope);    
+											emitIRAssignment(concat, (yyvsp[-1].string), numid);         
+
+											memset(concat, 0, sizeof(concat));
+										}
+
+									}else{
+										if(foundFST(concat, scope) != 1) {  
+											printf("SEMANTIC ERROR: Array %s has NOT been declared in scope %s \n", (yyvsp[-6].string), scope);
+											semanticCheckPassed = 0;
+										}
+										if(semanticCheckPassed == 1) {
+											printf("\n\nRule is semantically correct!\n\n");
+											setCharFST(concat, (yyvsp[-1].string), scope);
+											(yyval.ast) = AST_assignment("=",concat, (yyvsp[-1].string));
+									
+											int numid = getIDFST(concat, scope);    
+											emitIRAssignment(concat, (yyvsp[-1].string), numid);             
+											memset(concat, 0, sizeof(concat));
+										}
+
+									}							
+								}
+#line 1593 "parser.tab.c"
+    break;
+
+  case 38: /* AssignStmt: ID EQ CHAR SEMICOLON  */
+#line 373 "parser.y"
+                              { printf("\nRULE: Set String\n"); 
+	
+					char char1[50];
+					char id1[50];
+					sprintf(char1, "%s", (yyvsp[-1].string));
+					sprintf(id1, "%s", (yyvsp[-3].string));
+					if (strcmp(scope, Global) == 0){
+
+						if(found(id1, scope) != 1) {
+							printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", (yyvsp[-3].string), scope);
+							semanticCheckPassed = 0;
+						}
+
+						if (semanticCheckPassed == 1) {
+							printf("\n\nRule is semantically correct!\n\n");
+							setcharVal(id1, char1, scope);
+							showVarSymTable();
+							(yyval.ast) = AST_assignment("=",(yyvsp[-3].string), (yyvsp[-1].string));
+							int numid = getItemID((yyvsp[-3].string), scope);    
+							emitIRAssignment((yyvsp[-3].string), (yyvsp[-1].string), numid);             
+						}
+
+					}else{
+						if(foundFST(id1, scope) != 1) {
+							printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", (yyvsp[-3].string), scope);
+							semanticCheckPassed = 0;
+						}
+						if (semanticCheckPassed == 1) {
+							printf("\n\nRule is semantically correct!\n\n");
+							setCharFST(id1, char1, scope);
+							showVarSymTable();
+							(yyval.ast) = AST_assignment("=",(yyvsp[-3].string), (yyvsp[-1].string));
+							int numid = getValFST((yyvsp[-3].string), scope);   
+							emitIRAssignment((yyvsp[-3].string), (yyvsp[-1].string), numid);              
+						}
+
+					}
+				}
+#line 1636 "parser.tab.c"
+    break;
+
+  case 39: /* AssignStmt: ID EQ NUMBER SEMICOLON  */
+#line 412 "parser.y"
+                                 { printf("\nRULE: Set Val\n"); 
+
+
+						char str[50];
+						char id1[50];
+						char id2[50];
+
+						if (strcmp(scope, Global) == 0){
+
+
+							if(found((yyvsp[-3].string), scope) != 1) {
+								printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", (yyvsp[-3].string), scope);
+								semanticCheckPassed = 0;
+							}
+
+
+							if (semanticCheckPassed == 1) {
+								printf("\n\nRule is semantically correct!\n\n");
+								sprintf(id2, "%s", (yyvsp[-1].string)); 
+								sprintf(id1, "%s", (yyvsp[-3].string));
+								symTabAccess();
+								int CheckForFloat = 0;
+								for(int i = 0; (yyvsp[-1].string)[i] != '\0'; ++i)
+								{
+									if((yyvsp[-1].string)[i] == '.')
+									{
+									CheckForFloat = 1;
+									break;
+									}
+								}
+								if (CheckForFloat == 1){
+									printf("%s\n",(yyvsp[-1].string));
+									setfloatVal(id1, (yyvsp[-1].string), scope);
+								}else{
+									setVal(id1, (yyvsp[-1].string), scope);
+								}
+
+
+
+								showVarSymTable();
+								(yyval.ast) = AST_assignment("=",(yyvsp[-3].string), id2);
+								int numid = getItemID(id1, scope);    
+								emitIRAssignment(id1, id2, numid);             
+								
+
+							}
+						}else{
+							if(foundFST((yyvsp[-3].string), scope) != 1) {
+								printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", (yyvsp[-3].string), scope);
+								semanticCheckPassed = 0;
+							}
+							if (semanticCheckPassed == 1) {
+								printf("\n\nRule is semantically correct!\n\n");
+								sprintf(id2, "%s", (yyvsp[-1].string)); 
+								sprintf(id1, "%s", (yyvsp[-3].string));
+								int CheckForFloat = 0;
+								for(int i = 0; (yyvsp[-1].string)[i] != '\0'; ++i)
+								{
+									if((yyvsp[-1].string)[i] == '.')
+									{
+									CheckForFloat = 1;
+									break;
+									}
+								}
+								if (CheckForFloat == 1){
+									printf("%s\n",(yyvsp[-1].string));
+									setDecFST(id1, (yyvsp[-1].string), scope);
+								}else{
+									 
+									setIntFST(id1, (yyvsp[-1].string), scope);
+								}
+								printFuncTable();
+								(yyval.ast) = AST_assignment("=",(yyvsp[-3].string), id2);
+								int numid = getIDFST(id1, scope);   
+								emitIRAssignment(id1, id2, numid);            
+								emitMIPSConstantIntAssignment(id1, id2, numid);
+
+							}
+						} 
+					}
+#line 1721 "parser.tab.c"
+    break;
+
+  case 40: /* AssignStmt: ID EQ MathStat SEMICOLON  */
+#line 492 "parser.y"
+                                  {
+					char id1[50];
+					char id2[50];
+					FILE * ResultF;
+					sprintf(id1, "%s", (yyvsp[-3].string));
+					char command[50], mathVal[50];
+					char ch;
+					int i = 0;
+					int numid = getItemID(id1, scope);
+					reverseNumArr();
+					strcpy( command, "python3 Operations.py" );
+					printf("\n");
+					addCalcFile();
+					addOpArr('\0');
+					system(command);
+					sleep(1);
+					ResultF = fopen("./Calc/Results/CalcF.txt_results.txt", "r");
+					fgets(mathVal,20,ResultF);
+					int x = atoi(mathVal);
+					fclose(ResultF);
+
+					int CheckForFloat = 0;
+					for(int i = 0; mathVal[i] != '\0'; ++i){
+						if(mathVal[i] == '.'){
+							CheckForFloat = 1;
+							break;
+						}
+					}
+						if (CheckForFloat == 1){
+							printf("%s\n",mathVal);
+							setfloatVal((yyvsp[-3].string), mathVal, scope);
+						}else{
+							setVal((yyvsp[-3].string), mathVal, scope);
+						}
+					sprintf(id2, "%s", mathVal);	
+					(yyval.ast) = AST_assignment("=",(yyvsp[-3].string),mathVal);
+					emitMIPSConstantIntAssignment(id1, mathVal, numid);	
+					
+					showVarSymTable();
+					printOpArr();
+					printArr();
+					clearClacFile();
+					clearArr();
+					clearOpArr();
+		}
+#line 1771 "parser.tab.c"
+    break;
+
+  case 41: /* WriteStmtList: WriteStmt WriteStmtList  */
+#line 538 "parser.y"
+                                      { (yyvsp[-1].ast)->left = (yyvsp[0].ast);
+					(yyval.ast) = (yyvsp[-1].ast);}
+#line 1778 "parser.tab.c"
+    break;
+
+  case 42: /* WriteStmtList: WriteStmt  */
+#line 540 "parser.y"
+                                                 { (yyval.ast) = (yyvsp[0].ast); }
+#line 1784 "parser.tab.c"
+    break;
+
+  case 43: /* WriteStmt: WRITE ID SEMICOLON  */
+#line 542 "parser.y"
+                             { printf("\nRULE: WRITE STATMENT\n");
+
+					char id1[50];
+					sprintf(id1, "%s", (yyvsp[-1].string));
+					char *tyoe = getVariableType(id1, scope);
+					char type[50];
+					sprintf(type, "%s", tyoe);
+					printf("Type: %s\n", type);
+					(yyval.ast) = AST_Write("write",type, (yyvsp[-1].string));
+					
+					int numid = getItemID(id1, scope);
+
+
+					  
+					if (found((yyvsp[-1].string), scope) != 1) {	 
+						printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", (yyvsp[-1].string), scope);
+						semanticCheckPassed = 0;
+					}
+
+					if (semanticCheckPassed == 1) {
+							printf("\n\nRule is semantically correct!\n\n");
+							emitWriteId((yyvsp[-1].string));	 				
+							emitMIPSWriteId((yyvsp[-1].string),numid);		 
+						}
+					emitMIPSWriteId((yyvsp[-1].string),numid);
+				}
+#line 1815 "parser.tab.c"
+    break;
+
+  case 44: /* BinOp: ADD  */
+#line 571 "parser.y"
+                {
+			addOpArr('+');
+		}
+#line 1823 "parser.tab.c"
+    break;
+
+  case 45: /* BinOp: SUB  */
+#line 575 "parser.y"
+                        {
+			addOpArr('-');
+		}
+#line 1831 "parser.tab.c"
+    break;
+
+  case 46: /* BinOp: MULTIPLY  */
+#line 579 "parser.y"
+                                {
+			addOpArr('*');
+		}
+#line 1839 "parser.tab.c"
+    break;
+
+  case 47: /* BinOp: DIV  */
+#line 583 "parser.y"
+                        {
+			addOpArr('/');
+		}
+#line 1847 "parser.tab.c"
+    break;
+
+  case 48: /* MathStatList: MathStat MathStatList  */
+#line 587 "parser.y"
+                                    {(yyvsp[-1].ast)->left = (yyvsp[0].ast);
+					(yyval.ast) = (yyvsp[-1].ast);}
+#line 1854 "parser.tab.c"
+    break;
+
+  case 49: /* MathStatList: MathStat  */
+#line 589 "parser.y"
+                                          { (yyval.ast) = (yyvsp[0].ast); }
+#line 1860 "parser.tab.c"
+    break;
+
+  case 50: /* MathStat: NUMBER BinOp MathStat  */
+#line 591 "parser.y"
+                                        {
+				addNumArr((yyvsp[-2].string));
+			}
+#line 1868 "parser.tab.c"
+    break;
+
+  case 51: /* MathStat: ID BinOp MathStat  */
+#line 595 "parser.y"
+                                                {
+
+					symTabAccess();
+					int id1;
+					id1 = getVal((yyvsp[-2].string), scope);
+					addIDNumArr(id1);  
+					
+			}
+#line 1881 "parser.tab.c"
+    break;
+
+  case 52: /* MathStat: NUMBER  */
+#line 604 "parser.y"
+                                        {
+				addNumArr((yyvsp[0].string));	
+			}
+#line 1889 "parser.tab.c"
+    break;
+
+  case 53: /* MathStat: ID  */
+#line 608 "parser.y"
+                                {
+					symTabAccess();
+					int id1;
+					id1 = getVal((yyvsp[0].string), scope);
+					addIDNumArr(id1);	 
+					}
+#line 1900 "parser.tab.c"
+    break;
+
+
+#line 1904 "parser.tab.c"
 
       default: break;
     }
@@ -1509,31 +2093,35 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 203 "parser.y"
+#line 615 "parser.y"
 
 
-int main(int argc, char**argv) {
+int main(int argc, char**argv)
+{
 
 	printf("\n\n##### COMPILER STARTED #####\n\n");
-	if (argc > 1) {
-	    if(!(yyin = fopen(argv[1], "r"))) {
-		    perror(argv[1]);
-		    return(1);
-	    } 
+	
+	if (argc > 1){
+	  if(!(yyin = fopen(argv[1], "r")))
+          {
+		perror(argv[1]);
+		return(1);
+	  }
 	}
 
+ 
 	initIRcodeFile();
 	initAssemblyFile();
 
-
+ 
 	yyparse();
 
-
+ 
 	emitEndOfAssemblyCode();
 
 }
 
 void yyerror(const char* s) {
-	fprintf(stderr, "Parse error: %s\n", s);
+	fprintf(stderr, "Parse ERROR: %s\n", s);
 	exit(1);
 }

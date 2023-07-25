@@ -10,7 +10,7 @@ void emitBinaryOperation(char op[1], const char* id1, const char* id2){
     fprintf(IRcode, "T1 = %s %s %s", id1, op, id2); // Emit operation
     fclose(IRcode); // Close the file after writing
 }
-
+ 
 // This function initializes the IR code file
 void initIRcodeFile(){
     IRcode = fopen("IRcode.ir", "w"); // Write mode
