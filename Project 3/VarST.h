@@ -130,7 +130,7 @@ int setcharVal(char itemName[50], char CharVal[50], char scope[50]){
 
 // Display the current status of the symbol table
 void showVarSymTable(){
-	printf("----------------------------------------Globel Variable Symbol Table------------------------------------------\n");
+	printf("----------------------------------------Global Variable Symbol Table------------------------------------------\n");
 	printf("itemID    Name     Int      float       Char      itemKind        Type   ArrayLength     FunName    itemScope\n");
 	printf("--------------------------------------------------------------------------------------------------------------\n");
 	for (int i=0; i<symTabIndex; i++){
