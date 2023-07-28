@@ -55,9 +55,9 @@ void printRegistersStatus() {
     printf("Register Status:\n");
     for (int i = 0; i < MAX_REGISTERS; ++i) {
         printf("T%d: %s, P%d: %s, R%d: %s\n", i,
-               (registers_t[i] ? "Unavailable" : "Available"),
-               i, (registers_p[i] ? "Unavailable" : "Available"),
-               i, (registers_r[i] ? "Unavailable" : "Available"));
+               (registers_t[i] ? "In Use" : "Available"),
+               i, (registers_p[i] ? "In Use" : "Available"),
+               i, (registers_r[i] ? "In Use" : "Available"));
     }
 }
 
