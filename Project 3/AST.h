@@ -66,6 +66,18 @@ struct AST * AST_Func(char nodeType[50], char LHS[50], char RHS[50]){
 	
 }
 
+// Function to create a function node in AST. This node represents a function in the program.
+struct AST * AST_If_Then(char nodeType[50], char LHS[50], char RHS[50]){
+	
+	struct AST* ASTtype = malloc(sizeof(struct AST));
+	strcpy(ASTtype->nodeType, nodeType);
+	strcpy(ASTtype->LHS, LHS);
+	strcpy(ASTtype->RHS, RHS);
+		
+	return ASTtype;
+	
+}
+
 // Function to create a write node in AST. This node represents a write operation in the program.
 struct AST * AST_Write(char nodeType[50], char LHS[50], char RHS[50]){
 	

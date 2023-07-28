@@ -284,6 +284,7 @@ Stmt: AssignStmtList {printf("AssignStmt\n");}
 	| MathStatList {printf("MathStat\n");}
 	| WriteStmtList {printf("WriteStmt\n");}
 	| FuncallStmtList {printf("FuncallStmt\n");}
+	| CondStmt {printf("CondStmt\n");}
 
 
 
@@ -612,6 +613,16 @@ MathStat:	NUMBER BinOp MathStat	{
 					addIDNumArr(id1);	 
 					};
 
+CondStmtList: CondStmt CondStmtList {$1->left = $2;
+					$$ = $1;}
+				| CondStmt { $$ = $1; }
+
+CondStmt: IF Condition LBRACE StmtList RBRACE; 
+		| IF Condition LBRACE StmtList RBRACE ELSE LBRACE StmtList RBRACE;
+
+Condition: LPAREN MathStatList CompSymbol MathStatList RPAREN;
+
+CompSymbol: LSS | GTR | LEQ | GEQ | DEQ | NEQ;
 %%
 
 int main(int argc, char**argv)
