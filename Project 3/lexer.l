@@ -170,7 +170,7 @@ ws          {delim}+
 		yylval.string = strdup(yytext); 
 		return DEQ;
 		}
-		
+
 "!=" 	{chars++;
 		printf("%s : NEQ\n", yytext);
 		yylval.string = strdup(yytext); 
@@ -237,7 +237,7 @@ ws          {delim}+
 		 return DIV;
 		}				
 
-		
+[\n\r]	{lines++; chars=0;}		
 [\n]	{lines++; chars=0;}
 [ \t]	{chars++;}
 .		{chars++;

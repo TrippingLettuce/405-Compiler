@@ -74,13 +74,16 @@ int semanticCheckPassed = 1;
 %token <char> SUB
 %token <char> MULTIPLY
 %token <char> DIV
+%token <char> DEQ
+%token <char> NEQ
+
 
 %printer { fprintf(yyoutput, "%s", $$); } ID;
 %printer { fprintf(yyoutput, "%d", $$); } NUMBER;
 %printer { fprintf(yyoutput, "%s", $$); } CHAR;
 
 
-%type <ast> Program FunDeclList FunDecl FuncallStmtList FuncallStmt ArrayDecl ArrayDeclList ParamDeclList ParamDecl DeclList Decl VarDeclList VarDecl Stmt StmtList AssignStmt WriteStmt Block AssignStmtList MathStatList MathStat WriteStmtList
+%type <ast> Program FunDeclList FunDecl FuncallStmtList FuncallStmt ArrayDecl ArrayDeclList ParamDeclList ParamDecl DeclList Decl VarDeclList VarDecl Stmt StmtList AssignStmt WriteStmt Block AssignStmtList MathStatList MathStat WriteStmtList CondStmtList CondStmt	CompSymbol
 
 %right EQ
 %left ADD, SUB
@@ -617,8 +620,9 @@ CondStmtList: CondStmt CondStmtList {$1->left = $2;
 					$$ = $1;}
 				| CondStmt { $$ = $1; }
 
-CondStmt: IF Condition LBRACE StmtList RBRACE; 
-		| IF Condition LBRACE StmtList RBRACE ELSE LBRACE StmtList RBRACE;
+CondStmt: IF Condition LBRACE StmtList RBRACE ELSE LBRACE StmtList RBRACE {printf("RULE: If Then Else Then Statement");};
+ 		| IF Condition LBRACE StmtList RBRACE {printf("RULE: If Then Statement");}; 
+		
 
 Condition: LPAREN MathStatList CompSymbol MathStatList RPAREN;
 
