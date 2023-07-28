@@ -284,7 +284,7 @@ Stmt: AssignStmtList {printf("AssignStmt\n");}
 	| MathStatList {printf("MathStat\n");}
 	| WriteStmtList {printf("WriteStmt\n");}
 	| FuncallStmtList {printf("FuncallStmt\n");}
-	| CondStmt {printf("CondStmt\n");}
+	| CondStmtList {printf("CondStmt\n");}
 
 
 
