@@ -1,0 +1,20 @@
+
+
+#### IR Code ####
+
+T0 = w
+T1 = x
+T2 = y
+T3 = z
+T4 = c
+T5 = m
+T0 = arr
+T0 = arr2
+T10 = 100
+T14 = 'h'
+T15 = 'i'
+T16 = 'm'
+T17 = 'o'
+T18 = 'm'
+output T2
+output T2
