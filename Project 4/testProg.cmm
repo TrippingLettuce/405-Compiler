@@ -1,4 +1,10 @@
+int n;
+int m;
+n = 10;
+m = 5;
+
 if (n > m) {
+   int z;
    z = n * m - n/m;
    write z;
 }

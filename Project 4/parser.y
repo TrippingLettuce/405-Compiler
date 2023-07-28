@@ -95,7 +95,7 @@ int semanticCheckPassed = 1;
 
 Program: DeclList  { $$ = $1;
 					 printf("\n--- Abstract Syntax Tree ---\n\n");
-					 printAST($$,0);
+					 //printAST($$,0);
 					}
 
 ;
@@ -620,8 +620,9 @@ CondStmtList: CondStmt CondStmtList {$1->left = $2;
 					$$ = $1;}
 				| CondStmt { $$ = $1; }
 
-CondStmt: IF Condition LBRACE StmtList RBRACE ELSE LBRACE StmtList RBRACE {printf("RULE: If Then Else Then Statement");};
- 		| IF Condition LBRACE StmtList RBRACE {printf("RULE: If Then Statement");}; 
+CondStmt: IF Condition LBRACE DeclList RBRACE ElseCompt {printf("RULE: If Statement");};
+
+ElseCompt: | ELSE LBRACE DeclList RBRACE;
 		
 
 Condition: LPAREN MathStatList CompSymbol MathStatList RPAREN;
