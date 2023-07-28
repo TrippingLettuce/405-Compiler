@@ -1,0 +1,8 @@
+if (n > m) {
+   z = n * m - n/m;
+   write z;
+}
+else {
+   z = m - n;
+   write z;
+}

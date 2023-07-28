@@ -1,0 +1,1350 @@
+Nonterminals useless in grammar
+
+    FunDeclList
+
+
+Terminals unused in grammar
+
+    WHILE
+    RETURN
+    KEYWORD
+    SINGLE_QOUTE
+    COMMA
+    OR
+
+
+Rules useless in grammar
+
+   65 FunDeclList: ε
+   66            | FunDecl FunDeclList
+   67            | FunDecl
+
+
+Rules useless in parser due to conflicts
+
+   14 ParamDeclList: ParamDecl
+
+   16 ParamDecl: ε
+
+
+State 11 conflicts: 1 shift/reduce
+State 15 conflicts: 4 shift/reduce
+State 17 conflicts: 1 shift/reduce
+State 19 conflicts: 1 shift/reduce
+State 21 conflicts: 2 shift/reduce
+State 23 conflicts: 1 shift/reduce
+State 25 conflicts: 1 shift/reduce, 1 reduce/reduce
+State 48 conflicts: 1 shift/reduce
+State 53 conflicts: 1 shift/reduce, 2 reduce/reduce
+State 60 conflicts: 1 shift/reduce, 1 reduce/reduce
+
+
+Grammar
+
+    0 $accept: Program $end
+
+    1 Program: DeclList
+
+    2 DeclList: Decl DeclList
+    3         | Decl
+
+    4 Decl: FunDecl
+    5     | StmtList
+    6     | VarDecl
+    7     | ArrayDecl
+
+    8 FunDecl: TYPE ID LPAREN ParamDeclList RPAREN Block
+
+    9 FuncallStmtList: FuncallStmt FuncallStmtList
+   10                | FuncallStmt
+
+   11 FuncallStmt: ID LPAREN ParamDeclList RPAREN SEMICOLON
+
+   12 ParamDeclList: ε
+   13              | ParamDecl ParamDeclList
+   14              | ParamDecl
+
+   15 ParamDecl: TYPE ID
+   16          | ε
+
+   17 Block: LBRACE FunBlock RBRACE
+
+   18 FunBlock: ArrayDeclList
+   19         | VarDeclList
+   20         | StmtList
+
+   21 VarDeclList: VarDecl VarDeclList
+   22            | VarDecl
+
+   23 VarDecl: TYPE ID SEMICOLON
+
+   24 ArrayDeclList: ArrayDecl ArrayDeclList
+   25              | ArrayDecl
+
+   26 ArrayDecl: TYPE ID LBRACKET NUMBER RBRACKET SEMICOLON
+
+   27 StmtList: Stmt StmtList
+   28         | Stmt
+
+   29 Stmt: AssignStmtList
+   30     | MathStatList
+   31     | WriteStmtList
+   32     | FuncallStmtList
+   33     | CondStmtList
+
+   34 AssignStmtList: AssignStmt AssignStmtList
+   35               | AssignStmt
+
+   36 AssignStmt: ID LBRACKET NUMBER RBRACKET EQ NUMBER SEMICOLON
+   37           | ID LBRACKET NUMBER RBRACKET EQ CHAR SEMICOLON
+   38           | ID EQ CHAR SEMICOLON
+   39           | ID EQ NUMBER SEMICOLON
+   40           | ID EQ MathStat SEMICOLON
+
+   41 WriteStmtList: WriteStmt WriteStmtList
+   42              | WriteStmt
+
+   43 WriteStmt: WRITE ID SEMICOLON
+
+   44 BinOp: ADD
+   45      | SUB
+   46      | MULTIPLY
+   47      | DIV
+
+   48 MathStatList: MathStat MathStatList
+   49             | MathStat
+
+   50 MathStat: NUMBER BinOp MathStat
+   51         | ID BinOp MathStat
+   52         | NUMBER
+   53         | ID
+
+   54 CondStmtList: CondStmt CondStmtList
+   55             | CondStmt
+
+   56 CondStmt: IF Condition LBRACE StmtList RBRACE ELSE LBRACE StmtList RBRACE
+   57         | IF Condition LBRACE StmtList RBRACE
+
+   58 Condition: LPAREN MathStatList CompSymbol MathStatList RPAREN
+
+   59 CompSymbol: LSS
+   60           | GTR
+   61           | LEQ
+   62           | GEQ
+   63           | DEQ
+   64           | NEQ
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    ID <string> (258) 8 11 15 23 26 36 37 38 39 40 43 51 53
+    WRITE <string> (259) 43
+    IF <string> (260) 56 57
+    ELSE <string> (261) 56
+    WHILE <string> (262)
+    RETURN <string> (263)
+    TYPE <string> (264) 8 15 23 26
+    KEYWORD <string> (265)
+    NUMBER <string> (266) 26 36 37 39 50 52
+    CHAR <string> (267) 37 38
+    SINGLE_QOUTE <char> (268)
+    SEMICOLON <char> (269) 11 23 26 36 37 38 39 40 43
+    COMMA <char> (270)
+    EQ <char> (271) 36 37 38 39 40
+    OR <char> (272)
+    LSS <char> (273) 59
+    GTR <char> (274) 60
+    LEQ <char> (275) 61
+    GEQ <char> (276) 62
+    LPAREN <char> (277) 8 11 58
+    RPAREN <char> (278) 8 11 58
+    LBRACE <char> (279) 17 56 57
+    RBRACE <char> (280) 17 56 57
+    LBRACKET <char> (281) 26 36 37
+    RBRACKET <char> (282) 26 36 37
+    ADD <char> (283) 44
+    SUB <char> (284) 45
+    MULTIPLY <char> (285) 46
+    DIV <char> (286) 47
+    DEQ <char> (287) 63
+    NEQ <char> (288) 64
+
+
+Nonterminals, with rules where they appear
+
+    $accept (34)
+        on left: 0
+    Program <ast> (35)
+        on left: 1
+        on right: 0
+    DeclList <ast> (36)
+        on left: 2 3
+        on right: 1 2
+    Decl <ast> (37)
+        on left: 4 5 6 7
+        on right: 2 3
+    FunDecl <ast> (38)
+        on left: 8
+        on right: 4
+    FuncallStmtList <ast> (39)
+        on left: 9 10
+        on right: 9 32
+    FuncallStmt <ast> (40)
+        on left: 11
+        on right: 9 10
+    ParamDeclList <ast> (41)
+        on left: 12 13 14
+        on right: 8 11 13
+    ParamDecl <ast> (42)
+        on left: 15 16
+        on right: 13 14
+    Block <ast> (43)
+        on left: 17
+        on right: 8
+    FunBlock (44)
+        on left: 18 19 20
+        on right: 17
+    VarDeclList <ast> (45)
+        on left: 21 22
+        on right: 19 21
+    VarDecl <ast> (46)
+        on left: 23
+        on right: 6 21 22
+    ArrayDeclList <ast> (47)
+        on left: 24 25
+        on right: 18 24
+    ArrayDecl <ast> (48)
+        on left: 26
+        on right: 7 24 25
+    StmtList <ast> (49)
+        on left: 27 28
+        on right: 5 20 27 56 57
+    Stmt <ast> (50)
+        on left: 29 30 31 32 33
+        on right: 27 28
+    AssignStmtList <ast> (51)
+        on left: 34 35
+        on right: 29 34
+    AssignStmt <ast> (52)
+        on left: 36 37 38 39 40
+        on right: 34 35
+    WriteStmtList <ast> (53)
+        on left: 41 42
+        on right: 31 41
+    WriteStmt <ast> (54)
+        on left: 43
+        on right: 41 42
+    BinOp (55)
+        on left: 44 45 46 47
+        on right: 50 51
+    MathStatList <ast> (56)
+        on left: 48 49
+        on right: 30 48 58
+    MathStat <ast> (57)
+        on left: 50 51 52 53
+        on right: 40 48 49 50 51
+    CondStmtList <ast> (58)
+        on left: 54 55
+        on right: 33 54
+    CondStmt <ast> (59)
+        on left: 56 57
+        on right: 54 55
+    Condition (60)
+        on left: 58
+        on right: 56 57
+    CompSymbol <ast> (61)
+        on left: 59 60 61 62 63 64
+        on right: 58
+
+
+State 0
+
+    0 $accept: • Program $end
+
+    ID      shift, and go to state 1
+    WRITE   shift, and go to state 2
+    IF      shift, and go to state 3
+    TYPE    shift, and go to state 4
+    NUMBER  shift, and go to state 5
+
+    Program          go to state 6
+    DeclList         go to state 7
+    Decl             go to state 8
+    FunDecl          go to state 9
+    FuncallStmtList  go to state 10
+    FuncallStmt      go to state 11
+    VarDecl          go to state 12
+    ArrayDecl        go to state 13
+    StmtList         go to state 14
+    Stmt             go to state 15
+    AssignStmtList   go to state 16
+    AssignStmt       go to state 17
+    WriteStmtList    go to state 18
+    WriteStmt        go to state 19
+    MathStatList     go to state 20
+    MathStat         go to state 21
+    CondStmtList     go to state 22
+    CondStmt         go to state 23
+
+
+State 1
+
+   11 FuncallStmt: ID • LPAREN ParamDeclList RPAREN SEMICOLON
+   36 AssignStmt: ID • LBRACKET NUMBER RBRACKET EQ NUMBER SEMICOLON
+   37           | ID • LBRACKET NUMBER RBRACKET EQ CHAR SEMICOLON
+   38           | ID • EQ CHAR SEMICOLON
+   39           | ID • EQ NUMBER SEMICOLON
+   40           | ID • EQ MathStat SEMICOLON
+   51 MathStat: ID • BinOp MathStat
+   53         | ID •
+
+    EQ        shift, and go to state 24
+    LPAREN    shift, and go to state 25
+    LBRACKET  shift, and go to state 26
+    ADD       shift, and go to state 27
+    SUB       shift, and go to state 28
+    MULTIPLY  shift, and go to state 29
+    DIV       shift, and go to state 30
+
+    $default  reduce using rule 53 (MathStat)
+
+    BinOp  go to state 31
+
+
+State 2
+
+   43 WriteStmt: WRITE • ID SEMICOLON
+
+    ID  shift, and go to state 32
+
+
+State 3
+
+   56 CondStmt: IF • Condition LBRACE StmtList RBRACE ELSE LBRACE StmtList RBRACE
+   57         | IF • Condition LBRACE StmtList RBRACE
+
+    LPAREN  shift, and go to state 33
+
+    Condition  go to state 34
+
+
+State 4
+
+    8 FunDecl: TYPE • ID LPAREN ParamDeclList RPAREN Block
+   23 VarDecl: TYPE • ID SEMICOLON
+   26 ArrayDecl: TYPE • ID LBRACKET NUMBER RBRACKET SEMICOLON
+
+    ID  shift, and go to state 35
+
+
+State 5
+
+   50 MathStat: NUMBER • BinOp MathStat
+   52         | NUMBER •
+
+    ADD       shift, and go to state 27
+    SUB       shift, and go to state 28
+    MULTIPLY  shift, and go to state 29
+    DIV       shift, and go to state 30
+
+    $default  reduce using rule 52 (MathStat)
+
+    BinOp  go to state 36
+
+
+State 6
+
+    0 $accept: Program • $end
+
+    $end  shift, and go to state 37
+
+
+State 7
+
+    1 Program: DeclList •
+
+    $default  reduce using rule 1 (Program)
+
+
+State 8
+
+    2 DeclList: Decl • DeclList
+    3         | Decl •
+
+    ID      shift, and go to state 1
+    WRITE   shift, and go to state 2
+    IF      shift, and go to state 3
+    TYPE    shift, and go to state 4
+    NUMBER  shift, and go to state 5
+
+    $default  reduce using rule 3 (DeclList)
+
+    DeclList         go to state 38
+    Decl             go to state 8
+    FunDecl          go to state 9
+    FuncallStmtList  go to state 10
+    FuncallStmt      go to state 11
+    VarDecl          go to state 12
+    ArrayDecl        go to state 13
+    StmtList         go to state 14
+    Stmt             go to state 15
+    AssignStmtList   go to state 16
+    AssignStmt       go to state 17
+    WriteStmtList    go to state 18
+    WriteStmt        go to state 19
+    MathStatList     go to state 20
+    MathStat         go to state 21
+    CondStmtList     go to state 22
+    CondStmt         go to state 23
+
+
+State 9
+
+    4 Decl: FunDecl •
+
+    $default  reduce using rule 4 (Decl)
+
+
+State 10
+
+   32 Stmt: FuncallStmtList •
+
+    $default  reduce using rule 32 (Stmt)
+
+
+State 11
+
+    9 FuncallStmtList: FuncallStmt • FuncallStmtList
+   10                | FuncallStmt •
+
+    ID  shift, and go to state 39
+
+    ID        [reduce using rule 10 (FuncallStmtList)]
+    $default  reduce using rule 10 (FuncallStmtList)
+
+    FuncallStmtList  go to state 40
+    FuncallStmt      go to state 11
+
+
+State 12
+
+    6 Decl: VarDecl •
+
+    $default  reduce using rule 6 (Decl)
+
+
+State 13
+
+    7 Decl: ArrayDecl •
+
+    $default  reduce using rule 7 (Decl)
+
+
+State 14
+
+    5 Decl: StmtList •
+
+    $default  reduce using rule 5 (Decl)
+
+
+State 15
+
+   27 StmtList: Stmt • StmtList
+   28         | Stmt •
+
+    ID      shift, and go to state 1
+    WRITE   shift, and go to state 2
+    IF      shift, and go to state 3
+    NUMBER  shift, and go to state 5
+
+    ID        [reduce using rule 28 (StmtList)]
+    WRITE     [reduce using rule 28 (StmtList)]
+    IF        [reduce using rule 28 (StmtList)]
+    NUMBER    [reduce using rule 28 (StmtList)]
+    $default  reduce using rule 28 (StmtList)
+
+    FuncallStmtList  go to state 10
+    FuncallStmt      go to state 11
+    StmtList         go to state 41
+    Stmt             go to state 15
+    AssignStmtList   go to state 16
+    AssignStmt       go to state 17
+    WriteStmtList    go to state 18
+    WriteStmt        go to state 19
+    MathStatList     go to state 20
+    MathStat         go to state 21
+    CondStmtList     go to state 22
+    CondStmt         go to state 23
+
+
+State 16
+
+   29 Stmt: AssignStmtList •
+
+    $default  reduce using rule 29 (Stmt)
+
+
+State 17
+
+   34 AssignStmtList: AssignStmt • AssignStmtList
+   35               | AssignStmt •
+
+    ID  shift, and go to state 42
+
+    ID        [reduce using rule 35 (AssignStmtList)]
+    $default  reduce using rule 35 (AssignStmtList)
+
+    AssignStmtList  go to state 43
+    AssignStmt      go to state 17
+
+
+State 18
+
+   31 Stmt: WriteStmtList •
+
+    $default  reduce using rule 31 (Stmt)
+
+
+State 19
+
+   41 WriteStmtList: WriteStmt • WriteStmtList
+   42              | WriteStmt •
+
+    WRITE  shift, and go to state 2
+
+    WRITE     [reduce using rule 42 (WriteStmtList)]
+    $default  reduce using rule 42 (WriteStmtList)
+
+    WriteStmtList  go to state 44
+    WriteStmt      go to state 19
+
+
+State 20
+
+   30 Stmt: MathStatList •
+
+    $default  reduce using rule 30 (Stmt)
+
+
+State 21
+
+   48 MathStatList: MathStat • MathStatList
+   49             | MathStat •
+
+    ID      shift, and go to state 45
+    NUMBER  shift, and go to state 5
+
+    ID        [reduce using rule 49 (MathStatList)]
+    NUMBER    [reduce using rule 49 (MathStatList)]
+    $default  reduce using rule 49 (MathStatList)
+
+    MathStatList  go to state 46
+    MathStat      go to state 21
+
+
+State 22
+
+   33 Stmt: CondStmtList •
+
+    $default  reduce using rule 33 (Stmt)
+
+
+State 23
+
+   54 CondStmtList: CondStmt • CondStmtList
+   55             | CondStmt •
+
+    IF  shift, and go to state 3
+
+    IF        [reduce using rule 55 (CondStmtList)]
+    $default  reduce using rule 55 (CondStmtList)
+
+    CondStmtList  go to state 47
+    CondStmt      go to state 23
+
+
+State 24
+
+   38 AssignStmt: ID EQ • CHAR SEMICOLON
+   39           | ID EQ • NUMBER SEMICOLON
+   40           | ID EQ • MathStat SEMICOLON
+
+    ID      shift, and go to state 45
+    NUMBER  shift, and go to state 48
+    CHAR    shift, and go to state 49
+
+    MathStat  go to state 50
+
+
+State 25
+
+   11 FuncallStmt: ID LPAREN • ParamDeclList RPAREN SEMICOLON
+
+    TYPE  shift, and go to state 51
+
+    TYPE      [reduce using rule 16 (ParamDecl)]
+    RPAREN    reduce using rule 12 (ParamDeclList)
+    RPAREN    [reduce using rule 16 (ParamDecl)]
+    $default  reduce using rule 12 (ParamDeclList)
+
+    ParamDeclList  go to state 52
+    ParamDecl      go to state 53
+
+
+State 26
+
+   36 AssignStmt: ID LBRACKET • NUMBER RBRACKET EQ NUMBER SEMICOLON
+   37           | ID LBRACKET • NUMBER RBRACKET EQ CHAR SEMICOLON
+
+    NUMBER  shift, and go to state 54
+
+
+State 27
+
+   44 BinOp: ADD •
+
+    $default  reduce using rule 44 (BinOp)
+
+
+State 28
+
+   45 BinOp: SUB •
+
+    $default  reduce using rule 45 (BinOp)
+
+
+State 29
+
+   46 BinOp: MULTIPLY •
+
+    $default  reduce using rule 46 (BinOp)
+
+
+State 30
+
+   47 BinOp: DIV •
+
+    $default  reduce using rule 47 (BinOp)
+
+
+State 31
+
+   51 MathStat: ID BinOp • MathStat
+
+    ID      shift, and go to state 45
+    NUMBER  shift, and go to state 5
+
+    MathStat  go to state 55
+
+
+State 32
+
+   43 WriteStmt: WRITE ID • SEMICOLON
+
+    SEMICOLON  shift, and go to state 56
+
+
+State 33
+
+   58 Condition: LPAREN • MathStatList CompSymbol MathStatList RPAREN
+
+    ID      shift, and go to state 45
+    NUMBER  shift, and go to state 5
+
+    MathStatList  go to state 57
+    MathStat      go to state 21
+
+
+State 34
+
+   56 CondStmt: IF Condition • LBRACE StmtList RBRACE ELSE LBRACE StmtList RBRACE
+   57         | IF Condition • LBRACE StmtList RBRACE
+
+    LBRACE  shift, and go to state 58
+
+
+State 35
+
+    8 FunDecl: TYPE ID • LPAREN ParamDeclList RPAREN Block
+   23 VarDecl: TYPE ID • SEMICOLON
+   26 ArrayDecl: TYPE ID • LBRACKET NUMBER RBRACKET SEMICOLON
+
+    SEMICOLON  shift, and go to state 59
+    LPAREN     shift, and go to state 60
+    LBRACKET   shift, and go to state 61
+
+
+State 36
+
+   50 MathStat: NUMBER BinOp • MathStat
+
+    ID      shift, and go to state 45
+    NUMBER  shift, and go to state 5
+
+    MathStat  go to state 62
+
+
+State 37
+
+    0 $accept: Program $end •
+
+    $default  accept
+
+
+State 38
+
+    2 DeclList: Decl DeclList •
+
+    $default  reduce using rule 2 (DeclList)
+
+
+State 39
+
+   11 FuncallStmt: ID • LPAREN ParamDeclList RPAREN SEMICOLON
+
+    LPAREN  shift, and go to state 25
+
+
+State 40
+
+    9 FuncallStmtList: FuncallStmt FuncallStmtList •
+
+    $default  reduce using rule 9 (FuncallStmtList)
+
+
+State 41
+
+   27 StmtList: Stmt StmtList •
+
+    $default  reduce using rule 27 (StmtList)
+
+
+State 42
+
+   36 AssignStmt: ID • LBRACKET NUMBER RBRACKET EQ NUMBER SEMICOLON
+   37           | ID • LBRACKET NUMBER RBRACKET EQ CHAR SEMICOLON
+   38           | ID • EQ CHAR SEMICOLON
+   39           | ID • EQ NUMBER SEMICOLON
+   40           | ID • EQ MathStat SEMICOLON
+
+    EQ        shift, and go to state 24
+    LBRACKET  shift, and go to state 26
+
+
+State 43
+
+   34 AssignStmtList: AssignStmt AssignStmtList •
+
+    $default  reduce using rule 34 (AssignStmtList)
+
+
+State 44
+
+   41 WriteStmtList: WriteStmt WriteStmtList •
+
+    $default  reduce using rule 41 (WriteStmtList)
+
+
+State 45
+
+   51 MathStat: ID • BinOp MathStat
+   53         | ID •
+
+    ADD       shift, and go to state 27
+    SUB       shift, and go to state 28
+    MULTIPLY  shift, and go to state 29
+    DIV       shift, and go to state 30
+
+    $default  reduce using rule 53 (MathStat)
+
+    BinOp  go to state 31
+
+
+State 46
+
+   48 MathStatList: MathStat MathStatList •
+
+    $default  reduce using rule 48 (MathStatList)
+
+
+State 47
+
+   54 CondStmtList: CondStmt CondStmtList •
+
+    $default  reduce using rule 54 (CondStmtList)
+
+
+State 48
+
+   39 AssignStmt: ID EQ NUMBER • SEMICOLON
+   50 MathStat: NUMBER • BinOp MathStat
+   52         | NUMBER •
+
+    SEMICOLON  shift, and go to state 63
+    ADD        shift, and go to state 27
+    SUB        shift, and go to state 28
+    MULTIPLY   shift, and go to state 29
+    DIV        shift, and go to state 30
+
+    SEMICOLON  [reduce using rule 52 (MathStat)]
+
+    BinOp  go to state 36
+
+
+State 49
+
+   38 AssignStmt: ID EQ CHAR • SEMICOLON
+
+    SEMICOLON  shift, and go to state 64
+
+
+State 50
+
+   40 AssignStmt: ID EQ MathStat • SEMICOLON
+
+    SEMICOLON  shift, and go to state 65
+
+
+State 51
+
+   15 ParamDecl: TYPE • ID
+
+    ID  shift, and go to state 66
+
+
+State 52
+
+   11 FuncallStmt: ID LPAREN ParamDeclList • RPAREN SEMICOLON
+
+    RPAREN  shift, and go to state 67
+
+
+State 53
+
+   13 ParamDeclList: ParamDecl • ParamDeclList
+   14              | ParamDecl •
+
+    TYPE  shift, and go to state 51
+
+    TYPE      [reduce using rule 16 (ParamDecl)]
+    RPAREN    reduce using rule 12 (ParamDeclList)
+    RPAREN    [reduce using rule 14 (ParamDeclList)]
+    RPAREN    [reduce using rule 16 (ParamDecl)]
+    $default  reduce using rule 12 (ParamDeclList)
+
+    ParamDeclList  go to state 68
+    ParamDecl      go to state 53
+
+
+State 54
+
+   36 AssignStmt: ID LBRACKET NUMBER • RBRACKET EQ NUMBER SEMICOLON
+   37           | ID LBRACKET NUMBER • RBRACKET EQ CHAR SEMICOLON
+
+    RBRACKET  shift, and go to state 69
+
+
+State 55
+
+   51 MathStat: ID BinOp MathStat •
+
+    $default  reduce using rule 51 (MathStat)
+
+
+State 56
+
+   43 WriteStmt: WRITE ID SEMICOLON •
+
+    $default  reduce using rule 43 (WriteStmt)
+
+
+State 57
+
+   58 Condition: LPAREN MathStatList • CompSymbol MathStatList RPAREN
+
+    LSS  shift, and go to state 70
+    GTR  shift, and go to state 71
+    LEQ  shift, and go to state 72
+    GEQ  shift, and go to state 73
+    DEQ  shift, and go to state 74
+    NEQ  shift, and go to state 75
+
+    CompSymbol  go to state 76
+
+
+State 58
+
+   56 CondStmt: IF Condition LBRACE • StmtList RBRACE ELSE LBRACE StmtList RBRACE
+   57         | IF Condition LBRACE • StmtList RBRACE
+
+    ID      shift, and go to state 1
+    WRITE   shift, and go to state 2
+    IF      shift, and go to state 3
+    NUMBER  shift, and go to state 5
+
+    FuncallStmtList  go to state 10
+    FuncallStmt      go to state 11
+    StmtList         go to state 77
+    Stmt             go to state 15
+    AssignStmtList   go to state 16
+    AssignStmt       go to state 17
+    WriteStmtList    go to state 18
+    WriteStmt        go to state 19
+    MathStatList     go to state 20
+    MathStat         go to state 21
+    CondStmtList     go to state 22
+    CondStmt         go to state 23
+
+
+State 59
+
+   23 VarDecl: TYPE ID SEMICOLON •
+
+    $default  reduce using rule 23 (VarDecl)
+
+
+State 60
+
+    8 FunDecl: TYPE ID LPAREN • ParamDeclList RPAREN Block
+
+    TYPE  shift, and go to state 51
+
+    TYPE      [reduce using rule 16 (ParamDecl)]
+    RPAREN    reduce using rule 12 (ParamDeclList)
+    RPAREN    [reduce using rule 16 (ParamDecl)]
+    $default  reduce using rule 12 (ParamDeclList)
+
+    ParamDeclList  go to state 78
+    ParamDecl      go to state 53
+
+
+State 61
+
+   26 ArrayDecl: TYPE ID LBRACKET • NUMBER RBRACKET SEMICOLON
+
+    NUMBER  shift, and go to state 79
+
+
+State 62
+
+   50 MathStat: NUMBER BinOp MathStat •
+
+    $default  reduce using rule 50 (MathStat)
+
+
+State 63
+
+   39 AssignStmt: ID EQ NUMBER SEMICOLON •
+
+    $default  reduce using rule 39 (AssignStmt)
+
+
+State 64
+
+   38 AssignStmt: ID EQ CHAR SEMICOLON •
+
+    $default  reduce using rule 38 (AssignStmt)
+
+
+State 65
+
+   40 AssignStmt: ID EQ MathStat SEMICOLON •
+
+    $default  reduce using rule 40 (AssignStmt)
+
+
+State 66
+
+   15 ParamDecl: TYPE ID •
+
+    $default  reduce using rule 15 (ParamDecl)
+
+
+State 67
+
+   11 FuncallStmt: ID LPAREN ParamDeclList RPAREN • SEMICOLON
+
+    SEMICOLON  shift, and go to state 80
+
+
+State 68
+
+   13 ParamDeclList: ParamDecl ParamDeclList •
+
+    $default  reduce using rule 13 (ParamDeclList)
+
+
+State 69
+
+   36 AssignStmt: ID LBRACKET NUMBER RBRACKET • EQ NUMBER SEMICOLON
+   37           | ID LBRACKET NUMBER RBRACKET • EQ CHAR SEMICOLON
+
+    EQ  shift, and go to state 81
+
+
+State 70
+
+   59 CompSymbol: LSS •
+
+    $default  reduce using rule 59 (CompSymbol)
+
+
+State 71
+
+   60 CompSymbol: GTR •
+
+    $default  reduce using rule 60 (CompSymbol)
+
+
+State 72
+
+   61 CompSymbol: LEQ •
+
+    $default  reduce using rule 61 (CompSymbol)
+
+
+State 73
+
+   62 CompSymbol: GEQ •
+
+    $default  reduce using rule 62 (CompSymbol)
+
+
+State 74
+
+   63 CompSymbol: DEQ •
+
+    $default  reduce using rule 63 (CompSymbol)
+
+
+State 75
+
+   64 CompSymbol: NEQ •
+
+    $default  reduce using rule 64 (CompSymbol)
+
+
+State 76
+
+   58 Condition: LPAREN MathStatList CompSymbol • MathStatList RPAREN
+
+    ID      shift, and go to state 45
+    NUMBER  shift, and go to state 5
+
+    MathStatList  go to state 82
+    MathStat      go to state 21
+
+
+State 77
+
+   56 CondStmt: IF Condition LBRACE StmtList • RBRACE ELSE LBRACE StmtList RBRACE
+   57         | IF Condition LBRACE StmtList • RBRACE
+
+    RBRACE  shift, and go to state 83
+
+
+State 78
+
+    8 FunDecl: TYPE ID LPAREN ParamDeclList • RPAREN Block
+
+    RPAREN  shift, and go to state 84
+
+
+State 79
+
+   26 ArrayDecl: TYPE ID LBRACKET NUMBER • RBRACKET SEMICOLON
+
+    RBRACKET  shift, and go to state 85
+
+
+State 80
+
+   11 FuncallStmt: ID LPAREN ParamDeclList RPAREN SEMICOLON •
+
+    $default  reduce using rule 11 (FuncallStmt)
+
+
+State 81
+
+   36 AssignStmt: ID LBRACKET NUMBER RBRACKET EQ • NUMBER SEMICOLON
+   37           | ID LBRACKET NUMBER RBRACKET EQ • CHAR SEMICOLON
+
+    NUMBER  shift, and go to state 86
+    CHAR    shift, and go to state 87
+
+
+State 82
+
+   58 Condition: LPAREN MathStatList CompSymbol MathStatList • RPAREN
+
+    RPAREN  shift, and go to state 88
+
+
+State 83
+
+   56 CondStmt: IF Condition LBRACE StmtList RBRACE • ELSE LBRACE StmtList RBRACE
+   57         | IF Condition LBRACE StmtList RBRACE •
+
+    ELSE  shift, and go to state 89
+
+    $default  reduce using rule 57 (CondStmt)
+
+
+State 84
+
+    8 FunDecl: TYPE ID LPAREN ParamDeclList RPAREN • Block
+
+    LBRACE  shift, and go to state 90
+
+    Block  go to state 91
+
+
+State 85
+
+   26 ArrayDecl: TYPE ID LBRACKET NUMBER RBRACKET • SEMICOLON
+
+    SEMICOLON  shift, and go to state 92
+
+
+State 86
+
+   36 AssignStmt: ID LBRACKET NUMBER RBRACKET EQ NUMBER • SEMICOLON
+
+    SEMICOLON  shift, and go to state 93
+
+
+State 87
+
+   37 AssignStmt: ID LBRACKET NUMBER RBRACKET EQ CHAR • SEMICOLON
+
+    SEMICOLON  shift, and go to state 94
+
+
+State 88
+
+   58 Condition: LPAREN MathStatList CompSymbol MathStatList RPAREN •
+
+    $default  reduce using rule 58 (Condition)
+
+
+State 89
+
+   56 CondStmt: IF Condition LBRACE StmtList RBRACE ELSE • LBRACE StmtList RBRACE
+
+    LBRACE  shift, and go to state 95
+
+
+State 90
+
+   17 Block: LBRACE • FunBlock RBRACE
+
+    ID      shift, and go to state 1
+    WRITE   shift, and go to state 2
+    IF      shift, and go to state 3
+    TYPE    shift, and go to state 96
+    NUMBER  shift, and go to state 5
+
+    FuncallStmtList  go to state 10
+    FuncallStmt      go to state 11
+    FunBlock         go to state 97
+    VarDeclList      go to state 98
+    VarDecl          go to state 99
+    ArrayDeclList    go to state 100
+    ArrayDecl        go to state 101
+    StmtList         go to state 102
+    Stmt             go to state 15
+    AssignStmtList   go to state 16
+    AssignStmt       go to state 17
+    WriteStmtList    go to state 18
+    WriteStmt        go to state 19
+    MathStatList     go to state 20
+    MathStat         go to state 21
+    CondStmtList     go to state 22
+    CondStmt         go to state 23
+
+
+State 91
+
+    8 FunDecl: TYPE ID LPAREN ParamDeclList RPAREN Block •
+
+    $default  reduce using rule 8 (FunDecl)
+
+
+State 92
+
+   26 ArrayDecl: TYPE ID LBRACKET NUMBER RBRACKET SEMICOLON •
+
+    $default  reduce using rule 26 (ArrayDecl)
+
+
+State 93
+
+   36 AssignStmt: ID LBRACKET NUMBER RBRACKET EQ NUMBER SEMICOLON •
+
+    $default  reduce using rule 36 (AssignStmt)
+
+
+State 94
+
+   37 AssignStmt: ID LBRACKET NUMBER RBRACKET EQ CHAR SEMICOLON •
+
+    $default  reduce using rule 37 (AssignStmt)
+
+
+State 95
+
+   56 CondStmt: IF Condition LBRACE StmtList RBRACE ELSE LBRACE • StmtList RBRACE
+
+    ID      shift, and go to state 1
+    WRITE   shift, and go to state 2
+    IF      shift, and go to state 3
+    NUMBER  shift, and go to state 5
+
+    FuncallStmtList  go to state 10
+    FuncallStmt      go to state 11
+    StmtList         go to state 103
+    Stmt             go to state 15
+    AssignStmtList   go to state 16
+    AssignStmt       go to state 17
+    WriteStmtList    go to state 18
+    WriteStmt        go to state 19
+    MathStatList     go to state 20
+    MathStat         go to state 21
+    CondStmtList     go to state 22
+    CondStmt         go to state 23
+
+
+State 96
+
+   23 VarDecl: TYPE • ID SEMICOLON
+   26 ArrayDecl: TYPE • ID LBRACKET NUMBER RBRACKET SEMICOLON
+
+    ID  shift, and go to state 104
+
+
+State 97
+
+   17 Block: LBRACE FunBlock • RBRACE
+
+    RBRACE  shift, and go to state 105
+
+
+State 98
+
+   19 FunBlock: VarDeclList •
+
+    $default  reduce using rule 19 (FunBlock)
+
+
+State 99
+
+   21 VarDeclList: VarDecl • VarDeclList
+   22            | VarDecl •
+
+    TYPE  shift, and go to state 106
+
+    $default  reduce using rule 22 (VarDeclList)
+
+    VarDeclList  go to state 107
+    VarDecl      go to state 99
+
+
+State 100
+
+   18 FunBlock: ArrayDeclList •
+
+    $default  reduce using rule 18 (FunBlock)
+
+
+State 101
+
+   24 ArrayDeclList: ArrayDecl • ArrayDeclList
+   25              | ArrayDecl •
+
+    TYPE  shift, and go to state 108
+
+    $default  reduce using rule 25 (ArrayDeclList)
+
+    ArrayDeclList  go to state 109
+    ArrayDecl      go to state 101
+
+
+State 102
+
+   20 FunBlock: StmtList •
+
+    $default  reduce using rule 20 (FunBlock)
+
+
+State 103
+
+   56 CondStmt: IF Condition LBRACE StmtList RBRACE ELSE LBRACE StmtList • RBRACE
+
+    RBRACE  shift, and go to state 110
+
+
+State 104
+
+   23 VarDecl: TYPE ID • SEMICOLON
+   26 ArrayDecl: TYPE ID • LBRACKET NUMBER RBRACKET SEMICOLON
+
+    SEMICOLON  shift, and go to state 59
+    LBRACKET   shift, and go to state 61
+
+
+State 105
+
+   17 Block: LBRACE FunBlock RBRACE •
+
+    $default  reduce using rule 17 (Block)
+
+
+State 106
+
+   23 VarDecl: TYPE • ID SEMICOLON
+
+    ID  shift, and go to state 111
+
+
+State 107
+
+   21 VarDeclList: VarDecl VarDeclList •
+
+    $default  reduce using rule 21 (VarDeclList)
+
+
+State 108
+
+   26 ArrayDecl: TYPE • ID LBRACKET NUMBER RBRACKET SEMICOLON
+
+    ID  shift, and go to state 112
+
+
+State 109
+
+   24 ArrayDeclList: ArrayDecl ArrayDeclList •
+
+    $default  reduce using rule 24 (ArrayDeclList)
+
+
+State 110
+
+   56 CondStmt: IF Condition LBRACE StmtList RBRACE ELSE LBRACE StmtList RBRACE •
+
+    $default  reduce using rule 56 (CondStmt)
+
+
+State 111
+
+   23 VarDecl: TYPE ID • SEMICOLON
+
+    SEMICOLON  shift, and go to state 59
+
+
+State 112
+
+   26 ArrayDecl: TYPE ID • LBRACKET NUMBER RBRACKET SEMICOLON
+
+    LBRACKET  shift, and go to state 61
