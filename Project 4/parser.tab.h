@@ -69,22 +69,23 @@ extern int yydebug;
     COMMA = 270,                   /* COMMA  */
     EQ = 271,                      /* EQ  */
     OR = 272,                      /* OR  */
-    LSS = 273,                     /* LSS  */
-    GTR = 274,                     /* GTR  */
-    LEQ = 275,                     /* LEQ  */
-    GEQ = 276,                     /* GEQ  */
-    LPAREN = 277,                  /* LPAREN  */
-    RPAREN = 278,                  /* RPAREN  */
-    LBRACE = 279,                  /* LBRACE  */
-    RBRACE = 280,                  /* RBRACE  */
-    LBRACKET = 281,                /* LBRACKET  */
-    RBRACKET = 282,                /* RBRACKET  */
-    ADD = 283,                     /* ADD  */
-    SUB = 284,                     /* SUB  */
-    MULTIPLY = 285,                /* MULTIPLY  */
-    DIV = 286,                     /* DIV  */
-    DEQ = 287,                     /* DEQ  */
-    NEQ = 288                      /* NEQ  */
+    AND = 273,                     /* AND  */
+    LSS = 274,                     /* LSS  */
+    GTR = 275,                     /* GTR  */
+    LEQ = 276,                     /* LEQ  */
+    GEQ = 277,                     /* GEQ  */
+    LPAREN = 278,                  /* LPAREN  */
+    RPAREN = 279,                  /* RPAREN  */
+    LBRACE = 280,                  /* LBRACE  */
+    RBRACE = 281,                  /* RBRACE  */
+    LBRACKET = 282,                /* LBRACKET  */
+    RBRACKET = 283,                /* RBRACKET  */
+    ADD = 284,                     /* ADD  */
+    SUB = 285,                     /* SUB  */
+    MULTIPLY = 286,                /* MULTIPLY  */
+    DIV = 287,                     /* DIV  */
+    DEQ = 288,                     /* DEQ  */
+    NEQ = 289                      /* NEQ  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -100,7 +101,7 @@ union YYSTYPE
 	char* string;
 	struct AST* ast;
 
-#line 104 "parser.tab.h"
+#line 105 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -60,6 +60,7 @@ int semanticCheckPassed = 1;
 %token <char> COMMA
 %token <char> EQ 
 %token <char> OR
+%token <char> AND
 %token <char> LSS
 %token <char> GTR
 %token <char> LEQ
@@ -95,7 +96,7 @@ int semanticCheckPassed = 1;
 
 Program: DeclList  { $$ = $1;
 					 printf("\n--- Abstract Syntax Tree ---\n\n");
-					 //printAST($$,0);
+					 printAST($$,0);
 					}
 
 ;
@@ -166,6 +167,25 @@ FuncallStmt: ID LPAREN ParamDeclList RPAREN SEMICOLON {printf("\nRULE: Function 
 								
 			};
 
+CondStmtList: CondStmt CondStmtList {$1->left = $2;
+					$$ = $1;}
+				| CondStmt { $$ = $1; }
+
+CondStmt: IF LPAREN Condition RPAREN Block ElseCompt {printf("RULE: If Statement");
+};
+
+ElseCompt: %empty | ELSE Block
+		
+
+Condition: MathStatList CompSymbol MathStatList BoolCompt 
+			| MathStatList BoolCompt /* if (1) or if (x) */;
+
+CompSymbol: LSS | GTR | LEQ | GEQ | DEQ | NEQ
+
+BoolCompt: %empty | BoolOp Condition
+
+BoolOp: AND | OR
+
 ParamDeclList: %empty
  			| ParamDecl ParamDeclList {$1->left = $2;
 							  $$ = $1;}
@@ -199,9 +219,7 @@ ParamDecl: TYPE ID {printf("\nRULE: Variable declaration\n");
 Block:	LBRACE FunBlock RBRACE
 
 
-FunBlock: ArrayDeclList
-		| VarDeclList
-		| StmtList
+FunBlock: DeclList
 
 VarDeclList:	VarDecl VarDeclList {$1->left = $2;
 							  $$ = $1;}
@@ -287,7 +305,7 @@ Stmt: AssignStmtList {printf("AssignStmt\n");}
 	| MathStatList {printf("MathStat\n");}
 	| WriteStmtList {printf("WriteStmt\n");}
 	| FuncallStmtList {printf("FuncallStmt\n");}
-	| CondStmtList {printf("CondStmt\n");}
+	| CondStmtList {printf(" Condition Statement\n");}
 
 
 
@@ -529,7 +547,8 @@ AssignStmt:	ID LBRACKET NUMBER RBRACKET EQ NUMBER SEMICOLON { printf("\nRULE: Se
 						}
 					sprintf(id2, "%s", mathVal);	
 					$$ = AST_assignment("=",$1,mathVal);
-					emitMIPSConstantIntAssignment(id1, mathVal, numid);	
+					emitMIPSConstantIntAssignment(id1, mathVal, numid);
+					emitIRAssignment(id1, mathVal, numid);	
 					
 					showVarSymTable();
 					printOpArr();
@@ -616,18 +635,7 @@ MathStat:	NUMBER BinOp MathStat	{
 					addIDNumArr(id1);	 
 					};
 
-CondStmtList: CondStmt CondStmtList {$1->left = $2;
-					$$ = $1;}
-				| CondStmt { $$ = $1; }
 
-CondStmt: IF Condition LBRACE DeclList RBRACE ElseCompt {printf("RULE: If Statement");};
-
-ElseCompt: | ELSE LBRACE DeclList RBRACE;
-		
-
-Condition: LPAREN MathStatList CompSymbol MathStatList RPAREN;
-
-CompSymbol: LSS | GTR | LEQ | GEQ | DEQ | NEQ;
 %%
 
 int main(int argc, char**argv)

@@ -141,6 +141,12 @@ ws          {delim}+
 		 return OR;
 		}
 
+"&&"	{chars++;
+		 printf("%s : AND\n", yytext);
+		 yylval.string = strdup(yytext); 
+		 return AND;
+		}
+
 "<"	{chars++;
 		 printf("%s : LSS\n", yytext);
 		 yylval.string = strdup(yytext); 

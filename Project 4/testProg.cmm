@@ -2,13 +2,13 @@ int n;
 int m;
 n = 10;
 m = 5;
+float z;
 
-if (n > m) {
-   int z;
+if (n > 5 && n < 20) {
    z = n * m - n/m;
    write z;
 }
 else {
-   z = m - n;
+   z = n - m;
    write z;
 }
