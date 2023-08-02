@@ -78,24 +78,6 @@ CHARID \'([^\\\'']|\\.)*\'
      
 }
 
-"if"  {
-	words++; chars += strlen(yytext);
-	printf("%s : IF\n", yytext);
-    yylval.string = strdup(yytext);
-    return IF;
-     
-}
-
-"else"  {
-	words++; chars += strlen(yytext);
-	printf("%s : ELSE\n", yytext);
-    yylval.string = strdup(yytext);
-    return ELSE;
-     
-}
-
-
-
 "write"  {
 	words++; chars += strlen(yytext);
 	printf("%s : WRITE STATEMENT\n", yytext);
@@ -109,6 +91,22 @@ CHARID \'([^\\\'']|\\.)*\'
 	printf("%s : RETURN STATEMENT\n", yytext);
     yylval.string = strdup(yytext);
     return RETURN;
+     
+}
+
+"if"  {
+	words++; chars += strlen(yytext);
+	printf("%s : IF\n", yytext);
+    yylval.string = strdup(yytext);
+    return IF;
+     
+}
+
+"else"  {
+	words++; chars += strlen(yytext);
+	printf("%s : ELSE\n", yytext);
+    yylval.string = strdup(yytext);
+    return ELSE;
      
 }
 
