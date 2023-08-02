@@ -51,6 +51,7 @@ char num2[50]; // Second operand.
 int runIfElseBlock = 0; // Indicates whether to execute the 'if' block (1) or the 'else' block (0).
 int ifElseCurrentBlock = 0; // Shows current active block: 'if' block (1) or 'else' block (0).
 int inElse = 0; // Flag indicating which construct to update: 'if-else' (0)
+int BooleanOpt = 0; // Flag for Boolean Opeators. If none: 0, if && = -1, if || = 1.
 
 int registerCounter = 0; // Tracks the number of registers used for parameters in MIPS.
 
@@ -89,7 +90,9 @@ char scope[50] = "G"; // Initialize the scope as 'global'.
 %token <string> LEQ 
 %token <string> GEQ 
 %token <string> LT 
-%token <string> GT 
+%token <string> GT
+%token <string> AND 
+%token <string> OR
 %token <string> EQ 
 %token <string> ADD
 %token <string> MULTIPLY
@@ -112,7 +115,7 @@ char scope[50] = "G"; // Initialize the scope as 'global'.
 
 %printer { fprintf(yyoutput, "%s", $$); } ID;
 
-%type <ast> Program DeclList Decl VarDecl FuncDecl ParamDeclList IfStmt ElseStmt Condition ParamDecl ArgDeclList ArgDecl Block BlockDeclList BlockDecl StmtList Expr IDEQExpr MathStmt Math Operator CompOperator ArrDecl
+%type <ast> Program DeclList Decl VarDecl FuncDecl ParamDeclList IfStmt ElseStmt Condition ParamDecl ArgDeclList ArgDecl Block BlockDeclList BlockDecl StmtList Expr IDEQExpr MathStmt Math Operator CompOperator ArrDecl BoolOpStmt
 
 %start Program
 
@@ -1726,23 +1729,26 @@ IfStmt: IF {inElse = UPDATE_IF_ELSE;} LPAREN Condition RPAREN { printf(BORANGE "
 							}
 							runIfElseBlock = 0; // reset the pass variable
 							ifElseCurrentBlock = 0; // reset the current variable
+							BooleanOpt = 0;
 
 }
 
 ElseStmt: | ELSE Block
 
-Condition: NUMBER CompOperator NUMBER {
+Condition: NUMBER CompOperator NUMBER BoolOpStmt {
 
 				int temp1, temp2;
 				temp1 = atoi($1);
 				temp2 = atoi($3);
 
 				if (compareIntOp($2, temp1, temp2)) {
-					runIfElseBlock = 1;
+					if (BooleanOpt != -1) {
+						runIfElseBlock = 1;
+					}	
 				}
 
 
-		} | ID CompOperator ID {
+		} | ID CompOperator ID BoolOpStmt {
 
 				char type1[50];
 				char type2[50];
@@ -1793,7 +1799,9 @@ Condition: NUMBER CompOperator NUMBER {
 					//printf(BORANGE "temp1: %d\ntemp2: %d\n" RESET, temp1, temp2);
 
 					if (compareIntOp($2, temp1, temp2) && inElse == UPDATE_IF_ELSE) {
-					runIfElseBlock = 1;
+						if (BooleanOpt != -1) {
+							runIfElseBlock = 1;
+						}
 					}
 				}
 				else if (!typeFloat) { // if type is float
@@ -1803,7 +1811,9 @@ Condition: NUMBER CompOperator NUMBER {
 					//printf(BORANGE "temp1: %f\ntemp2: %f\n" RESET, temp1, temp2);
 
 					if (compareFloatOp($2, temp1, temp2) && inElse == UPDATE_IF_ELSE) {
-					runIfElseBlock = 1;
+						if (BooleanOpt != -1) {
+							runIfElseBlock = 1;
+						}
 					}
 				}
 				else if (!typeChar) { // if type is char
@@ -1813,12 +1823,14 @@ Condition: NUMBER CompOperator NUMBER {
 					//printf(BORANGE "temp1: %s\ntemp2: %s\n" RESET, temp1, temp2);
 
 					if (compareCharOp($2, temp1, temp2) && inElse == UPDATE_IF_ELSE) {
-					runIfElseBlock = 1;
+						if (BooleanOpt != -1) {
+							runIfElseBlock = 1;
+						}
 					}
 				}
 
 
-		} | ID CompOperator NUMBER {
+		} | ID CompOperator NUMBER BoolOpStmt {
 
 				// is the variable intitalized as a value?
 				int check;
@@ -1835,11 +1847,22 @@ Condition: NUMBER CompOperator NUMBER {
 				temp2 = atoi($3);
 
 				if (compareIntOp($2, temp1, temp2)) {
-					runIfElseBlock = 1;
+					if (BooleanOpt != -1) {
+						runIfElseBlock = 1;
+					} else {
+						if (runIfElseBlock != 1) {
+							runIfElseBlock = 0;
+						}
+					}
+				} else {
+					if (BooleanOpt == -1) {
+						runIfElseBlock = 0;
+						printf("THIS IS AN AND STATEMENT!!!!!!!!!!!!!!!!!!!!!");
+					}
 				}
 
 
-		} | FLOATNUM CompOperator FLOATNUM {
+		} | FLOATNUM CompOperator FLOATNUM BoolOpStmt {
 
 				float temp1, temp2;
 				temp1 = atof($1);
@@ -1847,10 +1870,12 @@ Condition: NUMBER CompOperator NUMBER {
 				//printf(BORANGE "temp1: %f\ntemp2: %f\n" RESET, temp1, temp2);
 
 				if (compareFloatOp($2, temp1, temp2) && inElse == UPDATE_IF_ELSE) {
-					runIfElseBlock = 1;
+					if (BooleanOpt != -1) {
+						runIfElseBlock = 1;
+					}
 				}
 
-		} | CHARID CompOperator CHARID {
+		} | CHARID CompOperator CHARID BoolOpStmt {
 
 				char temp1[50], temp2[50];
 				strcpy(temp1, $1);
@@ -1858,12 +1883,12 @@ Condition: NUMBER CompOperator NUMBER {
 				//printf(BORANGE "temp1: %s\ntemp2: %s\n" RESET, temp1, temp2);
 
 				if (compareCharOp($2, temp1, temp2) && inElse == UPDATE_IF_ELSE) {
-					runIfElseBlock = 1;
+					if (BooleanOpt != -1) {
+						runIfElseBlock = 1;
+					}
 				}
 
 		}
-
-
 
 ConditionVar:	NUMBER {
 
@@ -1874,6 +1899,10 @@ ConditionVar:	NUMBER {
 			} | CHARID {
 
 			}
+
+BoolOpStmt: %empty {}
+			| AND Condition {BooleanOpt = -1;}
+			| OR Condition {BooleanOpt = 1;}
 
 %%
 

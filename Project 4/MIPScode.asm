@@ -9,7 +9,8 @@
 	Gcarr2: .asciiz "m"
 	Gcarr3: .asciiz "o"
 	Gcarr4: .asciiz "m"
-	TEMP0: .asciiz "x is positive"
+	TEMP0: .asciiz "no change"
+	TEMP1: .asciiz "x is positive or less than 10"
 
 .text
 main:
@@ -37,6 +38,10 @@ main:
 
 	li $v0, 4       # call code to print an string
 	la $a0, TEMP0   # print stored string from above
+	syscall
+
+	li $v0, 4       # call code to print an string
+	la $a0, TEMP1   # print stored string from above
 	syscall
 
 	# -----------------------

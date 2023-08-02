@@ -5,10 +5,10 @@ Nonterminals useless in grammar
 
 Rules useless in grammar
 
-   98 ConditionVar: NUMBER
-   99             | ID
-  100             | FLOATNUM
-  101             | CHARID
+  101 ConditionVar: NUMBER
+  102             | ID
+  103             | FLOATNUM
+  104             | CHARID
 
 
 Rules useless in parser due to conflicts
@@ -27,7 +27,7 @@ State 99 conflicts: 11 reduce/reduce
 State 108 conflicts: 2 shift/reduce
 State 156 conflicts: 1 shift/reduce
 State 159 conflicts: 8 shift/reduce
-State 174 conflicts: 8 shift/reduce, 1 reduce/reduce
+State 181 conflicts: 8 shift/reduce, 1 reduce/reduce
 
 
 Grammar
@@ -158,11 +158,15 @@ Grammar
    91 ElseStmt: ε
    92         | ELSE Block
 
-   93 Condition: NUMBER CompOperator NUMBER
-   94          | ID CompOperator ID
-   95          | ID CompOperator NUMBER
-   96          | FLOATNUM CompOperator FLOATNUM
-   97          | CHARID CompOperator CHARID
+   93 Condition: NUMBER CompOperator NUMBER BoolOpStmt
+   94          | ID CompOperator ID BoolOpStmt
+   95          | ID CompOperator NUMBER BoolOpStmt
+   96          | FLOATNUM CompOperator FLOATNUM BoolOpStmt
+   97          | CHARID CompOperator CHARID BoolOpStmt
+
+   98 BoolOpStmt: ε
+   99           | AND Condition
+  100           | OR Condition
 
 
 Terminals, with rules where they appear
@@ -186,119 +190,124 @@ Terminals, with rules where they appear
     GEQ <string> (272) 81
     LT <string> (273) 78
     GT <string> (274) 79
-    EQ <string> (275) 39 41 43 44 48 49 55 56 57 63
-    ADD <string> (276) 73
-    MULTIPLY <string> (277) 75
-    SUB <string> (278) 74
-    DIV <string> (279) 76
-    EXPONENT <string> (280) 71
-    LPAREN <string> (281) 9 11 13 15 49 58 66 90
-    RPAREN <string> (282) 9 11 13 15 49 58 67 90
-    LBRACKET <string> (283) 29
-    RBRACKET <string> (284) 29
-    LBRACE <string> (285) 52 55 56 57 83 84 85 86
-    RBRACE <string> (286) 52 55 56 57 83 84 85 86
-    NUMBER <string> (287) 25 39 52 55 56 57 60 69 85 86 93 95
-    FLOATNUM <string> (288) 26 43 61 70 96
-    STRINGID <string> (289) 51
-    CHARID <string> (290) 27 41 57 62 97
-    ID <string> (291) 9 11 13 15 19 20 21 28 38 39 40 41 42 43 44 48 49 50 52 55 56 57 58 59 63 68 83 84 85 86 94 95
+    AND <string> (275) 99
+    OR <string> (276) 100
+    EQ <string> (277) 39 41 43 44 48 49 55 56 57 63
+    ADD <string> (278) 73
+    MULTIPLY <string> (279) 75
+    SUB <string> (280) 74
+    DIV <string> (281) 76
+    EXPONENT <string> (282) 71
+    LPAREN <string> (283) 9 11 13 15 49 58 66 90
+    RPAREN <string> (284) 9 11 13 15 49 58 67 90
+    LBRACKET <string> (285) 29
+    RBRACKET <string> (286) 29
+    LBRACE <string> (287) 52 55 56 57 83 84 85 86
+    RBRACE <string> (288) 52 55 56 57 83 84 85 86
+    NUMBER <string> (289) 25 39 52 55 56 57 60 69 85 86 93 95
+    FLOATNUM <string> (290) 26 43 61 70 96
+    STRINGID <string> (291) 51
+    CHARID <string> (292) 27 41 57 62 97
+    ID <string> (293) 9 11 13 15 19 20 21 28 38 39 40 41 42 43 44 48 49 50 52 55 56 57 58 59 63 68 83 84 85 86 94 95
 
 
 Nonterminals, with rules where they appear
 
-    $accept (37)
+    $accept (39)
         on left: 0
-    Program <ast> (38)
+    Program <ast> (40)
         on left: 1
         on right: 0
-    DeclList <ast> (39)
+    DeclList <ast> (41)
         on left: 2 3
         on right: 1 2
-    Decl <ast> (40)
+    Decl <ast> (42)
         on left: 4 5 6 7
         on right: 2 3
-    FuncDecl <ast> (41)
+    FuncDecl <ast> (43)
         on left: 9 11 13 15
         on right: 4
-    $@1 (42)
+    $@1 (44)
         on left: 8
         on right: 9
-    $@2 (43)
+    $@2 (45)
         on left: 10
         on right: 11
-    $@3 (44)
+    $@3 (46)
         on left: 12
         on right: 13
-    $@4 (45)
+    $@4 (47)
         on left: 14
         on right: 15
-    ParamDeclList <ast> (46)
+    ParamDeclList <ast> (48)
         on left: 16 17
         on right: 9 11 13 15 16
-    ParamDecl <ast> (47)
+    ParamDecl <ast> (49)
         on left: 18 19 20 21
         on right: 16 17
-    ArgDeclList <ast> (48)
+    ArgDeclList <ast> (50)
         on left: 22 23
         on right: 22 49 58
-    ArgDecl <ast> (49)
+    ArgDecl <ast> (51)
         on left: 24 25 26 27 28
         on right: 22 23
-    Block <ast> (50)
+    Block <ast> (52)
         on left: 29
         on right: 9 11 13 15 90 92
-    BlockDeclList <ast> (51)
+    BlockDeclList <ast> (53)
         on left: 30 31
         on right: 29 30
-    BlockDecl <ast> (52)
+    BlockDecl <ast> (54)
         on left: 32 33 34
         on right: 30 31
-    StmtList <ast> (53)
+    StmtList <ast> (55)
         on left: 35 36 37
         on right: 6 33 36
-    VarDecl <ast> (54)
+    VarDecl <ast> (56)
         on left: 38 39 40 41 42 43 44 45 46
         on right: 5 32
-    Expr <ast> (55)
+    Expr <ast> (57)
         on left: 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62
         on right: 36 37
-    IDEQExpr <ast> (56)
+    IDEQExpr <ast> (58)
         on left: 63
         on right: 45 54
-    MathStmt <ast> (57)
+    MathStmt <ast> (59)
         on left: 64 65
         on right: 63 64
-    Math <ast> (58)
+    Math <ast> (60)
         on left: 66 67 68 69 70 71 72
         on right: 56 64 65
-    Operator <ast> (59)
+    Operator <ast> (61)
         on left: 73 74 75 76
         on right: 72
-    CompOperator <ast> (60)
+    CompOperator <ast> (62)
         on left: 77 78 79 80 81 82
         on right: 93 94 95 96 97
-    ArrDecl <ast> (61)
+    ArrDecl <ast> (63)
         on left: 83 84 85 86
         on right: 46
-    IfStmt <ast> (62)
+    IfStmt <ast> (64)
         on left: 90
         on right: 7 34
-    $@5 (63)
+    $@5 (65)
         on left: 87
         on right: 90
-    $@6 (64)
+    $@6 (66)
         on left: 88
         on right: 90
-    $@7 (65)
+    $@7 (67)
         on left: 89
         on right: 90
-    ElseStmt <ast> (66)
+    ElseStmt <ast> (68)
         on left: 91 92
         on right: 90
-    Condition <ast> (67)
+    Condition <ast> (69)
         on left: 93 94 95 96 97
-        on right: 90
+        on right: 90 99 100
+    BoolOpStmt <ast> (70)
+        on left: 98 99 100
+        on right: 93 94 95 96 97
 
 
 State 0
@@ -1232,7 +1241,7 @@ State 89
 
 State 90
 
-   93 Condition: NUMBER • CompOperator NUMBER
+   93 Condition: NUMBER • CompOperator NUMBER BoolOpStmt
 
     DEQ    shift, and go to state 121
     NOTEQ  shift, and go to state 122
@@ -1246,7 +1255,7 @@ State 90
 
 State 91
 
-   96 Condition: FLOATNUM • CompOperator FLOATNUM
+   96 Condition: FLOATNUM • CompOperator FLOATNUM BoolOpStmt
 
     DEQ    shift, and go to state 121
     NOTEQ  shift, and go to state 122
@@ -1260,7 +1269,7 @@ State 91
 
 State 92
 
-   97 Condition: CHARID • CompOperator CHARID
+   97 Condition: CHARID • CompOperator CHARID BoolOpStmt
 
     DEQ    shift, and go to state 121
     NOTEQ  shift, and go to state 122
@@ -1274,8 +1283,8 @@ State 92
 
 State 93
 
-   94 Condition: ID • CompOperator ID
-   95          | ID • CompOperator NUMBER
+   94 Condition: ID • CompOperator ID BoolOpStmt
+   95          | ID • CompOperator NUMBER BoolOpStmt
 
     DEQ    shift, and go to state 121
     NOTEQ  shift, and go to state 122
@@ -1571,29 +1580,29 @@ State 126
 
 State 127
 
-   93 Condition: NUMBER CompOperator • NUMBER
+   93 Condition: NUMBER CompOperator • NUMBER BoolOpStmt
 
     NUMBER  shift, and go to state 148
 
 
 State 128
 
-   96 Condition: FLOATNUM CompOperator • FLOATNUM
+   96 Condition: FLOATNUM CompOperator • FLOATNUM BoolOpStmt
 
     FLOATNUM  shift, and go to state 149
 
 
 State 129
 
-   97 Condition: CHARID CompOperator • CHARID
+   97 Condition: CHARID CompOperator • CHARID BoolOpStmt
 
     CHARID  shift, and go to state 150
 
 
 State 130
 
-   94 Condition: ID CompOperator • ID
-   95          | ID CompOperator • NUMBER
+   94 Condition: ID CompOperator • ID BoolOpStmt
+   95          | ID CompOperator • NUMBER BoolOpStmt
 
     NUMBER  shift, and go to state 151
     ID      shift, and go to state 152
@@ -1752,37 +1761,62 @@ State 147
 
 State 148
 
-   93 Condition: NUMBER CompOperator NUMBER •
+   93 Condition: NUMBER CompOperator NUMBER • BoolOpStmt
 
-    $default  reduce using rule 93 (Condition)
+    AND  shift, and go to state 165
+    OR   shift, and go to state 166
+
+    $default  reduce using rule 98 (BoolOpStmt)
+
+    BoolOpStmt  go to state 167
 
 
 State 149
 
-   96 Condition: FLOATNUM CompOperator FLOATNUM •
+   96 Condition: FLOATNUM CompOperator FLOATNUM • BoolOpStmt
 
-    $default  reduce using rule 96 (Condition)
+    AND  shift, and go to state 165
+    OR   shift, and go to state 166
+
+    $default  reduce using rule 98 (BoolOpStmt)
+
+    BoolOpStmt  go to state 168
 
 
 State 150
 
-   97 Condition: CHARID CompOperator CHARID •
+   97 Condition: CHARID CompOperator CHARID • BoolOpStmt
 
-    $default  reduce using rule 97 (Condition)
+    AND  shift, and go to state 165
+    OR   shift, and go to state 166
+
+    $default  reduce using rule 98 (BoolOpStmt)
+
+    BoolOpStmt  go to state 169
 
 
 State 151
 
-   95 Condition: ID CompOperator NUMBER •
+   95 Condition: ID CompOperator NUMBER • BoolOpStmt
 
-    $default  reduce using rule 95 (Condition)
+    AND  shift, and go to state 165
+    OR   shift, and go to state 166
+
+    $default  reduce using rule 98 (BoolOpStmt)
+
+    BoolOpStmt  go to state 170
 
 
 State 152
 
-   94 Condition: ID CompOperator ID •
+   94 Condition: ID CompOperator ID • BoolOpStmt
 
-    $default  reduce using rule 94 (Condition)
+    AND  shift, and go to state 165
+    OR   shift, and go to state 166
+
+    $default  reduce using rule 98 (BoolOpStmt)
+
+    BoolOpStmt  go to state 171
 
 
 State 153
@@ -1791,7 +1825,7 @@ State 153
 
     LBRACKET  shift, and go to state 159
 
-    Block  go to state 165
+    Block  go to state 172
 
 
 State 154
@@ -1805,7 +1839,7 @@ State 155
 
    49 Expr: ID EQ ID LPAREN ArgDeclList RPAREN • SEMICOLON
 
-    SEMICOLON  shift, and go to state 166
+    SEMICOLON  shift, and go to state 173
 
 
 State 156
@@ -1813,7 +1847,7 @@ State 156
    55 Expr: ID LBRACE NUMBER RBRACE EQ NUMBER • SEMICOLON
    69 Math: NUMBER •
 
-    SEMICOLON  shift, and go to state 167
+    SEMICOLON  shift, and go to state 174
 
     SEMICOLON  [reduce using rule 69 (Math)]
 
@@ -1822,23 +1856,23 @@ State 157
 
    57 Expr: ID LBRACE NUMBER RBRACE EQ CHARID • SEMICOLON
 
-    SEMICOLON  shift, and go to state 168
+    SEMICOLON  shift, and go to state 175
 
 
 State 158
 
    56 Expr: ID LBRACE NUMBER RBRACE EQ Math • SEMICOLON
 
-    SEMICOLON  shift, and go to state 169
+    SEMICOLON  shift, and go to state 176
 
 
 State 159
 
    29 Block: LBRACKET • BlockDeclList RBRACKET
 
-    CHAR       shift, and go to state 170
-    INT        shift, and go to state 171
-    FLOAT      shift, and go to state 172
+    CHAR       shift, and go to state 177
+    INT        shift, and go to state 178
+    FLOAT      shift, and go to state 179
     IF         shift, and go to state 5
     WRITE      shift, and go to state 6
     RETURN     shift, and go to state 7
@@ -1855,14 +1889,14 @@ State 159
     ID         [reduce using rule 35 (StmtList)]
     $default   reduce using rule 35 (StmtList)
 
-    BlockDeclList  go to state 173
-    BlockDecl      go to state 174
-    StmtList       go to state 175
-    VarDecl        go to state 176
+    BlockDeclList  go to state 180
+    BlockDecl      go to state 181
+    StmtList       go to state 182
+    VarDecl        go to state 183
     Expr           go to state 16
     IDEQExpr       go to state 17
     ArrDecl        go to state 18
-    IfStmt         go to state 177
+    IfStmt         go to state 184
 
 
 State 160
@@ -1902,81 +1936,140 @@ State 164
 
 State 165
 
+   99 BoolOpStmt: AND • Condition
+
+    NUMBER    shift, and go to state 90
+    FLOATNUM  shift, and go to state 91
+    CHARID    shift, and go to state 92
+    ID        shift, and go to state 93
+
+    Condition  go to state 185
+
+
+State 166
+
+  100 BoolOpStmt: OR • Condition
+
+    NUMBER    shift, and go to state 90
+    FLOATNUM  shift, and go to state 91
+    CHARID    shift, and go to state 92
+    ID        shift, and go to state 93
+
+    Condition  go to state 186
+
+
+State 167
+
+   93 Condition: NUMBER CompOperator NUMBER BoolOpStmt •
+
+    $default  reduce using rule 93 (Condition)
+
+
+State 168
+
+   96 Condition: FLOATNUM CompOperator FLOATNUM BoolOpStmt •
+
+    $default  reduce using rule 96 (Condition)
+
+
+State 169
+
+   97 Condition: CHARID CompOperator CHARID BoolOpStmt •
+
+    $default  reduce using rule 97 (Condition)
+
+
+State 170
+
+   95 Condition: ID CompOperator NUMBER BoolOpStmt •
+
+    $default  reduce using rule 95 (Condition)
+
+
+State 171
+
+   94 Condition: ID CompOperator ID BoolOpStmt •
+
+    $default  reduce using rule 94 (Condition)
+
+
+State 172
+
    90 IfStmt: IF $@5 LPAREN Condition RPAREN $@6 Block • $@7 ElseStmt
 
     $default  reduce using rule 89 ($@7)
 
-    $@7  go to state 178
+    $@7  go to state 187
 
 
-State 166
+State 173
 
    49 Expr: ID EQ ID LPAREN ArgDeclList RPAREN SEMICOLON •
 
     $default  reduce using rule 49 (Expr)
 
 
-State 167
+State 174
 
    55 Expr: ID LBRACE NUMBER RBRACE EQ NUMBER SEMICOLON •
 
     $default  reduce using rule 55 (Expr)
 
 
-State 168
+State 175
 
    57 Expr: ID LBRACE NUMBER RBRACE EQ CHARID SEMICOLON •
 
     $default  reduce using rule 57 (Expr)
 
 
-State 169
+State 176
 
    56 Expr: ID LBRACE NUMBER RBRACE EQ Math SEMICOLON •
 
     $default  reduce using rule 56 (Expr)
 
 
-State 170
+State 177
 
    40 VarDecl: CHAR • ID SEMICOLON
    84 ArrDecl: CHAR • ID LBRACE RBRACE SEMICOLON
    86        | CHAR • ID LBRACE NUMBER RBRACE SEMICOLON
 
-    ID  shift, and go to state 179
+    ID  shift, and go to state 188
 
 
-State 171
+State 178
 
    38 VarDecl: INT • ID SEMICOLON
    83 ArrDecl: INT • ID LBRACE RBRACE SEMICOLON
    85        | INT • ID LBRACE NUMBER RBRACE SEMICOLON
 
-    ID  shift, and go to state 180
+    ID  shift, and go to state 189
 
 
-State 172
+State 179
 
    42 VarDecl: FLOAT • ID SEMICOLON
 
-    ID  shift, and go to state 181
+    ID  shift, and go to state 190
 
 
-State 173
+State 180
 
    29 Block: LBRACKET BlockDeclList • RBRACKET
 
-    RBRACKET  shift, and go to state 182
+    RBRACKET  shift, and go to state 191
 
 
-State 174
+State 181
 
    30 BlockDeclList: BlockDecl • BlockDeclList
    31              | BlockDecl •
 
-    CHAR       shift, and go to state 170
-    INT        shift, and go to state 171
-    FLOAT      shift, and go to state 172
+    CHAR       shift, and go to state 177
+    INT        shift, and go to state 178
+    FLOAT      shift, and go to state 179
     IF         shift, and go to state 5
     WRITE      shift, and go to state 6
     RETURN     shift, and go to state 7
@@ -1995,49 +2088,63 @@ State 174
     ID         [reduce using rule 35 (StmtList)]
     $default   reduce using rule 31 (BlockDeclList)
 
-    BlockDeclList  go to state 183
-    BlockDecl      go to state 174
-    StmtList       go to state 175
-    VarDecl        go to state 176
+    BlockDeclList  go to state 192
+    BlockDecl      go to state 181
+    StmtList       go to state 182
+    VarDecl        go to state 183
     Expr           go to state 16
     IDEQExpr       go to state 17
     ArrDecl        go to state 18
-    IfStmt         go to state 177
+    IfStmt         go to state 184
 
 
-State 175
+State 182
 
    33 BlockDecl: StmtList •
 
     $default  reduce using rule 33 (BlockDecl)
 
 
-State 176
+State 183
 
    32 BlockDecl: VarDecl •
 
     $default  reduce using rule 32 (BlockDecl)
 
 
-State 177
+State 184
 
    34 BlockDecl: IfStmt •
 
     $default  reduce using rule 34 (BlockDecl)
 
 
-State 178
+State 185
+
+   99 BoolOpStmt: AND Condition •
+
+    $default  reduce using rule 99 (BoolOpStmt)
+
+
+State 186
+
+  100 BoolOpStmt: OR Condition •
+
+    $default  reduce using rule 100 (BoolOpStmt)
+
+
+State 187
 
    90 IfStmt: IF $@5 LPAREN Condition RPAREN $@6 Block $@7 • ElseStmt
 
-    ELSE  shift, and go to state 184
+    ELSE  shift, and go to state 193
 
     $default  reduce using rule 91 (ElseStmt)
 
-    ElseStmt  go to state 185
+    ElseStmt  go to state 194
 
 
-State 179
+State 188
 
    40 VarDecl: CHAR ID • SEMICOLON
    84 ArrDecl: CHAR ID • LBRACE RBRACE SEMICOLON
@@ -2047,7 +2154,7 @@ State 179
     LBRACE     shift, and go to state 43
 
 
-State 180
+State 189
 
    38 VarDecl: INT ID • SEMICOLON
    83 ArrDecl: INT ID • LBRACE RBRACE SEMICOLON
@@ -2057,44 +2164,44 @@ State 180
     LBRACE     shift, and go to state 46
 
 
-State 181
+State 190
 
    42 VarDecl: FLOAT ID • SEMICOLON
 
     SEMICOLON  shift, and go to state 47
 
 
-State 182
+State 191
 
    29 Block: LBRACKET BlockDeclList RBRACKET •
 
     $default  reduce using rule 29 (Block)
 
 
-State 183
+State 192
 
    30 BlockDeclList: BlockDecl BlockDeclList •
 
     $default  reduce using rule 30 (BlockDeclList)
 
 
-State 184
+State 193
 
    92 ElseStmt: ELSE • Block
 
     LBRACKET  shift, and go to state 159
 
-    Block  go to state 186
+    Block  go to state 195
 
 
-State 185
+State 194
 
    90 IfStmt: IF $@5 LPAREN Condition RPAREN $@6 Block $@7 ElseStmt •
 
     $default  reduce using rule 90 (IfStmt)
 
 
-State 186
+State 195
 
    92 ElseStmt: ELSE Block •
 

@@ -27,6 +27,10 @@ main:
 	la $a0, TEMP0   # print stored string from above
 	syscall
 
+	li $v0, 4       # call code to print an string
+	la $a0, TEMP1   # print stored string from above
+	syscall
+
 	# -----------------------
 	#  done, terminate program.
 

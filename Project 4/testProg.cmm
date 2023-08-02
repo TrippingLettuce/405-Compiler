@@ -24,9 +24,16 @@ assignArray();
 
 write w;
 
-if (x > 0){
-    write "x is positive";
+if (x > 0 && x < 10){
+    write "x is positive and less than 10";
 }
 else {
     write "no change";
+}
+
+if (x < 10 || x > 0) {
+    write "x is positive or less than 10";
+}
+else {
+    write "no change again";
 }

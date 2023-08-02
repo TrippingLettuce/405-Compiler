@@ -157,6 +157,20 @@ CHARID \'([^\\\'']|\\.)*\'
      
 }
 
+"&&"  {
+	chars++;
+	printf("%s : BOOLEAN OPERATOR\n", yytext);
+    yylval.string = strdup(yytext);
+    return AND; 
+}
+
+"||"  {
+	chars++;
+	printf("%s : BOOLEAN OPERATOR\n", yytext);
+    yylval.string = strdup(yytext);
+    return OR; 
+}
+
 "="  {
 	chars++;
 	printf("%s : OPERATOR\n", yytext);

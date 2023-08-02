@@ -24,7 +24,8 @@ goto assignMath
 goto assignArray
 
 output T0
-output 'x is positive'
+output 'no change'
+output 'x is positive or less than 10'
 
 # Functions
 #---------------
