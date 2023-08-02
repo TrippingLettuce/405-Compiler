@@ -1,0 +1,13 @@
+
+
+#### IR Code ####
+
+T0 = n
+T1 = m
+T0 = 10
+T1 = 5
+T2 = z
+T2 = 48.0
+output T2
+T2 = 5
+output T2

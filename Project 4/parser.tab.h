@@ -54,38 +54,40 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    ID = 258,                      /* ID  */
-    WRITE = 259,                   /* WRITE  */
-    IF = 260,                      /* IF  */
-    ELSE = 261,                    /* ELSE  */
-    WHILE = 262,                   /* WHILE  */
-    RETURN = 263,                  /* RETURN  */
-    TYPE = 264,                    /* TYPE  */
-    KEYWORD = 265,                 /* KEYWORD  */
-    NUMBER = 266,                  /* NUMBER  */
-    CHAR = 267,                    /* CHAR  */
-    SINGLE_QOUTE = 268,            /* SINGLE_QOUTE  */
-    SEMICOLON = 269,               /* SEMICOLON  */
-    COMMA = 270,                   /* COMMA  */
-    EQ = 271,                      /* EQ  */
-    OR = 272,                      /* OR  */
-    AND = 273,                     /* AND  */
-    LSS = 274,                     /* LSS  */
-    GTR = 275,                     /* GTR  */
-    LEQ = 276,                     /* LEQ  */
-    GEQ = 277,                     /* GEQ  */
-    LPAREN = 278,                  /* LPAREN  */
-    RPAREN = 279,                  /* RPAREN  */
-    LBRACE = 280,                  /* LBRACE  */
-    RBRACE = 281,                  /* RBRACE  */
-    LBRACKET = 282,                /* LBRACKET  */
-    RBRACKET = 283,                /* RBRACKET  */
-    ADD = 284,                     /* ADD  */
-    SUB = 285,                     /* SUB  */
-    MULTIPLY = 286,                /* MULTIPLY  */
-    DIV = 287,                     /* DIV  */
-    DEQ = 288,                     /* DEQ  */
-    NEQ = 289                      /* NEQ  */
+    CHAR = 258,                    /* CHAR  */
+    INT = 259,                     /* INT  */
+    FLOAT = 260,                   /* FLOAT  */
+    VOID = 261,                    /* VOID  */
+    IF = 262,                      /* IF  */
+    ELSE = 263,                    /* ELSE  */
+    WRITE = 264,                   /* WRITE  */
+    RETURN = 265,                  /* RETURN  */
+    COMMA = 266,                   /* COMMA  */
+    SEMICOLON = 267,               /* SEMICOLON  */
+    NEWLINECHAR = 268,             /* NEWLINECHAR  */
+    DEQ = 269,                     /* DEQ  */
+    NOTEQ = 270,                   /* NOTEQ  */
+    LEQ = 271,                     /* LEQ  */
+    GEQ = 272,                     /* GEQ  */
+    LT = 273,                      /* LT  */
+    GT = 274,                      /* GT  */
+    EQ = 275,                      /* EQ  */
+    ADD = 276,                     /* ADD  */
+    MULTIPLY = 277,                /* MULTIPLY  */
+    SUB = 278,                     /* SUB  */
+    DIV = 279,                     /* DIV  */
+    EXPONENT = 280,                /* EXPONENT  */
+    LPAREN = 281,                  /* LPAREN  */
+    RPAREN = 282,                  /* RPAREN  */
+    LBRACKET = 283,                /* LBRACKET  */
+    RBRACKET = 284,                /* RBRACKET  */
+    LBRACE = 285,                  /* LBRACE  */
+    RBRACE = 286,                  /* RBRACE  */
+    NUMBER = 287,                  /* NUMBER  */
+    FLOATNUM = 288,                /* FLOATNUM  */
+    STRINGID = 289,                /* STRINGID  */
+    CHARID = 290,                  /* CHARID  */
+    ID = 291                       /* ID  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -94,14 +96,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 41 "parser.y"
+#line 64 "parser.y"
 
 	int number;
 	char character;
 	char* string;
 	struct AST* ast;
 
-#line 105 "parser.tab.h"
+#line 107 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

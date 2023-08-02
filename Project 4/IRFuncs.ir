@@ -1,0 +1,13 @@
+
+# Functions
+#---------------
+
+assignMath:
+T0 = {NUM} + {NUM}
+
+assignArray:
+T0 = h
+T0 = i
+T0 = m
+T0 = o
+T0 = m

@@ -1,0 +1,15 @@
+
+
+#### IR Code ####
+
+T0 = x
+T1 = y
+T2 = z
+T3 = temp
+T7 = ch1
+T8 = floatnum
+T0 = 11
+T3 = 30
+T5 = 223
+T6 = 2332
+T1 = 15

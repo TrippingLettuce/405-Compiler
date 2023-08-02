@@ -2,19 +2,21 @@
 
 #### IR Code ####
 
-T0 = w
-T1 = x
-T2 = y
-T3 = z
-T4 = c
-T5 = m
+T0 = x
+T1 = y
+T2 = z
+T3 = temp
 T0 = arr
-T0 = arr2
-T10 = 100
-T14 = 'h'
-T15 = 'i'
-T16 = 'm'
-T17 = 'o'
-T18 = 'm'
-output T2
+T7 = ch1
+T8 = floatnum
+T0 = arrTwo
+T0 = 11
+T3 = 30
+T5 = 223
+T6 = 2332
+T1 = 15
+T10 = 'a'
+T11 = 'b'
+T7 = 'c'
+T8 = 12.65
 output T2

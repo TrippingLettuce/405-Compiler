@@ -1,14 +1,32 @@
-int n;
-int m;
-n = 10;
-m = 5;
-float z;
+int w;
+int x;
+int y;
+x = 12;
+int arr [3];
+char carr [5];
+arr[1] = 223;
+arr[2] = 2332;
 
-if (n > 5 && n < 20) {
-   z = n * m - n/m;
-   write z;
+int assignMath(){
+    w = 21 + 19 * 5 - 60 + 69;
+}
+
+int assignArray(){
+    carr[0] = 'h';
+    carr[1] = 'i';
+    carr[2] = 'm';
+    carr[3] = 'o';
+    carr[4] = 'm';
+}
+
+assignMath();
+assignArray();
+
+write w;
+
+if (x > 0){
+    write "x is positive";
 }
 else {
-   z = n - m;
-   write z;
+    write "no change";
 }

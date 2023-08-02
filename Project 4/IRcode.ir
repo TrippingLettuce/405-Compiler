@@ -1,13 +1,40 @@
+# IR Code
+#---------------
+
+main:
+
+T0 = w
+T1 = x
+T2 = y
+T1 = 12
+T3 = arr[0]
+T4 = arr[1]
+T5 = arr[2]
+T6 = carr[0]
+T7 = carr[1]
+T8 = carr[2]
+T9 = carr[3]
+T10 = carr[4]
+T4 = 223
+T5 = 2332
+
+goto assignMath
 
 
-#### IR Code ####
+goto assignArray
 
-T0 = n
-T1 = m
-T0 = 10
-T1 = 5
-T2 = z
-T2 = 48.0
-output T2
-T2 = 5
-output T2
+output T0
+output 'x is positive'
+
+# Functions
+#---------------
+
+assignMath:
+T0 = {NUM} + {NUM}
+
+assignArray:
+T0 = h
+T0 = i
+T0 = m
+T0 = o
+T0 = m

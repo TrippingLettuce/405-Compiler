@@ -1,0 +1,6 @@
+
+# Functions
+#---------------
+whileloop0:
+goto main if not x > 0
+output 'Hello World'

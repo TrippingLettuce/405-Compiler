@@ -1,8 +1,5 @@
-
 //Abstract Syntax Tree Implementation
 #include <string.h>
-#include <stdio.h>
-
 
 // Define the structure of an AST node. Each node has a type (nodeType), left-hand-side (LHS) and right-hand-side (RHS).
 // Also, each node has pointers to left and right child nodes in the tree.
@@ -21,7 +18,6 @@ struct AST{
 // Function to create an assignment node in AST.
 struct AST * AST_assignment(char nodeType[50], char LHS[50], char RHS[50]){
 	
-
 	struct AST* ASTassign = malloc(sizeof(struct AST));
 	strcpy(ASTassign->nodeType, nodeType);
 	strcpy(ASTassign->LHS, LHS);
@@ -53,21 +49,8 @@ struct AST * AST_Type(char nodeType[50], char LHS[50], char RHS[50]){
 	
 }
 
-
 // Function to create a function node in AST. This node represents a function in the program.
 struct AST * AST_Func(char nodeType[50], char LHS[50], char RHS[50]){
-	
-	struct AST* ASTtype = malloc(sizeof(struct AST));
-	strcpy(ASTtype->nodeType, nodeType);
-	strcpy(ASTtype->LHS, LHS);
-	strcpy(ASTtype->RHS, RHS);
-		
-	return ASTtype;
-	
-}
-
-// Function to create a function node in AST. This node represents a function in the program.
-struct AST * AST_If_Then(char nodeType[50], char LHS[50], char RHS[50]){
 	
 	struct AST* ASTtype = malloc(sizeof(struct AST));
 	strcpy(ASTtype->nodeType, nodeType);
@@ -84,7 +67,7 @@ struct AST * AST_Write(char nodeType[50], char LHS[50], char RHS[50]){
 	struct AST* ASTtype = malloc(sizeof(struct AST));
 	strcpy(ASTtype->nodeType, nodeType);
 	strcpy(ASTtype->LHS, LHS);
-	strcpy(ASTtype->RHS, RHS);
+	strcpy(ASTtype->LHS, RHS);
 		
 	return ASTtype;
 	
@@ -94,8 +77,9 @@ struct AST * AST_Write(char nodeType[50], char LHS[50], char RHS[50]){
 void printDots(int num)
 {
 	for (int i = 0; i < num; i++)
-		printf("       ");
+		printf("      ");
 }
+
 
 // Function to print the AST structure starting from the given node. 
 // The function is recursive and traverses the tree depth-first. 
@@ -103,10 +87,8 @@ void printDots(int num)
 void printAST(struct AST* tree, int level){
 	if (tree == NULL) return;
 	printDots(level);
-
 	printf("%s\n", tree->nodeType);
 	printDots(level);
-
 	printf("%s %s\n", tree->LHS, tree->RHS);
 	if(tree->left != NULL) printAST(tree->left, level+1); else return;
 	if(tree->right != NULL) printAST(tree->right, level+1); else return;

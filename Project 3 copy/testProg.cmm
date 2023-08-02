@@ -1,0 +1,46 @@
+int x;
+int y;
+int z;
+int temp;
+int arr [3];
+char ch1;
+float floatnum;
+char arrTwo[3];
+
+x = 11;
+temp = 30;
+
+arr[1] = 223;
+arr[2] = 2332;
+
+void mathFunc(){
+    y = 15;
+    z = 58 + 5 + 10 * 5;
+}
+
+
+void arrAssignChar(){
+    arrTwo[1] = 'a';
+    arrTwo[2] = 'b';
+    ch1 = 'c';
+}
+
+
+void assignFloat(){
+    floatnum = 12.65;
+}
+
+mathFunc();
+arrAssignChar();
+assignFloat();
+
+write ch1;
+write arr[2];
+
+if-else(x < 10){
+    x = 100
+}else{
+    x = 100
+};
+
+write x;

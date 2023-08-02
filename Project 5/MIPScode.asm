@@ -1,410 +1,45 @@
+.globl main
+.data
+
+	Gx: .word 0
+	TEMP0: .asciiz "Hello World"
+
 .text
 main:
 # -----------------------
-li $t0,33
 
-li $t1,133.0
+	la $a0, 20      # store value in $a0
+	la $t0, Gx      # load variable address into $t0
+	sw $a0, 0($t0)  # move value from $a0 into .word variable
 
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
+	jal whileLoop0       # goto loop: whileLoop0
 
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
+	next:       # return from loop here
 
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
+	# -----------------------
+	#  done, terminate program.
 
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
+	li $v0, 10      # call code to terminate program
+	syscall         # system call (terminate)
+	.end main
 
-# -----------------
-#  Done, terminate program.
 
-li $v0,10   # call code for terminate
-syscall      # system call (terminate)
-.end main
-.text
-main:
 # -----------------------
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
+# function declarations
 
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
+whileLoop0:
 
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
+	lw $t0, Gx              # load the variable into $t0
+	li $t1, 0               # load the number into $t1
+	blt $t0, $t1, endloop   # break loop if true 
 
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
+	li $v0, 4       # call code to print an string
+	la $a0, TEMP0   # print stored string from above
+	syscall
 
-li $t0,33
+	j whileLoop0       # loop back
 
-li $t1,133.0
+endloop:
 
-# -----------------
-#  Done, terminate program.
+	jal next       # return to main
 
-li $v0,10   # call code for terminate
-syscall      # system call (terminate)
-.end main
-.text
-main:
-# -----------------------
-li $t0,33
-
-li $t1,133.0
-
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-# -----------------
-#  Done, terminate program.
-
-li $v0,10   # call code for terminate
-syscall      # system call (terminate)
-.end main
-.text
-main:
-# -----------------------
-li $t0,-548
-
-li $t1,-448.0
-
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-# -----------------
-#  Done, terminate program.
-
-li $v0,10   # call code for terminate
-syscall      # system call (terminate)
-.end main
-.text
-main:
-# -----------------------
-li $t0,33
-
-li $t1,133.0
-
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-# -----------------
-#  Done, terminate program.
-
-li $v0,10   # call code for terminate
-syscall      # system call (terminate)
-.end main
-.text
-main:
-# -----------------------
-li $t0,33
-
-li $t1,133.0
-
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-# -----------------
-#  Done, terminate program.
-
-li $v0,10   # call code for terminate
-syscall      # system call (terminate)
-.end main
-.text
-main:
-# -----------------------
-li $t0,33
-
-li $t1,133.0
-
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-# -----------------
-#  Done, terminate program.
-
-li $v0,10   # call code for terminate
-syscall      # system call (terminate)
-.end main
-.text
-main:
-# -----------------------
-li $t0,56
-
-li $t1,149.0
-
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-# -----------------
-#  Done, terminate program.
-
-li $v0,10   # call code for terminate
-syscall      # system call (terminate)
-.end main
-.text
-main:
-# -----------------------
-li $t0,56
-
-li $t1,149.0
-
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-# -----------------
-#  Done, terminate program.
-
-li $v0,10   # call code for terminate
-syscall      # system call (terminate)
-.end main
-.text
-main:
-# -----------------------
-li $t0,56
-
-li $t1,149.0
-
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t0
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-move $a0,$t1
-li $v0,1   # call code for terminate
-syscall      # system call (terminate)
-li $a0, 10
-li $v0, 11
-syscall
-
-# -----------------
-#  Done, terminate program.
-
-li $v0,10   # call code for terminate
-syscall      # system call (terminate)
-.end main
