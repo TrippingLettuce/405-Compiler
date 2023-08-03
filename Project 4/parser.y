@@ -1729,7 +1729,7 @@ IfStmt: IF {inElse = UPDATE_IF_ELSE;} LPAREN Condition RPAREN { printf(BORANGE "
 							}
 							runIfElseBlock = 0; // reset the pass variable
 							ifElseCurrentBlock = 0; // reset the current variable
-							BooleanOpt = 0;
+							BooleanOpt = 0; // reset the current value of Boolean Operation
 
 }
 
@@ -1741,10 +1741,18 @@ Condition: NUMBER CompOperator NUMBER BoolOpStmt {
 				temp1 = atoi($1);
 				temp2 = atoi($3);
 
-				if (compareIntOp($2, temp1, temp2)) {
+				if (compareIntOp($2, temp1, temp2))  {
 					if (BooleanOpt != -1) {
 						runIfElseBlock = 1;
-					}	
+					} else {
+						if (runIfElseBlock != 1) {
+							runIfElseBlock = 0;
+						}
+					}
+				} else {
+					if (BooleanOpt == -1) {
+						runIfElseBlock = 0;
+					}
 				}
 
 
@@ -1798,9 +1806,17 @@ Condition: NUMBER CompOperator NUMBER BoolOpStmt {
 					temp2 = atoi(getValue($3, scope));
 					//printf(BORANGE "temp1: %d\ntemp2: %d\n" RESET, temp1, temp2);
 
-					if (compareIntOp($2, temp1, temp2) && inElse == UPDATE_IF_ELSE) {
+					if (compareIntOp($2, temp1, temp2) && inElse == UPDATE_IF_ELSE)  {
 						if (BooleanOpt != -1) {
 							runIfElseBlock = 1;
+						} else {
+							if (runIfElseBlock != 1) {
+								runIfElseBlock = 0;
+							}
+						}
+					} else {
+						if (BooleanOpt == -1) {
+							runIfElseBlock = 0;
 						}
 					}
 				}
@@ -1810,9 +1826,17 @@ Condition: NUMBER CompOperator NUMBER BoolOpStmt {
 					temp2 = atof(getValue($3, scope));
 					//printf(BORANGE "temp1: %f\ntemp2: %f\n" RESET, temp1, temp2);
 
-					if (compareFloatOp($2, temp1, temp2) && inElse == UPDATE_IF_ELSE) {
+					if (compareFloatOp($2, temp1, temp2) && inElse == UPDATE_IF_ELSE)  {
 						if (BooleanOpt != -1) {
 							runIfElseBlock = 1;
+						} else {
+							if (runIfElseBlock != 1) {
+								runIfElseBlock = 0;
+							}
+						}
+					} else {
+						if (BooleanOpt == -1) {
+							runIfElseBlock = 0;
 						}
 					}
 				}
@@ -1822,9 +1846,17 @@ Condition: NUMBER CompOperator NUMBER BoolOpStmt {
 					strcpy(temp2, getValue($3, scope));
 					//printf(BORANGE "temp1: %s\ntemp2: %s\n" RESET, temp1, temp2);
 
-					if (compareCharOp($2, temp1, temp2) && inElse == UPDATE_IF_ELSE) {
+					if (compareCharOp($2, temp1, temp2) && inElse == UPDATE_IF_ELSE)  {
 						if (BooleanOpt != -1) {
 							runIfElseBlock = 1;
+						} else {
+							if (runIfElseBlock != 1) {
+								runIfElseBlock = 0;
+							}
+						}
+					} else {
+						if (BooleanOpt == -1) {
+							runIfElseBlock = 0;
 						}
 					}
 				}
@@ -1857,7 +1889,6 @@ Condition: NUMBER CompOperator NUMBER BoolOpStmt {
 				} else {
 					if (BooleanOpt == -1) {
 						runIfElseBlock = 0;
-						printf("THIS IS AN AND STATEMENT!!!!!!!!!!!!!!!!!!!!!");
 					}
 				}
 
@@ -1869,9 +1900,17 @@ Condition: NUMBER CompOperator NUMBER BoolOpStmt {
 				temp2 = atof($3);
 				//printf(BORANGE "temp1: %f\ntemp2: %f\n" RESET, temp1, temp2);
 
-				if (compareFloatOp($2, temp1, temp2) && inElse == UPDATE_IF_ELSE) {
+				if (compareFloatOp($2, temp1, temp2) && inElse == UPDATE_IF_ELSE)  {
 					if (BooleanOpt != -1) {
 						runIfElseBlock = 1;
+					} else {
+						if (runIfElseBlock != 1) {
+							runIfElseBlock = 0;
+						}
+					}
+				} else {
+					if (BooleanOpt == -1) {
+						runIfElseBlock = 0;
 					}
 				}
 
@@ -1885,6 +1924,14 @@ Condition: NUMBER CompOperator NUMBER BoolOpStmt {
 				if (compareCharOp($2, temp1, temp2) && inElse == UPDATE_IF_ELSE) {
 					if (BooleanOpt != -1) {
 						runIfElseBlock = 1;
+					} else {
+						if (runIfElseBlock != 1) {
+							runIfElseBlock = 0;
+						}
+					}
+				} else {
+					if (BooleanOpt == -1) {
+						runIfElseBlock = 0;
 					}
 				}
 
