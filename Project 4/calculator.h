@@ -50,3 +50,4 @@ void writeResultToNewFile(char* result) {
 
 
 
+

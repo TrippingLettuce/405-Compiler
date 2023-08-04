@@ -1,6 +1,25 @@
 
 # Functions
 #---------------
+
+assignMath:
+T0 = {NUM} + {NUM}
+
+assignArray:
+T0 = h
+T0 = i
+T0 = m
+T0 = o
+T0 = m
+
+addValue:
+T12 = result
+T6 = {NUM} + {NUM}
+return T6
+
 whileloop0:
 goto main if not x > 0
-output 'Hello World'
+output 'result:'
+output T6
+output *newline*
+T1 = {NUM} - {NUM}

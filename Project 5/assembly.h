@@ -5,14 +5,14 @@
 #include <unistd.h>
 
 //Colors What they mean
-//Symbol Table or Var Table Acessed, Parameters Aceppted 
+//Symbol Table or Var Table Acessed, Background tasks
 #define GREEN   "\x1b[32m"
 #define BGREEN  "\x1b[1;32m"
-//NOT
+//ERROR
 #define RED     "\x1b[1;31m"
 #define ORANGE 	"\x1b[33m"
 #define BORANGE "\x1b[1;33m"
-//Defined 
+//Parameters Passed or Failed for If Else statments   
 #define PINK	"\x1b[95m"
 #define BPINK	"\x1b[1;95m"
 //IR Code
@@ -21,7 +21,7 @@
 //MIPS
 #define CYAN	"\x1b[96m"
 #define BCYAN	"\x1b[1;96m"
-//Variable 
+//Variable or Complier Start/End
 #define BYELLOW "\x1b[1;103m"
 //Rule Reconized
 #define GRAY	"\x1b[90m"
@@ -267,40 +267,9 @@ void createMIPSFloatFunctionCall(char id[50]) {
 
 }
 
+//I dont think I need this
 void createMIPSIDtoIDAssignment(char id1[50], char id2[50], char scope[50]){
     // e.g. x = y;
-/*
-    tempMIPS = fopen("tempMIPS.asm", "a");
-    int itemID1;
-    int itemID2;
-    char* itemValue1;
-    char* itemValue2;
-    int typeInt = strcmp(getVariableType(id1, "G"), "INT");
-    int typeChar = strcmp(getVariableType(id1, "G"), "CHR");
-    int typeFloat = strcmp(getVariableType(id1, "G"), "FLT");
-
-    itemID1 = getItemID(id1, scope);
-    itemID2 = getItemID(id2, scope);
-    itemValue1 = getValue(id1, scope);
-    itemValue2 = getValue(id2, scope);
-
-    if (typeInt == 0) { // if not char
-
-        fprintf(tempMIPS, "\n\tli $t%d, %s       # load the value of %s into $t%d\n", itemID1, itemValue1, id2, itemID1);
-        fprintf(tempMIPS, "\tmove $t%d, $t%d    # move the value of %s into %s\n", itemID2, itemID1, id2, id1); // TODO: i think rn this moves the second regidster to the first instead of copying
-
-    } else if (typeChar == 0) { // if char
-
-        fprintf(tempMIPS, "\n\tli $t%d, '%s'       # load the value of %s into $t%d\n", itemID1, itemValue1, id2, itemID1);
-        fprintf(tempMIPS, "\tmove $t%d, $t%d    # move the value of %s into %s\n", itemID2, itemID1, id2, id1); // TODO: i think rn this moves the second regidster to the first instead of copying
-
-    } else if (typeFloat == 0) {
-
-        fprintf(tempMIPS, "\n\tl.s $f%d, %s       # load the value of %s into $t%d, %s = %s\n", itemID1, id2, id2, itemID1, id1, id2);
-
-    }
-    fclose(tempMIPS);
-*/
 
 }
 

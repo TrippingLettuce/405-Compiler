@@ -627,8 +627,8 @@ static const yytype_int16 yyrline[] =
     1355,  1410,  1432,  1454,  1479,  1572,  1576,  1581,  1582,  1583,
     1588,  1593,  1594,  1595,  1599,  1600,  1601,  1602,  1605,  1606,
     1607,  1608,  1609,  1610,  1614,  1619,  1624,  1666,  1708,  1708,
-    1713,  1708,  1736,  1736,  1738,  1751,  1833,  1865,  1878,  1903,
-    1904,  1905
+    1713,  1708,  1736,  1736,  1738,  1759,  1865,  1896,  1917,  1950,
+    1951,  1952
 };
 #endif
 
@@ -3360,7 +3360,7 @@ yyreduce:
 							}
 							runIfElseBlock = 0; // reset the pass variable
 							ifElseCurrentBlock = 0; // reset the current variable
-							BooleanOpt = 0;
+							BooleanOpt = 0; // reset the current value of Boolean Operation
 
 }
 #line 3367 "parser.tab.c"
@@ -3374,19 +3374,27 @@ yyreduce:
 				temp1 = atoi((yyvsp[-3].string));
 				temp2 = atoi((yyvsp[-1].string));
 
-				if (compareIntOp((yyvsp[-2].ast), temp1, temp2)) {
+				if (compareIntOp((yyvsp[-2].ast), temp1, temp2))  {
 					if (BooleanOpt != -1) {
 						runIfElseBlock = 1;
-					}	
+					} else {
+						if (runIfElseBlock != 1) {
+							runIfElseBlock = 0;
+						}
+					}
+				} else {
+					if (BooleanOpt == -1) {
+						runIfElseBlock = 0;
+					}
 				}
 
 
 		}
-#line 3386 "parser.tab.c"
+#line 3394 "parser.tab.c"
     break;
 
   case 95: /* Condition: ID CompOperator ID BoolOpStmt  */
-#line 1751 "parser.y"
+#line 1759 "parser.y"
                                                   {
 
 				char type1[50];
@@ -3437,9 +3445,17 @@ yyreduce:
 					temp2 = atoi(getValue((yyvsp[-1].string), scope));
 					//printf(BORANGE "temp1: %d\ntemp2: %d\n" RESET, temp1, temp2);
 
-					if (compareIntOp((yyvsp[-2].ast), temp1, temp2) && inElse == UPDATE_IF_ELSE) {
+					if (compareIntOp((yyvsp[-2].ast), temp1, temp2) && inElse == UPDATE_IF_ELSE)  {
 						if (BooleanOpt != -1) {
 							runIfElseBlock = 1;
+						} else {
+							if (runIfElseBlock != 1) {
+								runIfElseBlock = 0;
+							}
+						}
+					} else {
+						if (BooleanOpt == -1) {
+							runIfElseBlock = 0;
 						}
 					}
 				}
@@ -3449,9 +3465,17 @@ yyreduce:
 					temp2 = atof(getValue((yyvsp[-1].string), scope));
 					//printf(BORANGE "temp1: %f\ntemp2: %f\n" RESET, temp1, temp2);
 
-					if (compareFloatOp((yyvsp[-2].ast), temp1, temp2) && inElse == UPDATE_IF_ELSE) {
+					if (compareFloatOp((yyvsp[-2].ast), temp1, temp2) && inElse == UPDATE_IF_ELSE)  {
 						if (BooleanOpt != -1) {
 							runIfElseBlock = 1;
+						} else {
+							if (runIfElseBlock != 1) {
+								runIfElseBlock = 0;
+							}
+						}
+					} else {
+						if (BooleanOpt == -1) {
+							runIfElseBlock = 0;
 						}
 					}
 				}
@@ -3461,20 +3485,28 @@ yyreduce:
 					strcpy(temp2, getValue((yyvsp[-1].string), scope));
 					//printf(BORANGE "temp1: %s\ntemp2: %s\n" RESET, temp1, temp2);
 
-					if (compareCharOp((yyvsp[-2].ast), temp1, temp2) && inElse == UPDATE_IF_ELSE) {
+					if (compareCharOp((yyvsp[-2].ast), temp1, temp2) && inElse == UPDATE_IF_ELSE)  {
 						if (BooleanOpt != -1) {
 							runIfElseBlock = 1;
+						} else {
+							if (runIfElseBlock != 1) {
+								runIfElseBlock = 0;
+							}
+						}
+					} else {
+						if (BooleanOpt == -1) {
+							runIfElseBlock = 0;
 						}
 					}
 				}
 
 
 		}
-#line 3474 "parser.tab.c"
+#line 3506 "parser.tab.c"
     break;
 
   case 96: /* Condition: ID CompOperator NUMBER BoolOpStmt  */
-#line 1833 "parser.y"
+#line 1865 "parser.y"
                                                       {
 
 				// is the variable intitalized as a value?
@@ -3502,17 +3534,16 @@ yyreduce:
 				} else {
 					if (BooleanOpt == -1) {
 						runIfElseBlock = 0;
-						printf("THIS IS AN AND STATEMENT!!!!!!!!!!!!!!!!!!!!!");
 					}
 				}
 
 
 		}
-#line 3512 "parser.tab.c"
+#line 3543 "parser.tab.c"
     break;
 
   case 97: /* Condition: FLOATNUM CompOperator FLOATNUM BoolOpStmt  */
-#line 1865 "parser.y"
+#line 1896 "parser.y"
                                                               {
 
 				float temp1, temp2;
@@ -3520,18 +3551,26 @@ yyreduce:
 				temp2 = atof((yyvsp[-1].string));
 				//printf(BORANGE "temp1: %f\ntemp2: %f\n" RESET, temp1, temp2);
 
-				if (compareFloatOp((yyvsp[-2].ast), temp1, temp2) && inElse == UPDATE_IF_ELSE) {
+				if (compareFloatOp((yyvsp[-2].ast), temp1, temp2) && inElse == UPDATE_IF_ELSE)  {
 					if (BooleanOpt != -1) {
 						runIfElseBlock = 1;
+					} else {
+						if (runIfElseBlock != 1) {
+							runIfElseBlock = 0;
+						}
+					}
+				} else {
+					if (BooleanOpt == -1) {
+						runIfElseBlock = 0;
 					}
 				}
 
 		}
-#line 3531 "parser.tab.c"
+#line 3570 "parser.tab.c"
     break;
 
   case 98: /* Condition: CHARID CompOperator CHARID BoolOpStmt  */
-#line 1878 "parser.y"
+#line 1917 "parser.y"
                                                           {
 
 				char temp1[50], temp2[50];
@@ -3542,33 +3581,41 @@ yyreduce:
 				if (compareCharOp((yyvsp[-2].ast), temp1, temp2) && inElse == UPDATE_IF_ELSE) {
 					if (BooleanOpt != -1) {
 						runIfElseBlock = 1;
+					} else {
+						if (runIfElseBlock != 1) {
+							runIfElseBlock = 0;
+						}
+					}
+				} else {
+					if (BooleanOpt == -1) {
+						runIfElseBlock = 0;
 					}
 				}
 
 		}
-#line 3550 "parser.tab.c"
+#line 3597 "parser.tab.c"
     break;
 
   case 99: /* BoolOpStmt: %empty  */
-#line 1903 "parser.y"
+#line 1950 "parser.y"
                    {}
-#line 3556 "parser.tab.c"
+#line 3603 "parser.tab.c"
     break;
 
   case 100: /* BoolOpStmt: AND Condition  */
-#line 1904 "parser.y"
+#line 1951 "parser.y"
                                         {BooleanOpt = -1;}
-#line 3562 "parser.tab.c"
+#line 3609 "parser.tab.c"
     break;
 
   case 101: /* BoolOpStmt: OR Condition  */
-#line 1905 "parser.y"
+#line 1952 "parser.y"
                                        {BooleanOpt = 1;}
-#line 3568 "parser.tab.c"
+#line 3615 "parser.tab.c"
     break;
 
 
-#line 3572 "parser.tab.c"
+#line 3619 "parser.tab.c"
 
       default: break;
     }
@@ -3761,7 +3808,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 1907 "parser.y"
+#line 1954 "parser.y"
 
 
 int main(int argc, char**argv)
