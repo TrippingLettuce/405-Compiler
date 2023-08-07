@@ -8,9 +8,8 @@ char carr [5];
 arr[1] = 223;
 arr[2] = 2332;
 
-int assignMath(){
-    w = 21 + 19 * 5 - 60 + 69;
-}
+w = 21 + 19 * 5 - 60 + 69;
+
 
 int assignArray(){
     carr[0] = 'h';
