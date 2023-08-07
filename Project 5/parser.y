@@ -51,6 +51,8 @@ char num2[50]; // Second operand.
 // Control flags for 'if-else' and 'while' constructs.
 int runIfElseBlock = 0; // Indicates whether to execute the 'if' block (1) or the 'else' block (0).
 int ifElseCurrentBlock = 0; // Shows current active block: 'if' block (1) or 'else' block (0).
+int inElse = 0; // Flag indicating which construct to update: 'if-else' (0)
+int BooleanOpt = 0; // Flag for Boolean Opeators. If none: 0, if && = -1, if || = 1.
 int runWhileBlock = 0; // Indicates whether to execute the 'while' block (1) or exit the loop (0).
 int inElseOrWhile = 0; // Flag indicating which construct to update: 'if-else' (0) or 'while' loop (1).
 
@@ -95,7 +97,9 @@ char scope[50] = "G"; // Initialize the scope as 'global'.
 %token <string> LEQ 
 %token <string> GEQ 
 %token <string> LT 
-%token <string> GT 
+%token <string> GT
+%token <string> AND 
+%token <string> OR 
 %token <string> EQ 
 %token <string> ADD
 %token <string> MULTIPLY
@@ -118,7 +122,7 @@ char scope[50] = "G"; // Initialize the scope as 'global'.
 
 %printer { fprintf(yyoutput, "%s", $$); } ID;
 
-%type <ast> Program DeclList Decl VarDecl FuncDecl ParamDeclList WhileStmt IfStmt ElseStmt Condition ParamDecl ArgDeclList ArgDecl Block BlockDeclList BlockDecl StmtList Expr IDEQExpr MathStmt Math Operator CompOperator ArrDecl
+%type <ast> Program DeclList Decl VarDecl FuncDecl ParamDeclList WhileStmt IfStmt ElseStmt Condition ParamDecl ArgDeclList ArgDecl Block BlockDeclList BlockDecl StmtList Expr IDEQExpr MathStmt Math Operator CompOperator ArrDecl BoolOpStmt
 
 %start Program
 
@@ -1777,9 +1781,9 @@ WhileStmt:	WHILE { inElseOrWhile = UPDATE_WHILE;
 
 }
 
-IfStmt: IF {inElseOrWhile = UPDATE_IF_ELSE;} LPAREN Condition RPAREN { printf(BORANGE "RULE: If-Else Statement Initialization \n\n" RESET);
+IfStmt: IF {inElse = UPDATE_IF_ELSE;} LPAREN Condition RPAREN { printf(BORANGE "RULE: If-Else Statement Initialization \n\n" RESET);
 						
-						inElseOrWhile = 0; //reset before block since Condition has been run already		 
+						inElse = 0; //reset before block since Condition has been run already		 
 						ifElseCurrentBlock = IN_IF_BLOCK;
 						 
 						 } Block { printf(BORANGE "\nRULE: IF Statement Block\n\n" RESET);
@@ -1801,31 +1805,34 @@ IfStmt: IF {inElseOrWhile = UPDATE_IF_ELSE;} LPAREN Condition RPAREN { printf(BO
 							}
 							runIfElseBlock = 0; // reset the pass variable
 							ifElseCurrentBlock = 0; // reset the current variable
+							BooleanOpt = 0; // reset the current value of Boolean Operation
 
 }
 
 ElseStmt: | ELSE Block
 
-Condition: NUMBER CompOperator NUMBER {
+Condition: NUMBER CompOperator NUMBER BoolOpStmt {
 
 				int temp1, temp2;
 				temp1 = atoi($1);
 				temp2 = atoi($3);
 
-				if (compareIntOp($2, temp1, temp2) && inElseOrWhile == UPDATE_IF_ELSE) {
-					runIfElseBlock = 1;
-				}
-				if (compareIntOp($2, temp1, temp2) && inElseOrWhile == UPDATE_WHILE) {
-					if(strcmp($2,"==") == 0){
-						printf(BORANGE "\nWARNING: Possible infinite loop detected.\n" RESET);
+				if (compareIntOp($2, temp1, temp2))  {
+					if (BooleanOpt != -1) {
+						runIfElseBlock = 1;
+					} else {
+						if (runIfElseBlock != 1) {
+							runIfElseBlock = 0;
+						}
 					}
-					createWhileCondition($1, $2, $3);
-					endMIPSWhile($1,$2,$3,scope,1,1);
-					runWhileBlock = 1;
+				} else {
+					if (BooleanOpt == -1) {
+						runIfElseBlock = 0;
+					}
 				}
 
 
-		} | ID CompOperator ID {
+		} | ID CompOperator ID BoolOpStmt {
 
 				char type1[50];
 				char type2[50];
@@ -1875,16 +1882,18 @@ Condition: NUMBER CompOperator NUMBER {
 					temp2 = atoi(getValue($3, scope));
 					//printf(BORANGE "temp1: %d\ntemp2: %d\n" RESET, temp1, temp2);
 
-					if (compareIntOp($2, temp1, temp2) && inElseOrWhile == UPDATE_IF_ELSE) {
-					runIfElseBlock = 1;
-					}
-					if (compareIntOp($2, temp1, temp2) && inElseOrWhile == UPDATE_WHILE) {
-						if(strcmp($2,"==") == 0){
-							printf(BORANGE "\nWARNING: Possible infinite loop detected.\n" RESET);
+					if (compareIntOp($2, temp1, temp2) && inElse == UPDATE_IF_ELSE)  {
+						if (BooleanOpt != -1) {
+							runIfElseBlock = 1;
+						} else {
+							if (runIfElseBlock != 1) {
+								runIfElseBlock = 0;
+							}
 						}
-						createWhileCondition($1, $2, $3);
-						endMIPSWhile($1,$2,$3,scope,0,0);
-						runWhileBlock = 1;
+					} else {
+						if (BooleanOpt == -1) {
+							runIfElseBlock = 0;
+						}
 					}
 				}
 				else if (!typeFloat) { // if type is float
@@ -1893,16 +1902,18 @@ Condition: NUMBER CompOperator NUMBER {
 					temp2 = atof(getValue($3, scope));
 					//printf(BORANGE "temp1: %f\ntemp2: %f\n" RESET, temp1, temp2);
 
-					if (compareFloatOp($2, temp1, temp2) && inElseOrWhile == UPDATE_IF_ELSE) {
-					runIfElseBlock = 1;
-					}
-					if (compareFloatOp($2, temp1, temp2) && inElseOrWhile == UPDATE_WHILE) {
-						if(strcmp($2,"==") == 0){
-							printf(BORANGE "\nWARNING: Possible infinite loop detected.\n" RESET);
+					if (compareFloatOp($2, temp1, temp2) && inElse == UPDATE_IF_ELSE)  {
+						if (BooleanOpt != -1) {
+							runIfElseBlock = 1;
+						} else {
+							if (runIfElseBlock != 1) {
+								runIfElseBlock = 0;
+							}
 						}
-						createWhileCondition($1, $2, $3);
-						endMIPSWhile($1,$2,$3,scope,0,0);
-						runWhileBlock = 1;
+					} else {
+						if (BooleanOpt == -1) {
+							runIfElseBlock = 0;
+						}
 					}
 				}
 				else if (!typeChar) { // if type is char
@@ -1911,21 +1922,23 @@ Condition: NUMBER CompOperator NUMBER {
 					strcpy(temp2, getValue($3, scope));
 					//printf(BORANGE "temp1: %s\ntemp2: %s\n" RESET, temp1, temp2);
 
-					if (compareCharOp($2, temp1, temp2) && inElseOrWhile == UPDATE_IF_ELSE) {
-					runIfElseBlock = 1;
-					}
-					if (compareCharOp($2, temp1, temp2) && inElseOrWhile == UPDATE_WHILE) {
-						if(strcmp($2,"==") == 0){
-							printf(BORANGE "\nWARNING: Possible infinite loop detected.\n" RESET);
+					if (compareCharOp($2, temp1, temp2) && inElse == UPDATE_IF_ELSE)  {
+						if (BooleanOpt != -1) {
+							runIfElseBlock = 1;
+						} else {
+							if (runIfElseBlock != 1) {
+								runIfElseBlock = 0;
+							}
 						}
-						createWhileCondition($1, $2, $3);
-						endMIPSWhile($1,$2,$3,scope,0,0);
-						runWhileBlock = 1;
+					} else {
+						if (BooleanOpt == -1) {
+							runIfElseBlock = 0;
+						}
 					}
 				}
 
 
-		} | ID CompOperator NUMBER {
+		} | ID CompOperator NUMBER BoolOpStmt {
 
 				// is the variable intitalized as a value?
 				int check;
@@ -1941,58 +1954,64 @@ Condition: NUMBER CompOperator NUMBER {
 				temp1 = atoi(getValue($1, scope));
 				temp2 = atoi($3);
 
-				if (compareIntOp($2, temp1, temp2) && inElseOrWhile == UPDATE_IF_ELSE) {
-					runIfElseBlock = 1;
-				}
-				if (compareIntOp($2, temp1, temp2) && inElseOrWhile == UPDATE_WHILE) {
-					if(strcmp($2,"==") == 0){
-						printf(BORANGE "\nWARNING: Possible infinite loop detected.\n" RESET);
+				if (compareIntOp($2, temp1, temp2)) {
+					if (BooleanOpt != -1) {
+						runIfElseBlock = 1;
+					} else {
+						if (runIfElseBlock != 1) {
+							runIfElseBlock = 0;
+						}
 					}
-					createWhileCondition($1, $2, $3);
-					endMIPSWhile($1,$2,$3,scope,0,1);
-					runWhileBlock = 1;
+				} else {
+					if (BooleanOpt == -1) {
+						runIfElseBlock = 0;
+					}
 				}
 
 
-		} | FLOATNUM CompOperator FLOATNUM {
+		} | FLOATNUM CompOperator FLOATNUM BoolOpStmt {
 
 				float temp1, temp2;
 				temp1 = atof($1);
 				temp2 = atof($3);
 				//printf(BORANGE "temp1: %f\ntemp2: %f\n" RESET, temp1, temp2);
 
-				if (compareFloatOp($2, temp1, temp2) && inElseOrWhile == UPDATE_IF_ELSE) {
-					runIfElseBlock = 1;
-				}
-				if (compareFloatOp($2, temp1, temp2) && inElseOrWhile == UPDATE_WHILE) {
-					if(strcmp($2,"==") == 0){
-						printf(BORANGE "\nWARNING: Possible infinite loop detected.\n" RESET);
+				if (compareFloatOp($2, temp1, temp2) && inElse == UPDATE_IF_ELSE)  {
+					if (BooleanOpt != -1) {
+						runIfElseBlock = 1;
+					} else {
+						if (runIfElseBlock != 1) {
+							runIfElseBlock = 0;
+						}
 					}
-					endMIPSWhile($1,$2,$3,scope,1,1);
-					runWhileBlock = 1;
+				} else {
+					if (BooleanOpt == -1) {
+						runIfElseBlock = 0;
+					}
 				}
 
-		} | CHARID CompOperator CHARID {
+		} | CHARID CompOperator CHARID BoolOpStmt {
 
 				char temp1[50], temp2[50];
 				strcpy(temp1, $1);
 				strcpy(temp2, $3);
 				//printf(BORANGE "temp1: %s\ntemp2: %s\n" RESET, temp1, temp2);
 
-				if (compareCharOp($2, temp1, temp2) && inElseOrWhile == UPDATE_IF_ELSE) {
-					runIfElseBlock = 1;
-				}
-				if (compareCharOp($2, temp1, temp2) && inElseOrWhile == UPDATE_WHILE) {
-					if(strcmp($2,"==") == 0){
-						printf(BORANGE "\nWARNING: Possible infinite loop detected.\n" RESET);
+				if (compareCharOp($2, temp1, temp2) && inElse == UPDATE_IF_ELSE) {
+					if (BooleanOpt != -1) {
+						runIfElseBlock = 1;
+					} else {
+						if (runIfElseBlock != 1) {
+							runIfElseBlock = 0;
+						}
 					}
-					endMIPSWhile($1,$2,$3,scope,1,1);
-					runWhileBlock = 1;
+				} else {
+					if (BooleanOpt == -1) {
+						runIfElseBlock = 0;
+					}
 				}
 
 		}
-
-
 
 ConditionVar:	NUMBER {
 
@@ -2003,6 +2022,10 @@ ConditionVar:	NUMBER {
 			} | CHARID {
 
 			}
+
+BoolOpStmt: %empty {}
+			| AND Condition {BooleanOpt = -1;}
+			| OR Condition {BooleanOpt = 1;}
 
 %%
 

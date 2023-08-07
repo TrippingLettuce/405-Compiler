@@ -78,22 +78,6 @@ CHARID \'([^\\\'']|\\.)*\'
      
 }
 
-"if"  {
-	words++; chars += strlen(yytext);
-	printf("%s : IF\n", yytext);
-    yylval.string = strdup(yytext);
-    return IF;
-     
-}
-
-"else"  {
-	words++; chars += strlen(yytext);
-	printf("%s : ELSE\n", yytext);
-    yylval.string = strdup(yytext);
-    return ELSE;
-     
-}
-
 "while"  {
 	words++; chars += strlen(yytext);
 	printf("%s : WHILE STATEMENT\n", yytext);
@@ -115,6 +99,22 @@ CHARID \'([^\\\'']|\\.)*\'
 	printf("%s : RETURN STATEMENT\n", yytext);
     yylval.string = strdup(yytext);
     return RETURN;
+     
+}
+
+"if"  {
+	words++; chars += strlen(yytext);
+	printf("%s : IF\n", yytext);
+    yylval.string = strdup(yytext);
+    return IF;
+     
+}
+
+"else"  {
+	words++; chars += strlen(yytext);
+	printf("%s : ELSE\n", yytext);
+    yylval.string = strdup(yytext);
+    return ELSE;
      
 }
 
@@ -162,6 +162,21 @@ CHARID \'([^\\\'']|\\.)*\'
 	printf("%s : OPERATOR\n", yytext);
     yylval.string = strdup(yytext);
     return GT;
+     
+}
+
+"&&"  {
+	chars++;
+	printf("%s : BOOL OPERATOR\n", yytext);
+    yylval.string = strdup(yytext);
+    return AND; 
+}
+
+"||"  {
+	chars++;
+	printf("%s : BOOL OPERATOR\n", yytext);
+    yylval.string = strdup(yytext);
+    return OR;
      
 }
 
