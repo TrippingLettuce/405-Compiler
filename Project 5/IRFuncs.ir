@@ -12,14 +12,11 @@ T0 = m
 T0 = o
 T0 = m
 
-addValue:
-T12 = result
-T6 = {NUM} + {NUM}
-return T6
-
+removeOne:
+T17 = i
+T3 = {NUM} - {NUM}
 whileloop0:
-goto main if not x > 0
-output 'result:'
-output T6
-output *newline*
 T1 = {NUM} - {NUM}
+whileloop1:
+output 'p is 6'
+T8 = {NUM} - {NUM}

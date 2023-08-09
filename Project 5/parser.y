@@ -4,6 +4,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <string.h>
+#include <time.h>
+#include <sys/time.h>
 
 #include "symbolTable.h"
 #include "AST.h"
@@ -2032,6 +2034,17 @@ BoolOpStmt: %empty {}
 int main(int argc, char**argv)
 {
 
+	//clock_t start, end;
+	//double cpu_time_used;	
+
+	struct timeval start, end;
+	long seconds, useconds;
+	double mtime;
+
+	gettimeofday(&start, NULL);
+	
+	//start = clock();
+
 	/*
 	#ifdef YYDEBUG
 		yydebug = 1;
@@ -2063,6 +2076,21 @@ int main(int argc, char**argv)
 	printf(BORANGE "\n\n --------------------->" RESET);
 	printf(BORANGE " COMPILER ENDED " RESET);
 	printf(BORANGE "<--------------------- \n\n" RESET);
+
+	gettimeofday(&end, NULL);
+
+	seconds  = end.tv_sec  - start.tv_sec;
+	useconds = end.tv_usec - start.tv_usec;
+
+	mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
+
+
+
+	printf(BORANGE "Elapsed time: %f milliseconds\n" RESET, mtime);
+
+	//end = clock();
+	//cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+	//printf("Program took %f seconds to execute \n", cpu_time_used);
 	
 	printf("\n\n ---------------------" RESET);
 	printf(BCYAN " SHOW SYMBOL TABLE " RESET);

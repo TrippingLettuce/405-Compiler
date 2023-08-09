@@ -1,15 +1,29 @@
 int w;
 int x;
+int j;
+int i;
+int on; 
+int time;
+int age;
 char y;
-x = 20;
+int p;
+
 int arr [3];
-int result;
 char carr [5];
 arr[1] = 223;
 arr[2] = 2332;
 
-w = 21 + 19 * 5 - 60 + 69;
+j = 7;
+on = 1;
+time = 4;
+i = 100;
+x = 5;
+age = 14;
+p = 8;
 
+int assignMath(){
+    w = 21 + 19 * 5 - 60 + 69;
+}
 
 int assignArray(){
     carr[0] = 'h';
@@ -19,24 +33,50 @@ int assignArray(){
     carr[4] = 'm';
 }
 
-int addValue(int num1, int num2){
-     int result;
-     result = num1 + num2;
-     return result;
+int removeOne(){
+    int i;
+    i = i - 1;
 }
 
+while (x > 0){
+    write x;
+    x = x - 1;
+}
+
+if (j > 0 && j < 10){
+    write "j is positive and less than 10";
+}
+else {
+    write "no change";
+}
+if (j < 10 || j > 0) {
+    write "j is positive or less than 10";
+}
+else {
+    write "no change again";
+}
+
+if (age > 12) {
+    if (age < 19){
+        write "age is a teenager";
+    }
+    else {
+        write "age is an adult";
+    }
+}
+
+while (p > 4){
+    if (p == 6){
+        write "p is 6";
+        removeOne();
+    }
+    else {
+        write "p is not 6";
+    }
+    p = p - 1; 
+}
 
 assignMath();
 assignArr();
 
 write w;
-write x;
-
-while (x > 0){
-    result = addValue(x, -5);
-    write "result:";
-    write result;
-    write ~nl;
-    x = x - 5;
-}
-
