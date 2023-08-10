@@ -1,0 +1,66 @@
+# IR Code
+#---------------
+
+main:
+
+T0 = w
+T1 = x
+T2 = j
+T3 = i
+T4 = on
+T5 = time
+T6 = age
+T7 = y
+T8 = p
+T9 = arr[0]
+T10 = arr[1]
+T11 = arr[2]
+T12 = carr[0]
+T13 = carr[1]
+T14 = carr[2]
+T15 = carr[3]
+T16 = carr[4]
+T10 = 223
+T11 = 2332
+T2 = 8
+T4 = 8
+T5 = 8
+T3 = 8
+T1 = 8
+T6 = 8
+T8 = 8
+
+goto assignMath
+
+
+goto assignArray
+
+
+goto removeOne
+
+output 'j is positive and less than 10'
+output 'j is positive or less than 10'
+output 'age is a teenager'
+output T0
+
+# Functions
+#---------------
+
+assignMath:
+T0 = {NUM} + {NUM}
+
+assignArray:
+T0 = h
+T0 = i
+T0 = m
+T0 = o
+T0 = m
+
+removeOne:
+T17 = i
+T3 = {NUM} - {NUM}
+whileloop0:
+T1 = {NUM} - {NUM}
+whileloop1:
+output 'p is 6'
+T8 = {NUM} - {NUM}
