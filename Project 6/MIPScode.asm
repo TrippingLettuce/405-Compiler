@@ -30,22 +30,22 @@ main:
 	la $a0, 2332      # store value in $a0
 	la $t0, Garr2      # load variable address into $t0
 	sw $a0, 0($t0)  # move value from $a0 into .word variable
-	la $a0, 8      # store value in $a0
+	la $a0, 7      # store value in $a0
 	la $t0, Gj      # load variable address into $t0
 	sw $a0, 0($t0)  # move value from $a0 into .word variable
-	la $a0, 8      # store value in $a0
+	la $a0, 1      # store value in $a0
 	la $t0, Gon      # load variable address into $t0
 	sw $a0, 0($t0)  # move value from $a0 into .word variable
-	la $a0, 8      # store value in $a0
+	la $a0, 4      # store value in $a0
 	la $t0, Gtime      # load variable address into $t0
 	sw $a0, 0($t0)  # move value from $a0 into .word variable
-	la $a0, 8      # store value in $a0
+	la $a0, 100      # store value in $a0
 	la $t0, Gi      # load variable address into $t0
 	sw $a0, 0($t0)  # move value from $a0 into .word variable
-	la $a0, 8      # store value in $a0
+	la $a0, 5      # store value in $a0
 	la $t0, Gx      # load variable address into $t0
 	sw $a0, 0($t0)  # move value from $a0 into .word variable
-	la $a0, 8      # store value in $a0
+	la $a0, 14      # store value in $a0
 	la $t0, Gage      # load variable address into $t0
 	sw $a0, 0($t0)  # move value from $a0 into .word variable
 	la $a0, 8      # store value in $a0
