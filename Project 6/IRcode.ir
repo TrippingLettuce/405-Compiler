@@ -29,25 +29,29 @@ T3 = 100
 T1 = 5
 T6 = 14
 T8 = 8
+output 'no change'
+output 'j is positive or less than 10'
+T0 = 125
+output T0
+output 'age is a teenager'
 
-goto assignMath
+goto removeOne
 
 
 goto assignArray
 
 
-goto removeOne
-
-output 'j is positive and less than 10'
-output 'j is positive or less than 10'
-output 'age is a teenager'
-output T0
-
 # Functions
 #---------------
+whileloop0:
+T1 = {NUM} - {NUM}
 
-assignMath:
-T0 = {NUM} + {NUM}
+removeOne:
+T17 = i
+T3 = {NUM} - {NUM}
+whileloop1:
+output 'p is 6'
+T8 = {NUM} - {NUM}
 
 assignArray:
 T0 = h
@@ -55,12 +59,3 @@ T0 = i
 T0 = m
 T0 = o
 T0 = m
-
-removeOne:
-T17 = i
-T3 = {NUM} - {NUM}
-whileloop0:
-T1 = {NUM} - {NUM}
-whileloop1:
-output 'p is 6'
-T8 = {NUM} - {NUM}

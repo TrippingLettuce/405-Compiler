@@ -21,29 +21,7 @@ x = 5;
 age = 14;
 p = 8;
 
-int assignMath(){
-    w = 21 + 19 * 5 - 60 + 69;
-}
-
-int assignArray(){
-    carr[0] = 'h';
-    carr[1] = 'i';
-    carr[2] = 'm';
-    carr[3] = 'o';
-    carr[4] = 'm';
-}
-
-int removeOne(){
-    int i;
-    i = i - 1;
-}
-
-while (x > 0){
-    write x;
-    x = x - 1;
-}
-
-if (j > 0 && j < 10){
+if (j > 0 && j < 5){
     write "j is positive and less than 10";
 }
 else {
@@ -56,6 +34,16 @@ else {
     write "no change again";
 }
 
+w = 21 + 19 * 5 - 60 + 69;
+write w;
+
+
+
+while (x > 0){
+    write x;
+    x = x - 1;
+}
+
 if (age > 12) {
     if (age < 19){
         write "age is a teenager";
@@ -63,6 +51,11 @@ if (age > 12) {
     else {
         write "age is an adult";
     }
+}
+
+int removeOne(){
+    int i;
+    i = i - 1;
 }
 
 while (p > 4){
@@ -76,7 +69,12 @@ while (p > 4){
     p = p - 1; 
 }
 
-assignMath();
-assignArr();
+int assignArray(){
+    carr[0] = 'h';
+    carr[1] = 'i';
+    carr[2] = 'm';
+    carr[3] = 'o';
+    carr[4] = 'm';
+}
 
-write w;
+assignArr();

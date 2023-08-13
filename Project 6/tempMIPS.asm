@@ -31,10 +31,6 @@ main:
 	la $t0, Gp      # load variable address into $t0
 	sw $a0, 0($t0)  # move value from $a0 into .word variable
 
-	jal whileLoop0       # goto loop: whileLoop0
-
-	next:       # return from loop here
-
 	li $v0, 4       # call code to print an string
 	la $a0, TEMP0   # print stored string from above
 	syscall
@@ -42,6 +38,19 @@ main:
 	li $v0, 4       # call code to print an string
 	la $a0, TEMP1   # print stored string from above
 	syscall
+	la $a0, 125      # store value in $a0
+	la $t0, Gw      # load variable address into $t0
+	sw $a0, 0($t0)  # move value from $a0 into .word variable
+
+	lw $t0, Gw       # load the value of w into $t0
+
+	li $v0, 1       # call code to print an integer
+	move $a0, $t0   # move the value of w into $a0
+	syscall         # system call to print integer
+
+	jal whileLoop0       # goto loop: whileLoop0
+
+	next:       # return from loop here
 
 	li $v0, 4       # call code to print an string
 	la $a0, TEMP2   # print stored string from above
@@ -51,15 +60,7 @@ main:
 
 	next:       # return from loop here
 
-	jal assignMath       # goto function: assignMath
-
 	jal assignArr       # goto function: assignArr
-
-	lw $t0, Gw       # load the value of w into $t0
-
-	li $v0, 1       # call code to print an integer
-	move $a0, $t0   # move the value of w into $a0
-	syscall         # system call to print integer
 
 	# -----------------------
 	#  done, terminate program.

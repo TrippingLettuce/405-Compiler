@@ -9,16 +9,16 @@
 	Gtime: .word 0
 	Gage: .word 0
 	Gp: .word 0
+	TEMP0: .asciiz "no change"
+	TEMP1: .asciiz "j is positive or less than 10"
+	TEMP2: .asciiz "age is a teenager"
+	removeOnei: .word 0
+	TEMP3: .asciiz "p is 6"
 	Gcarr0: .asciiz "h"
 	Gcarr1: .asciiz "i"
 	Gcarr2: .asciiz "m"
 	Gcarr3: .asciiz "o"
 	Gcarr4: .asciiz "m"
-	removeOnei: .word 0
-	TEMP0: .asciiz "j is positive and less than 10"
-	TEMP1: .asciiz "j is positive or less than 10"
-	TEMP2: .asciiz "age is a teenager"
-	TEMP3: .asciiz "p is 6"
 
 .text
 main:
@@ -52,10 +52,6 @@ main:
 	la $t0, Gp      # load variable address into $t0
 	sw $a0, 0($t0)  # move value from $a0 into .word variable
 
-	jal whileLoop0       # goto loop: whileLoop0
-
-	next:       # return from loop here
-
 	li $v0, 4       # call code to print an string
 	la $a0, TEMP0   # print stored string from above
 	syscall
@@ -63,6 +59,19 @@ main:
 	li $v0, 4       # call code to print an string
 	la $a0, TEMP1   # print stored string from above
 	syscall
+	la $a0, 125      # store value in $a0
+	la $t0, Gw      # load variable address into $t0
+	sw $a0, 0($t0)  # move value from $a0 into .word variable
+
+	lw $t0, Gw       # load the value of w into $t0
+
+	li $v0, 1       # call code to print an integer
+	move $a0, $t0   # move the value of w into $a0
+	syscall         # system call to print integer
+
+	jal whileLoop0       # goto loop: whileLoop0
+
+	next:       # return from loop here
 
 	li $v0, 4       # call code to print an string
 	la $a0, TEMP2   # print stored string from above
@@ -72,15 +81,7 @@ main:
 
 	next:       # return from loop here
 
-	jal assignMath       # goto function: assignMath
-
 	jal assignArr       # goto function: assignArr
-
-	lw $t0, Gw       # load the value of w into $t0
-
-	li $v0, 1       # call code to print an integer
-	move $a0, $t0   # move the value of w into $a0
-	syscall         # system call to print integer
 
 	# -----------------------
 	#  done, terminate program.
@@ -93,23 +94,6 @@ main:
 # -----------------------
 # function declarations
 
-assignMath:
-
-	add $t0, $a1, $a2         # add the two values into $t0
-	sw $t0, assignMathw      # store the sum into target variable
-
-	jr $ra       # return to main
-
-assignArray:
-
-	jr $ra       # return to main
-
-removeOne:
-	sub $t0, $t0, 1    # subtract the two values into $t0
-	sw $t0, Gi          # store the sum into target variable
-
-	jr $ra       # return to main
-
 whileLoop0:
 
 	lw $s0, Gx
@@ -121,6 +105,17 @@ whileLoop0:
 
 	j whileLoop0       # loop back
 
+removeOne:
+
+	lw $s2, removeOnei
+
+	li $s3, 1
+
+	sub $t0, $s0, $s1   # subtract the two values into $t0
+	sw $t0, Gx          # store the result into target variable
+
+	jr $ra       # return to main
+
 whileLoop1:
 
 	li $v0, 4       # call code to print an string
@@ -129,14 +124,18 @@ whileLoop1:
 
 	jal removeOne       # goto function: removeOne
 
-	lw $s2, Gp
+	lw $s4, Gp
 
-	li $s3, 1
+	li $s5, 1
 
 	sub $t0, $s0, $s1   # subtract the two values into $t0
 	sw $t0, Gx          # store the result into target variable
 
 	j whileLoop1       # loop back
+
+assignArray:
+
+	jr $ra       # return to main
 
 endloop:
 
